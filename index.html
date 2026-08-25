@@ -1,0 +1,4016 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Global Labor Law Intelligence Dashboard</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" onerror="this.remove()" />
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#f8fafc;--bg2:#ffffff;--surface:#f1f5f9;
+  --card:#ffffff;--card-hover:#f8fafc;
+  --border:#e2e8f0;--border-light:#f1f5f9;
+  --text:#0f172a;--text2:#475569;--text3:#94a3b8;
+  --accent:#2563eb;--accent-light:#eff6ff;
+  --green:#16a34a;--green-bg:#f0fdf4;
+  --orange:#ea580c;--orange-bg:#fff7ed;
+  --red:#dc2626;--red-bg:#fef2f2;
+  --blue:#2563eb;--blue-bg:#eff6ff;
+  --purple:#7c3aed;
+  --radius:12px;--radius-sm:8px;--radius-xs:6px;--radius-pill:999px;
+  --shadow-sm:0 1px 2px rgba(0,0,0,0.05);
+  --shadow:0 1px 3px rgba(0,0,0,0.1);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.08);
+  --header-h:50px;--ticker-h:42px;
+  --left-w:220px;--right-w:220px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans SC","Helvetica Neue",sans-serif;
+}
+[data-theme="dark"]{
+  --bg:#0a0e1a;--bg2:#111827;--surface:#1e293b;
+  --card:rgba(15,23,42,0.85);--card-hover:rgba(20,30,55,0.95);
+  --border:rgba(56,189,248,0.12);--border-light:rgba(56,189,248,0.06);
+  --text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;
+  --accent:#3b82f6;--accent-light:rgba(59,130,246,0.1);
+  --green:#22c55e;--green-bg:rgba(34,197,94,0.1);
+  --orange:#f59e0b;--orange-bg:rgba(245,158,11,0.1);
+  --red:#ef4444;--red-bg:rgba(239,68,68,0.1);
+  --blue:#3b82f6;--blue-bg:rgba(59,130,246,0.1);
+  --shadow-sm:0 1px 2px rgba(0,0,0,0.2);
+  --shadow:0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.3);
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex;flex-direction:column;font-size:13px;line-height:1.5}
+
+.header{height:var(--header-h);background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:100;flex-shrink:0}
+.header-left{display:flex;flex-direction:column;gap:0}
+.header-title{font-size:20px;font-weight:700;letter-spacing:-0.3px;line-height:1.2}
+.header-title .g1{background:linear-gradient(135deg,#2563eb,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.header-subtitle{font-size:11px;color:var(--text3);letter-spacing:0.3px}
+.header-actions{display:flex;align-items:center;gap:6px}
+.hbtn{background:var(--card);border:1px solid var(--border);color:var(--text2);padding:5px 10px;border-radius:var(--radius-pill);cursor:pointer;font-size:12px;display:inline-flex;align-items:center;gap:4px;transition:all .15s;font-family:var(--font)}
+.hbtn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light)}
+.theme-btn{background:var(--card);border:1px solid var(--border);color:var(--text2);width:30px;height:30px;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+.notif-btn{position:relative;background:var(--card);border:1px solid var(--border);color:var(--text2);width:30px;height:30px;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.notif-btn:hover{border-color:var(--accent);color:var(--accent)}
+.notif-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;border-radius:50%;width:16px;height:16px;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:700;border:2px solid var(--bg2)}
+
+.latest-ticker{width:100%;height:var(--ticker-h);background:var(--bg2);border-bottom:1px solid var(--border);overflow:hidden;flex-shrink:0;display:flex;align-items:center}
+.ticker-inner{display:flex;align-items:center;width:100%}
+.ticker-label{flex-shrink:0;padding:0 14px;font-size:12px;font-weight:600;color:var(--accent);display:flex;align-items:center;gap:6px;white-space:nowrap}
+.ticker-label .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.ticker-wrap{flex:1;overflow:hidden;position:relative;mask-image:linear-gradient(to right,transparent 0,#000 3%,#000 93%,transparent 100%);-webkit-mask-image:linear-gradient(to right,transparent 0,#000 3%,#000 93%,transparent 100%)}
+.ticker-track{display:flex;align-items:center;gap:0;width:max-content}
+.ticker-track.auto{animation:tickerScroll 80s linear infinite}
+.ticker-track:hover,.ticker-wrap:hover .ticker-track{animation-play-state:paused!important}
+@keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.tc-item{flex-shrink:0;display:flex;align-items:center;gap:8px;padding:4px 14px;cursor:pointer;border-radius:var(--radius-pill);white-space:nowrap;transition:background .15s;margin:0 2px}
+.tc-item:hover{background:var(--accent-light)}
+.tc-item .flag{font-size:14px}
+.tc-item .name{font-size:12px;font-weight:600;color:var(--text)}
+.tc-item .sep{color:var(--text3);font-size:11px}
+.tc-item .cat{font-size:11px;color:var(--accent)}
+.tc-item .title{font-size:12px;color:var(--text2)}
+.tc-item .date{font-size:11px;color:var(--text3)}
+.tc-item .new-tag{font-size:8px;font-weight:700;color:#fff;background:var(--accent);padding:1px 5px;border-radius:var(--radius-pill);line-height:1.4}
+.ticker-viewall{flex-shrink:0;padding:4px 14px;font-size:12px;font-weight:600;color:var(--accent);cursor:pointer;white-space:nowrap;border-radius:var(--radius-pill);transition:background .15s}
+.ticker-viewall:hover{background:var(--accent-light)}
+
+.dd-wrap{position:relative}
+.dd-menu{position:absolute;top:calc(100% + 4px);right:0;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm);min-width:130px;display:none;z-index:200;overflow:hidden;box-shadow:var(--shadow-md)}
+.dd-menu.open{display:block}
+.dd-menu div{padding:7px 12px;font-size:12px;cursor:pointer;color:var(--text);transition:background .15s}
+.dd-menu div:hover{background:var(--accent-light);color:var(--accent)}
+
+.notif-panel{position:fixed;top:var(--header-h);right:0;width:340px;height:calc(100vh - var(--header-h));background:var(--bg2);border-left:1px solid var(--border);z-index:150;transform:translateX(100%);transition:transform .25s ease;display:flex;flex-direction:column}
+.notif-panel.open{transform:translateX(0)}
+.notif-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.notif-header h3{font-size:14px;font-weight:700}
+.notif-body{flex:1;overflow-y:auto;padding:6px 0}
+.notif-group-label{padding:6px 16px;font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.5px}
+.notif-item{padding:10px 16px;cursor:pointer;transition:background .15s;border-bottom:1px solid var(--border-light);display:flex;gap:10px;align-items:flex-start}
+.notif-item:hover{background:var(--card-hover)}
+.notif-item .ni-flag{font-size:1.1rem;flex-shrink:0;margin-top:1px}
+.notif-item .ni-body{flex:1;min-width:0}
+.notif-item .ni-title{font-size:12px;font-weight:600;margin-bottom:1px}
+.notif-item .ni-sub{font-size:11px;color:var(--text2)}
+.notif-item .ni-date{font-size:10px;color:var(--text3);margin-top:2px}
+.notif-item .ni-badge{background:var(--red);color:#fff;font-size:8px;padding:1px 5px;border-radius:var(--radius-pill);font-weight:700;flex-shrink:0;margin-top:2px}
+
+.main{flex:1;display:grid;grid-template-columns:var(--left-w) 1fr var(--right-w);overflow:hidden}
+
+.left{border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;background:var(--bg2)}
+.panel-section{padding:12px 14px;border-bottom:1px solid var(--border-light)}
+.panel-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.filter-select{width:100%;padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--card);color:var(--text);font-size:12px;cursor:pointer;font-family:var(--font);outline:none;transition:border-color .15s;height:36px}
+.filter-select:focus{border-color:var(--accent)}
+.filter-row{margin-bottom:6px}
+.filter-row:last-child{margin-bottom:0}
+.filter-row label{display:block;font-size:11px;color:var(--text3);margin-bottom:3px}
+.reset-btn{width:100%;padding:5px;border:1px solid var(--border);border-radius:var(--radius-xs);background:transparent;color:var(--text2);font-size:11px;cursor:pointer;font-family:var(--font);transition:all .15s;margin-top:6px}
+.reset-btn:hover{border-color:var(--accent);color:var(--accent)}
+.map-section{padding:12px 14px;flex:1;display:flex;flex-direction:column;overflow:hidden}
+.map-info{font-size:11px;color:var(--text3);margin-bottom:6px;display:flex;align-items:center;gap:4px}
+.map-shell{position:relative;width:100%;flex:1;min-height:180px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border)}
+#leafletMap{width:100%;height:100%;background:#e8edf5}
+[data-theme="dark"] #leafletMap{background:#1a1d24}
+.leaflet-container{font-family:var(--font)}
+.leaflet-control-zoom{border:none!important;box-shadow:var(--shadow)!important}
+.leaflet-control-zoom a{background:var(--bg2)!important;color:var(--text)!important;border:1px solid var(--border)!important;width:26px!important;height:26px!important;line-height:26px!important;font-size:13px!important;border-radius:var(--radius-xs)!important}
+.leaflet-control-zoom a:hover{background:var(--accent)!important;color:#fff!important}
+.leaflet-interactive{transition:fill-opacity .2s,fill .2s;outline:none}
+.map-return-btn{position:absolute;top:6px;left:6px;z-index:600;display:none;align-items:center;gap:3px;background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-pill);padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;box-shadow:var(--shadow);transition:all .15s}
+.map-return-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.map-return-btn.show{display:inline-flex}
+.map-chip{position:absolute;bottom:6px;left:6px;right:6px;z-index:600;display:none;background:var(--bg2);border:1px solid var(--accent);border-radius:var(--radius-sm);padding:6px 10px;box-shadow:var(--shadow-md);animation:chipUp .25s ease}
+.map-chip.show{display:block}
+@keyframes chipUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.map-chip .mc-name{font-size:12px;font-weight:700;color:var(--accent);display:flex;align-items:center;gap:4px}
+.map-chip .mc-count{font-size:11px;color:var(--text2);margin-top:1px}
+.globe-legend{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.gleg{font-size:11px;color:var(--text3);cursor:pointer;display:flex;align-items:center;gap:3px;padding:2px 6px;border-radius:var(--radius-pill);transition:all .15s}
+.gleg:hover,.gleg.on{color:var(--accent);background:var(--accent-light);font-weight:600}
+.gdot{width:6px;height:6px;border-radius:50%}
+.leaflet-tooltip.map-tip{background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:var(--radius-sm);box-shadow:var(--shadow);font-size:11px;font-weight:600;padding:3px 8px}
+.leaflet-tooltip.map-tip::before{display:none}
+
+.center{display:flex;flex-direction:column;overflow:hidden}
+.center-scroll{flex:1;overflow-y:auto}
+
+.hero-section{padding:20px 24px 16px;border-bottom:1px solid var(--border-light);background:var(--bg2);text-align:center}
+.hero-tag{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.hero-title{font-size:20px;font-weight:700;margin-bottom:2px;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:12px;color:var(--text3);margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:8px}
+.hero-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:var(--radius-pill);background:var(--green-bg);color:var(--green);font-size:10px;font-weight:700}
+.hero-badge .dot{width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+.hero-search{width:100%;padding:10px 14px 10px 36px;border:1px solid var(--border);border-radius:22px;background:var(--card);color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border-color .15s;height:44px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242.156a5 5 0 1 1 0-10 5 5 0 0 1 0 10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:12px center}
+.hero-search:focus{border-color:var(--accent)}
+.hero-tabs{display:flex;gap:4px;margin-top:12px;justify-content:center;flex-wrap:wrap}
+.tab-btn{padding:5px 14px;border-radius:var(--radius-pill);font-size:12px;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text2);transition:all .15s;font-family:var(--font);font-weight:500}
+.tab-btn:hover{border-color:var(--accent);color:var(--accent)}
+.tab-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+.timeline-section{padding:16px 24px 8px}
+.section-title-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.section-title-label::after{content:'';flex:1;height:1px;background:var(--border)}
+.tl-group{margin-bottom:14px}
+.tl-year{font-size:14px;font-weight:800;color:var(--accent);padding:4px 0;display:flex;align-items:center;gap:8px}
+.tl-year::after{content:'';flex:1;height:1px;background:var(--border)}
+.tl-entry{display:flex;gap:12px;padding:8px 0;border-bottom:1px solid var(--border-light);cursor:pointer;transition:background .15s;max-width:800px}
+.tl-entry:hover{background:var(--surface);border-radius:var(--radius-xs);margin:0 -8px;padding:8px}
+.tl-left{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;width:70px;padding-top:2px}
+.tl-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);margin-bottom:4px}
+.tl-date{font-size:11px;color:var(--text3);white-space:nowrap}
+.tl-right{flex:1;min-width:0}
+.tl-meta{display:flex;align-items:center;gap:6px;margin-bottom:2px;flex-wrap:wrap}
+.tl-flag{font-size:14px}
+.tl-country{font-size:13px;font-weight:600}
+.tl-cat{font-size:11px;color:var(--accent);padding:1px 6px;background:var(--accent-light);border-radius:var(--radius-pill);font-weight:600}
+.tl-law{font-size:13px;font-weight:600;margin-bottom:1px}
+.tl-summary{font-size:12px;color:var(--text2);line-height:1.45;margin-bottom:2px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.tl-link{font-size:12px;color:var(--accent);font-weight:600;cursor:pointer}
+.tl-link:hover{text-decoration:underline}
+
+.library-section{padding:16px 24px 24px;border-top:1px solid var(--border-light)}
+.lib-count{font-size:12px;color:var(--text3);margin-bottom:10px}
+.lib-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.law-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;cursor:pointer;transition:all .18s}
+.law-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.law-card.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-light)}
+.lc-top{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.lc-flag{font-size:1.2rem}
+.lc-country{font-size:13px;font-weight:600}
+.lc-title{font-size:14px;font-weight:600;margin-bottom:4px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lc-cat{display:inline-block;font-size:11px;padding:2px 8px;border-radius:var(--radius-pill);background:var(--accent-light);color:var(--accent);font-weight:600;margin-bottom:4px}
+.lc-date{font-size:11px;color:var(--text3);margin-bottom:4px}
+.lc-summary{font-size:12px;color:var(--text2);line-height:1.45;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.lc-footer{display:flex;align-items:center;justify-content:space-between}
+.lc-status{font-size:11px;padding:2px 8px;border-radius:var(--radius-pill);font-weight:600}
+.lc-status.effective{background:var(--green-bg);color:var(--green)}
+.lc-status.upcoming{background:var(--orange-bg);color:var(--orange)}
+.lc-status.active{background:var(--blue-bg);color:var(--blue)}
+.lc-status.action-required{background:var(--red-bg);color:var(--red)}
+.lc-link{font-size:12px;color:var(--accent);font-weight:600;cursor:pointer}
+.lc-link:hover{text-decoration:underline}
+.lib-empty{grid-column:1/-1;text-align:center;padding:30px;color:var(--text3);font-size:12px}
+
+.right{border-left:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;background:var(--bg2)}
+.right-section{padding:14px;border-bottom:1px solid var(--border-light)}
+.right-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.kpi{text-align:center;padding:10px 4px;background:var(--surface);border-radius:var(--radius-sm)}
+.kpi-v{font-size:24px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.kpi-l{font-size:11px;color:var(--text3);margin-top:1px}
+.upcoming-item{padding:8px 0;border-bottom:1px solid var(--border-light);font-size:12px;transition:background .15s;cursor:pointer}
+.upcoming-item:last-child{border-bottom:none}
+.upcoming-item:hover{background:var(--surface);border-radius:var(--radius-xs)}
+.upcoming-date{font-size:11px;color:var(--accent);font-weight:600;margin-bottom:2px}
+.upcoming-country{font-size:12px;font-weight:600}
+.upcoming-title{font-size:12px;color:var(--text2)}
+.ai-summary{padding:10px;background:var(--surface);border-radius:var(--radius-sm);font-size:12px;color:var(--text2);line-height:1.6;border-left:3px solid var(--accent)}
+
+.detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;display:none;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
+.detail-overlay.open{opacity:1;pointer-events:all;display:flex}
+.detail-panel{display:none;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);width:680px;max-width:92vw;max-height:85vh;overflow-y:auto;padding:24px;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:210;box-shadow:var(--shadow-md)}
+.detail-panel.open{display:block}
+.detail-panel .dp-close{position:absolute;top:12px;right:14px;background:none;border:1px solid var(--border);color:var(--text2);width:28px;height:28px;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.detail-panel .dp-close:hover{border-color:var(--red);color:var(--red)}
+.dp-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.dp-section h4{font-size:12px;font-weight:700;color:var(--accent);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.dp-row{margin-bottom:8px}
+.dp-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.dp-val{font-size:12px;color:var(--text);line-height:1.5}
+.dp-val a{color:var(--accent);text-decoration:none}
+.dp-tag{display:inline-block;font-size:11px;padding:3px 8px;border-radius:var(--radius-pill);margin:2px 4px 2px 0}
+.dp-tag.mod{background:var(--accent-light);color:var(--accent);border:1px solid rgba(37,99,235,0.2)}
+
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;backdrop-filter:blur(2px)}
+.drawer-overlay.open{opacity:1;pointer-events:all}
+.drawer{position:fixed;top:0;right:0;width:480px;max-width:90vw;height:100vh;background:var(--bg2);border-left:1px solid var(--border);z-index:210;transform:translateX(100%);transition:transform .25s;overflow-y:auto;padding:20px;box-shadow:var(--shadow-md)}
+.drawer.open{transform:translateX(0)}
+.drawer h2{font-size:16px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.drawer .field{margin-bottom:10px}
+.drawer .field-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;margin-bottom:3px;letter-spacing:.5px}
+.drawer .field-value{font-size:12px;color:var(--text);line-height:1.5}
+.drawer-close{position:absolute;top:14px;right:14px;background:none;border:1px solid var(--border);color:var(--text2);width:28px;height:28px;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.drawer-close:hover{border-color:var(--red);color:var(--red)}
+
+.btn-fullview{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;margin-top:12px;border-radius:var(--radius-sm);border:1px solid var(--accent);background:var(--accent-light);color:var(--accent);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-fullview:hover{background:var(--accent);color:#fff}
+
+.country-modal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px)}
+.country-modal.open{display:flex;flex-direction:column}
+.country-modal-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:var(--card);border-bottom:1px solid var(--border)}
+.country-modal-bar h3{margin:0;font-size:14px;display:flex;align-items:center;gap:8px}
+.country-modal-close{background:none;border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 16px;cursor:pointer;font-size:12px;color:var(--text);transition:all .15s}
+.country-modal-close:hover{background:var(--red);color:#fff;border-color:var(--red)}
+.country-modal iframe{flex:1;border:none;width:100%}
+
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--accent);color:#fff;padding:8px 18px;border-radius:var(--radius-pill);font-size:12px;font-weight:600;opacity:0;transition:all .3s;z-index:999;pointer-events:none}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+
+/* ============ AI Panel ============ */
+.ai-fab{position:fixed;bottom:24px;right:24px;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff;border:none;font-size:22px;cursor:pointer;box-shadow:0 4px 16px rgba(37,99,235,0.3);z-index:300;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.ai-fab:hover{transform:scale(1.1);box-shadow:0 6px 20px rgba(37,99,235,0.4)}
+.ai-fab.hidden{display:none}
+
+.ai-panel{position:fixed;bottom:24px;right:24px;width:400px;max-width:calc(100vw - 48px);height:520px;max-height:calc(100vh - 100px);background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 8px 32px rgba(0,0,0,0.15);z-index:310;display:none;flex-direction:column;overflow:hidden}
+.ai-panel.open{display:flex}
+
+.ai-panel-header{padding:10px 14px;background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:700;flex-shrink:0}
+.ai-panel-actions{display:flex;align-items:center;gap:4px}
+.ai-tab-btn{background:rgba(255,255,255,0.15);border:none;color:#fff;padding:4px 10px;border-radius:var(--radius-pill);font-size:11px;cursor:pointer;transition:all .15s;font-family:var(--font)}
+.ai-tab-btn:hover,.ai-tab-btn.active{background:rgba(255,255,255,0.3)}
+.ai-minimize-btn{background:rgba(255,255,255,0.15);border:none;color:#fff;width:24px;height:24px;border-radius:var(--radius-xs);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;margin-left:6px}
+
+.ai-tab-content{flex:1;display:none;flex-direction:column;overflow:hidden}
+.ai-tab-content.active{display:flex}
+
+/* Chat */
+.ai-chat-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
+.ai-msg{padding:10px 14px;border-radius:var(--radius-sm);font-size:12px;line-height:1.6;max-width:85%;word-wrap:break-word;white-space:pre-wrap}
+.ai-msg-bot{background:var(--surface);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px}
+.ai-msg-user{background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.ai-msg-loading{background:var(--surface);color:var(--text3);align-self:flex-start;font-style:italic}
+
+.ai-chat-input-wrap{padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0}
+.ai-chat-input{flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-pill);background:var(--card);color:var(--text);font-size:12px;font-family:var(--font);outline:none}
+.ai-chat-input:focus{border-color:var(--accent)}
+.ai-send-btn{padding:8px 16px;border-radius:var(--radius-pill);background:var(--accent);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s}
+.ai-send-btn:hover{background:#1d4ed8}
+
+/* Translate */
+.ai-translate-wrap{padding:12px;display:flex;flex-direction:column;gap:10px;flex:1;overflow-y:auto}
+.ai-textarea{width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--card);color:var(--text);font-size:12px;font-family:var(--font);resize:vertical;outline:none;min-height:80px}
+.ai-textarea:focus{border-color:var(--accent)}
+.ai-translate-controls{display:flex;gap:8px;align-items:center}
+.ai-select{padding:6px 10px;border:1px solid var(--border);border-radius:var(--radius-xs);background:var(--card);color:var(--text);font-size:12px;font-family:var(--font);cursor:pointer}
+.ai-action-btn{padding:7px 16px;border-radius:var(--radius-pill);background:var(--accent);color:#fff;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s;white-space:nowrap}
+.ai-action-btn:hover{background:#1d4ed8}
+.ai-action-btn.secondary{background:var(--surface);color:var(--text2);border:1px solid var(--border)}
+.ai-action-btn.secondary:hover{border-color:var(--accent);color:var(--accent)}
+.ai-action-btn:disabled{opacity:0.5;cursor:not-allowed}
+.ai-result-box{padding:12px;background:var(--surface);border-radius:var(--radius-sm);font-size:12px;color:var(--text);line-height:1.7;min-height:60px;white-space:pre-wrap;word-wrap:break-word;overflow-y:auto;flex:1}
+
+/* Analyze */
+.ai-analyze-wrap{padding:12px;display:flex;flex-direction:column;gap:10px;flex:1;overflow:hidden}
+.ai-analyze-options{display:flex;gap:8px;flex-wrap:wrap;flex-shrink:0}
+
+/* API Key Modal */
+.ai-key-modal{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:400;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.ai-key-modal.open{display:flex}
+.ai-key-modal-content{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:24px;width:380px;max-width:90vw;box-shadow:var(--shadow-md)}
+.ai-key-modal-content h3{font-size:16px;margin-bottom:8px}
+.ai-key-input{width:100%;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--card);color:var(--text);font-size:13px;font-family:monospace;outline:none;margin-bottom:12px}
+.ai-key-input:focus{border-color:var(--accent)}
+.ai-key-actions{display:flex;gap:8px}
+
+@media(max-width:1200px){.main{grid-template-columns:1fr}.left{display:none}.right{display:none}.lib-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:768px){.lib-grid{grid-template-columns:1fr}.hero-section{padding:16px}.timeline-section,.library-section{padding:12px 16px}.ai-panel{width:calc(100vw - 24px);right:12px;bottom:12px;height:60vh}}
+
+</style>
+<script>
+// Lazy-load Leaflet to prevent blocking if CDN is unreachable
+(function(){
+  var s = document.createElement('script');
+  s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+  s.async = true;
+  s.onload = function(){ if(typeof initMap==='function'){try{initMap();}catch(e){console.warn('Map init after load failed:',e);}} };
+  s.onerror = function(){ window.L = null; console.warn('Leaflet CDN unavailable - map disabled'); };
+  document.head.appendChild(s);
+})();
+</script>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <div class="header-title"><span class="g1">🌐 Global Labor Law Intelligence</span></div>
+    <div class="header-subtitle">全球劳动法规智能监控系统 · v3.0</div>
+  </div>
+  <div class="header-actions">
+    <div class="dd-wrap">
+      <button class="hbtn" onclick="toggleDD('langDD')" id="langBtn">🌐 中文</button>
+      <div class="dd-menu" id="langDD">
+        <div onclick="switchLang('zh')">🇨🇳 中文</div>
+        <div onclick="switchLang('en')">🇺🇸 English</div>
+        <div onclick="switchLang('es')">🇪🇸 Español</div>
+      </div>
+    </div>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">☀️</button>
+    <button class="notif-btn" onclick="toggleNotifPanel()">🔔<span class="notif-badge" id="notifBadge">3</span></button>
+  </div>
+</header>
+
+<div class="latest-ticker">
+  <div class="ticker-inner">
+    <div class="ticker-label"><span class="dot"></span>Latest Updates</div>
+    <div class="ticker-wrap">
+      <div class="ticker-track" id="tickerTrack"></div>
+    </div>
+  </div>
+</div>
+
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-header">
+    <h3>🔔 <span data-i18n="notifications">通知中心</span></h3>
+    <button class="hbtn" onclick="toggleNotifPanel()" data-i18n="close">关闭</button>
+  </div>
+  <div class="notif-body" id="notifBody"></div>
+</div>
+
+<div class="main">
+  <div class="left">
+    <div class="panel-section">
+      <div class="panel-label">FILTERS</div>
+      <div class="filter-row">
+        <label data-i18n="countryRegion">Country / Region</label>
+        <select class="filter-select" id="filterRegion" onchange="applyFilters()">
+          <option value="" data-i18n="all">全部</option>
+          <option value="Asia">亚洲</option><option value="Europe">欧洲</option><option value="Americas">美洲</option>
+          <option value="Africa">非洲</option><option value="Oceania">大洋洲</option>
+        </select>
+      </div>
+      <div class="filter-row">
+        <select class="filter-select" id="filterCountry" onchange="onCountrySelectChange()"><option value="" data-i18n="all">全部</option></select>
+      </div>
+      <div class="filter-row">
+        <label data-i18n="classificationLevel1">一级分类</label>
+        <select class="filter-select" id="filterLevel1" onchange="onLevel1Change()">
+          <option value="">全部</option>
+        </select>
+      </div>
+      <div class="filter-row">
+        <label data-i18n="classificationLevel2">二级分类</label>
+        <select class="filter-select" id="filterLevel2" onchange="applyFilters()" disabled>
+          <option value="">请先选择一级分类</option>
+        </select>
+      </div>
+      <div class="filter-row">
+        <label data-i18n="updated">Updated</label>
+        <select class="filter-select" id="sortBy" onchange="applyFilters()">
+          <option value="date" data-i18n="sortDate">按更新日期</option>
+          <option value="country" data-i18n="sortCountry">按国家</option>
+        </select>
+      </div>
+      <button class="reset-btn" onclick="resetFilters()" data-i18n="resetFilters">Reset filters</button>
+    </div>
+    <div class="map-section">
+      <div class="map-info">🗺️ <span data-i18n="globeInfo">点击国家放大 · 滚轮缩放 · 返回世界视图</span></div>
+      <div class="map-shell">
+        <div id="leafletMap"></div>
+        <button class="map-return-btn" id="mapReturnBtn" onclick="returnToWorldView()">← <span data-i18n="backToWorld">返回世界视图</span></button>
+        <div class="map-chip" id="mapChip">
+          <div class="mc-name" id="mcName">-</div>
+          <div class="mc-count" id="mcCount">0</div>
+        </div>
+      </div>
+      <div class="globe-legend" id="globeLegend"></div>
+    </div>
+  </div>
+
+  <div class="center">
+    <div class="center-scroll">
+      <div class="hero-section">
+        <div class="hero-tag">AI REGULATORY INTELLIGENCE</div>
+        <div class="hero-title" data-i18n="heroTitle">全球劳动法规智能监控</div>
+        <div class="hero-sub">
+          <span>Monitor · Compare · Analyze global HR regulations</span>
+          <span class="hero-badge"><span class="dot"></span> AI Monitoring Active</span>
+        </div>
+        <input class="hero-search" id="searchInput" data-i18n-ph="searchPlaceholder" placeholder="🔍 Search regulations, countries or HR topics..." oninput="applyFilters()">
+        <div class="hero-tabs" id="heroChips"></div>
+      </div>
+
+      <div class="timeline-section">
+        <div class="section-title-label" id="timelineLabel">── REGULATORY TIMELINE ──</div>
+        <div id="timeline"></div>
+      </div>
+
+      <div class="library-section">
+        <div class="section-title-label" id="libraryLabel" style="justify-content:flex-start;gap:8px">
+          ── REGULATION LIBRARY ── <span id="libCount" style="font-weight:400;color:var(--text3)"></span>
+        </div>
+        <div class="lib-grid" id="lawCards"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="right-section">
+      <div class="right-label" id="insightsLabel">📊 REGULATORY INSIGHTS</div>
+      <div class="kpi-grid">
+        <div class="kpi"><div class="kpi-v" id="kTotal">0</div><div class="kpi-l">Active Regulations</div></div>
+        <div class="kpi"><div class="kpi-v" id="kCountries">0</div><div class="kpi-l">Countries Covered</div></div>
+        <div class="kpi"><div class="kpi-v" id="kUpdated30">0</div><div class="kpi-l">Updated (30 days)</div></div>
+        <div class="kpi"><div class="kpi-v" id="kAction">0</div><div class="kpi-l">Action Required</div></div>
+      </div>
+    </div>
+    <div class="right-section">
+      <div class="right-label" id="upcomingLabel">📅 UPCOMING EFFECTIVE DATES</div>
+      <div id="upcomingList"></div>
+    </div>
+    <div class="right-section">
+      <div class="right-label" id="aiLabel">🤖 AI IMPACT SUMMARY</div>
+      <div class="ai-summary" id="aiSummary"></div>
+    </div>
+  </div>
+</div>
+
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  <div id="drawerContent"></div>
+</div>
+
+<div class="detail-overlay" id="detailOverlay" onclick="closeDetail()"></div>
+<div class="detail-panel" id="detailPanel">
+  <button class="dp-close" onclick="closeDetail()">✕</button>
+  <div id="detailContent"></div>
+</div>
+
+<div class="country-modal" id="countryModal">
+  <div class="country-modal-bar">
+    <h3 id="countryModalTitle">📖</h3>
+    <button class="country-modal-close" onclick="closeCountryPage()">✕ Close</button>
+  </div>
+  <iframe id="countryModalIframe" src=""></iframe>
+</div>
+
+<div id="toast"></div>
+
+<!-- AI Assistant Panel -->
+<div class="ai-panel" id="aiPanel">
+  <div class="ai-panel-header">
+    <span>🤖 DeepSeek AI 助手</span>
+    <div class="ai-panel-actions">
+      <button class="ai-tab-btn active" data-tab="chat" onclick="switchAITab('chat')">💬 问答</button>
+      <button class="ai-tab-btn" data-tab="translate" onclick="switchAITab('translate')">🌐 翻译</button>
+      <button class="ai-tab-btn" data-tab="analyze" onclick="switchAITab('analyze')">📊 分析</button>
+      <button class="ai-minimize-btn" onclick="toggleAIPanel()">─</button>
+    </div>
+  </div>
+
+  <!-- Chat Tab -->
+  <div class="ai-tab-content active" id="aiTabChat">
+    <div class="ai-chat-messages" id="aiChatMessages">
+      <div class="ai-msg ai-msg-bot">👋 你好！我是劳动法 AI 助手，可以帮你：<br>• 解答各国劳动法问题<br>• 对比不同国家法规<br>• 提供 HR 合规建议<br><br>有什么可以帮你的？</div>
+    </div>
+    <div class="ai-chat-input-wrap">
+      <input type="text" class="ai-chat-input" id="aiChatInput" placeholder="问我关于劳动法的任何问题..." onkeydown="if(event.key==='Enter')sendAIChat()">
+      <button class="ai-send-btn" onclick="sendAIChat()">发送</button>
+    </div>
+  </div>
+
+  <!-- Translate Tab -->
+  <div class="ai-tab-content" id="aiTabTranslate">
+    <div class="ai-translate-wrap">
+      <textarea class="ai-textarea" id="aiTranslateInput" placeholder="输入要翻译的法规文本..." rows="4"></textarea>
+      <div class="ai-translate-controls">
+        <select class="ai-select" id="aiTranslateLang">
+          <option value="zh">→ 中文</option>
+          <option value="en">→ English</option>
+          <option value="ja">→ 日本語</option>
+          <option value="ko">→ 한국어</option>
+          <option value="es">→ Español</option>
+          <option value="fr">→ Français</option>
+          <option value="de">→ Deutsch</option>
+        </select>
+        <button class="ai-action-btn" onclick="doTranslate()">翻译</button>
+      </div>
+      <div class="ai-result-box" id="aiTranslateResult"></div>
+    </div>
+  </div>
+
+  <!-- Analyze Tab -->
+  <div class="ai-tab-content" id="aiTabAnalyze">
+    <div class="ai-analyze-wrap">
+      <div class="ai-analyze-options">
+        <button class="ai-action-btn" onclick="doAnalyzeCurrent()">📋 分析当前法规</button>
+        <button class="ai-action-btn" onclick="doRegionalInsight()">🌍 地区趋势分析</button>
+      </div>
+      <div class="ai-result-box" id="aiAnalyzeResult">
+        <span style="color:var(--text3)">选择一条法规后点击"分析当前法规"，或选择地区后点击"地区趋势分析"</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AI Panel Toggle Button -->
+<button class="ai-fab" id="aiFab" onclick="toggleAIPanel()">🤖</button>
+
+<!-- API Key Settings Modal -->
+<div class="ai-key-modal" id="aiKeyModal">
+  <div class="ai-key-modal-content">
+    <h3>⚙️ DeepSeek API 设置</h3>
+    <p style="font-size:12px;color:var(--text2);margin-bottom:12px">输入你的 DeepSeek API Key 以启用 AI 功能。<br>Key 仅保存在本地浏览器，不会上传到任何服务器。</p>
+    <input type="password" class="ai-key-input" id="aiKeyInput" placeholder="sk-xxxxxxxxxxxxxxxx">
+    <div class="ai-key-actions">
+      <button class="ai-action-btn" onclick="saveApiKey()">保存</button>
+      <button class="ai-action-btn secondary" onclick="closeKeyModal()">取消</button>
+    </div>
+    <p style="font-size:11px;color:var(--text3);margin-top:8px">获取 Key: <a href="https://platform.deepseek.com/api_keys" target="_blank" style="color:var(--accent)">platform.deepseek.com</a></p>
+  </div>
+</div>
+
+<script>
+// ============ DeepSeek API Integration ============
+// Provides: Translation, AI Chat Assistant, Smart Summary Analysis
+
+const DEEPSEEK_CONFIG = {
+  apiUrl: 'https://api.deepseek.com/chat/completions',
+  model: 'deepseek-chat',
+  maxTokens: 2048,
+  temperature: 0.7
+};
+
+// API Key management (stored in localStorage)
+function getApiKey() {
+  return localStorage.getItem('deepseek_api_key') || '';
+}
+
+function setApiKey(key) {
+  localStorage.setItem('deepseek_api_key', key.trim());
+}
+
+function hasApiKey() {
+  return !!getApiKey();
+}
+
+// Core API call
+async function callDeepSeek(messages, options = {}) {
+  const apiKey = getApiKey();
+  if (!apiKey) {
+    throw new Error('请先设置 DeepSeek API Key');
+  }
+
+  const response = await fetch(DEEPSEEK_CONFIG.apiUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model: options.model || DEEPSEEK_CONFIG.model,
+      messages: messages,
+      max_tokens: options.maxTokens || DEEPSEEK_CONFIG.maxTokens,
+      temperature: options.temperature ?? DEEPSEEK_CONFIG.temperature,
+      stream: false
+    })
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    if (response.status === 401) throw new Error('API Key 无效，请检查后重新设置');
+    if (response.status === 429) throw new Error('请求过于频繁，请稍后再试');
+    throw new Error(err.error?.message || `API 请求失败 (${response.status})`);
+  }
+
+  const data = await response.json();
+  return data.choices[0].message.content;
+}
+
+// ============ Feature 1: Translation ============
+async function translateText(text, targetLang = 'zh') {
+  const langNames = {
+    zh: '中文', en: 'English', es: 'Español',
+    ja: '日本語', ko: '한국어', fr: 'Français', de: 'Deutsch'
+  };
+  const target = langNames[targetLang] || targetLang;
+
+  const messages = [
+    {
+      role: 'system',
+      content: `You are a professional legal translator specializing in labor law. Translate accurately while maintaining legal terminology. Output ONLY the translated text, no explanations.`
+    },
+    {
+      role: 'user',
+      content: `Translate the following text to ${target}:\n\n${text}`
+    }
+  ];
+
+  return await callDeepSeek(messages, { temperature: 0.3 });
+}
+
+// ============ Feature 2: AI Chat Assistant ============
+let chatHistory = [];
+
+function resetChat() {
+  chatHistory = [];
+}
+
+async function chatWithAI(userMessage, context = null) {
+  const systemPrompt = `You are a global labor law expert AI assistant. You have deep knowledge of employment regulations across 30+ countries including working time, minimum wage, employee rights, social insurance, data privacy, and workplace safety.
+
+When answering:
+- Be specific and cite relevant laws when possible
+- Provide practical HR compliance advice
+- Compare regulations across countries when relevant
+- Answer in the same language the user uses (Chinese/English/Spanish)
+- Be concise but thorough`;
+
+  const messages = [{ role: 'system', content: systemPrompt }];
+
+  // Add context if viewing a specific law
+  if (context) {
+    messages.push({
+      role: 'system',
+      content: `Current context - the user is viewing: ${JSON.stringify(context)}`
+    });
+  }
+
+  // Add chat history (last 10 messages for context window)
+  const recentHistory = chatHistory.slice(-10);
+  messages.push(...recentHistory);
+
+  // Add new user message
+  messages.push({ role: 'user', content: userMessage });
+
+  const reply = await callDeepSeek(messages, { maxTokens: 1500 });
+
+  // Save to history
+  chatHistory.push({ role: 'user', content: userMessage });
+  chatHistory.push({ role: 'assistant', content: reply });
+
+  return reply;
+}
+
+// ============ Feature 3: Smart Summary & Analysis ============
+async function analyzeLaw(lawItem) {
+  const messages = [
+    {
+      role: 'system',
+      content: `You are a senior HR compliance analyst. Provide a structured analysis of labor regulations. Answer in Chinese. Be practical and actionable.`
+    },
+    {
+      role: 'user',
+      content: `请对以下劳动法规进行深度分析：
+
+法规：${lawItem.law}
+国家：${lawItem.country}
+类别：${lawItem.category}
+生效日期：${lawItem.effectiveDate}
+状态：${lawItem.status}
+摘要：${lawItem.summary}
+关键变更：${lawItem.changes.join('；')}
+HR影响：${lawItem.hrImpact.join('；')}
+
+请从以下维度分析：
+1. 🎯 核心要点（3-5条）
+2. ⚠️ 合规风险评估（高/中/低 + 原因）
+3. 📋 HR行动清单（具体步骤）
+4. 🌍 与其他国家对比（同类法规差异）
+5. 📅 建议时间表（何时完成哪些准备）`
+    }
+  ];
+
+  return await callDeepSeek(messages, { maxTokens: 2048, temperature: 0.5 });
+}
+
+async function generateComparisonAnalysis(country1Data, country2Data) {
+  const messages = [
+    {
+      role: 'system',
+      content: `You are a comparative labor law expert. Provide clear, structured comparisons. Answer in Chinese.`
+    },
+    {
+      role: 'user',
+      content: `请对比分析以下两个国家的劳动法规：
+
+【${country1Data[0]?.country}】
+${country1Data.map(d => `- ${d.law} (${d.category}): ${d.summaryZh}`).join('\n')}
+
+【${country2Data[0]?.country}】
+${country2Data.map(d => `- ${d.law} (${d.category}): ${d.summaryZh}`).join('\n')}
+
+请从以下角度对比：
+1. 工时制度差异
+2. 薪酬保障水平
+3. 员工权益保护
+4. 合规难度评估
+5. 对跨国企业的建议`
+    }
+  ];
+
+  return await callDeepSeek(messages, { maxTokens: 2048, temperature: 0.5 });
+}
+
+async function generateRegionalInsight(region) {
+  const regionData = laborLawData.filter(d => d.region === region);
+  if (!regionData.length) return '该地区暂无数据';
+
+  const messages = [
+    {
+      role: 'system',
+      content: `You are a regional HR strategy advisor. Provide strategic insights. Answer in Chinese.`
+    },
+    {
+      role: 'user',
+      content: `请分析${region}地区的劳动法规趋势：
+
+该地区法规数据：
+${regionData.map(d => `- ${d.country}: ${d.law} (${d.category}, ${d.status}, 生效:${d.effectiveDate})`).join('\n')}
+
+请提供：
+1. 📈 地区整体趋势
+2. 🔥 热点合规领域
+3. ⏰ 近期需关注事项
+4. 💡 跨国企业策略建议`
+    }
+  ];
+
+  return await callDeepSeek(messages, { maxTokens: 1500, temperature: 0.6 });
+}
+
+</script>
+<script>
+const INLINE_DATA = {
+  "laborLawData": [
+    {
+      "id": "au01",
+      "country": "Australia",
+      "countryCode": "AU",
+      "region": "Oceania",
+      "flag": "🇦🇺",
+      "law": "Fair Work Act 2009 – Modern Awards Update",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Working Time",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Annual review of Modern Awards requiring employers to update minimum wages, overtime rates, penalty rates, and allowances.",
+      "summaryZh": "公平工作委员会年度审查现代奖标准，要求雇主更新最低工资、加班费率、惩罚性费率和津贴。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://www.fwc.gov.au",
+      "changes": [
+        "Minimum wage increased by 3.5%",
+        "Penalty rates adjusted for weekends",
+        "New allowance for remote workers"
+      ],
+      "hrImpact": [
+        "Payroll systems must be updated",
+        "Employment contracts requiring review",
+        "Pay slip templates need revision"
+      ],
+      "modules": [
+        "薪酬管理",
+        "工时与加班"
+      ],
+      "titleCategory": "Working Time & Overtime",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.fwc.gov.au",
+      "effectiveDateEvidence": "Annual Modern Awards update usually effective July 1, but no specific 2026 date confirmed on official site",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Fair Work Act Modern Awards - regulates minimum wages, overtime rates, penalty rates for working time"
+    },
+    {
+      "id": "au02",
+      "country": "Australia",
+      "countryCode": "AU",
+      "region": "Oceania",
+      "flag": "🇦🇺",
+      "law": "Closing Loopholes Act – Gig Economy Provisions",
+      "category": "法定标准Legal standard",
+      "subCategory": "Employee Benefits",
+      "level1Category": "离职与遣散Termination & Severance",
+      "level2Category": "法定标准Legal standard",
+      "summary": "New provisions extending employee-like protections to gig economy workers including minimum earnings, insurance, and right to disconnect.",
+      "summaryZh": "新条款将类雇员保护扩展至零工经济工人，包括最低收入、保险覆盖和断开连接权。",
+      "status": "effective",
+      "effectiveDate": "2024-08-26",
+      "source": "https://www.legislation.gov.au",
+      "changes": [
+        "Gig workers entitled to minimum earnings",
+        "Right to disconnect after hours",
+        "Insurance requirements for platform workers"
+      ],
+      "hrImpact": [
+        "Gig workforce classification review",
+        "Budget allocation for new compliance",
+        "Platform worker policy updates"
+      ],
+      "modules": [
+        "员工关系",
+        "薪酬管理"
+      ],
+      "titleCategory": "Basic Information",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://www.fwc.gov.au/about-us/new-laws/closing-loopholes-acts-whats-changing",
+      "effectiveDateEvidence": "Fair Work Commission official implementation report: \"commence on 26 August 2024 or a date to be proclaimed\"",
+      "primaryCategory": "离职与遣散Termination & Severance",
+      "secondaryCategory": "法定标准Legal standard",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Closing Loopholes Act - gig economy worker protections and unfair deactivation provisions"
+    },
+    {
+      "id": "de01",
+      "country": "Germany",
+      "countryCode": "DE",
+      "region": "Europe",
+      "flag": "🇩🇪",
+      "law": "Arbeitszeitgesetz – Working Time Recording",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Working Time",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Mandatory electronic recording of all working hours as per Federal Labour Court ruling.",
+      "summaryZh": "根据联邦劳动法院裁决，强制电子记录所有工作时间。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://www.gesetze-im-internet.de",
+      "changes": [
+        "Electronic time tracking mandatory",
+        "Daily rest period of 11 hours",
+        "Weekly maximum 48 hours enforced"
+      ],
+      "hrImpact": [
+        "Time tracking system implementation",
+        "Workforce scheduling optimization",
+        "Overtime monitoring required"
+      ],
+      "modules": [
+        "工时与加班",
+        "员工关系"
+      ],
+      "titleCategory": "Working Time & Overtime",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.gesetze-im-internet.de/arbzg/",
+      "effectiveDateEvidence": "No formal amendment to Arbeitszeitgesetz with confirmed 2026 effective date found",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Arbeitszeitgesetz - working time recording requirements for employers"
+    },
+    {
+      "id": "de02",
+      "country": "Germany",
+      "countryCode": "DE",
+      "region": "Europe",
+      "flag": "🇩🇪",
+      "law": "LkSG – Supply Chain Due Diligence",
+      "category": "基础信息Basic Information",
+      "subCategory": "Employee Benefits",
+      "level1Category": "基础信息Basic Information",
+      "level2Category": "",
+      "summary": "Expanded supply chain due diligence obligations requiring companies to ensure human rights and environmental standards.",
+      "summaryZh": "扩大的供应链尽职调查义务，要求公司确保人权和环境标准。",
+      "status": "effective",
+      "effectiveDate": "2023-01-01",
+      "source": "https://www.bafa.de",
+      "changes": [
+        "Expanded scope to 1000+ employees",
+        "Enhanced grievance mechanisms",
+        "Third-party audit requirements"
+      ],
+      "hrImpact": [
+        "Supply chain HR audit protocols",
+        "Vendor compliance verification",
+        "Training program for procurement"
+      ],
+      "modules": [
+        "员工关系"
+      ],
+      "titleCategory": "Basic Information",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://www.bafa.de/DE/Lieferketten/FAQ/haeufig_gestellte_fragen.html",
+      "effectiveDateEvidence": "BAFA: \"Datum des Inkrafttretens 01.01.2023\" for companies with 3,000+ employees",
+      "primaryCategory": "基础信息Basic Information",
+      "secondaryCategory": "",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "LkSG - supply chain due diligence, compliance/regulatory framework"
+    },
+    {
+      "id": "fr01",
+      "country": "France",
+      "countryCode": "FR",
+      "region": "Europe",
+      "flag": "🇫🇷",
+      "law": "Code du travail – Right to Disconnect",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Working Time",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Strengthened right to disconnect requiring companies with 50+ employees to establish formal policies.",
+      "summaryZh": "加强断开连接权执行，要求50人以上公司制定正式政策。",
+      "status": "active",
+      "effectiveDate": "2017-01-01",
+      "source": "https://www.legifrance.gouv.fr",
+      "changes": [
+        "Mandatory disconnect policy for 50+ staff",
+        "Annual negotiation on digital usage",
+        "Penalties for non-compliance"
+      ],
+      "hrImpact": [
+        "Policy documentation required",
+        "Manager training on boundaries",
+        "IT system configuration changes"
+      ],
+      "modules": [
+        "工时与加班",
+        "员工关系"
+      ],
+      "titleCategory": "Working Time & Overtime",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000033020617/",
+      "effectiveDateEvidence": "Right to Disconnect introduced by Law No. 2016-1088 (El Khomri law), effective January 1, 2017",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Code du travail - right to disconnect, working time management"
+    },
+    {
+      "id": "fr02",
+      "country": "France",
+      "countryCode": "FR",
+      "region": "Europe",
+      "flag": "🇫🇷",
+      "law": "Loi sur les Salaires – Minimum Wage Indexation",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Minimum Wage",
+      "level1Category": "法定缴费类Social Security / Statutory Funds",
+      "level2Category": "养老金Pension",
+      "summary": "Automatic minimum wage (SMIC) adjustment based on inflation index at €11.88/hour.",
+      "summaryZh": "基于通胀指数自动调整最低工资（SMIC），每小时11.88欧元。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://www.service-public.fr",
+      "changes": [
+        "SMIC increased to €11.88/hour",
+        "Quarterly indexation mechanism",
+        "Youth wage convergence accelerated"
+      ],
+      "hrImpact": [
+        "Payroll adjustment required",
+        "Budget impact assessment",
+        "Contract amendment notifications"
+      ],
+      "modules": [
+        "薪酬管理"
+      ],
+      "titleCategory": "Mandatory Payments & Allowances",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.service-public.fr/particuliers/vosdroits/F2300",
+      "effectiveDateEvidence": "SMIC automatically revalued January 1 each year by decree; no specific new legislative reform confirmed for 2026",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Minimum wage indexation - automatic revaluation of SMIC"
+    },
+    {
+      "id": "gb01",
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "region": "Europe",
+      "flag": "🇬🇧",
+      "law": "Employment Rights Bill 2024 – Day One Rights",
+      "category": "法定标准Legal standard",
+      "subCategory": "Employee Benefits",
+      "level1Category": "离职与遣散Termination & Severance",
+      "level2Category": "法定标准Legal standard",
+      "summary": "Major employment reform extending day-one rights including unfair dismissal protection and zero-hours contract reforms.",
+      "summaryZh": "重大就业改革，扩展第一天权利包括不当解雇保护和零小时合同改革。",
+      "status": "upcoming",
+      "effectiveDate": "",
+      "source": "https://www.legislation.gov.uk",
+      "changes": [
+        "Day-one unfair dismissal rights",
+        "Statutory sick pay from day one",
+        "Zero-hours contract reform"
+      ],
+      "hrImpact": [
+        "Probation period policies revision",
+        "Sick pay budget increase",
+        "Zero-hours contract review"
+      ],
+      "modules": [
+        "离职与遣散",
+        "员工关系"
+      ],
+      "titleCategory": "Basic Information",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.legislation.gov.uk/",
+      "effectiveDateEvidence": "Employment Rights Bill introduced in late 2024, but exact dates for provisions subject to secondary legislation, not yet confirmed",
+      "primaryCategory": "离职与遣散Termination & Severance",
+      "secondaryCategory": "法定标准Legal standard",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Employment Rights Bill 2024 - day one rights, unfair dismissal protections"
+    },
+    {
+      "id": "gb02",
+      "country": "United Kingdom",
+      "countryCode": "GB",
+      "region": "Europe",
+      "flag": "🇬🇧",
+      "law": "National Living Wage Increase 2026",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Minimum Wage",
+      "level1Category": "法定缴费类Social Security / Statutory Funds",
+      "level2Category": "养老金Pension",
+      "summary": "National Living Wage increased to £12.21/hour for workers aged 21 and over.",
+      "summaryZh": "21岁及以上工人国家生活工资提高至每小时12.21英镑。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://www.gov.uk/national-minimum-wage",
+      "changes": [
+        "NLW increased to £12.21/hour",
+        "Apprentice rate aligned",
+        "Age threshold lowered to 21"
+      ],
+      "hrImpact": [
+        "Payroll system update",
+        "Budget reallocation",
+        "Apprentice contract updates"
+      ],
+      "modules": [
+        "薪酬管理"
+      ],
+      "titleCategory": "Mandatory Payments & Allowances",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.gov.uk/national-minimum-wage",
+      "effectiveDateEvidence": "National Living Wage increases traditionally April 1, but 2026 rate not yet officially enacted",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "National Living Wage increase - minimum wage rates"
+    },
+    {
+      "id": "us01",
+      "country": "United States",
+      "countryCode": "US",
+      "region": "Americas",
+      "flag": "🇺🇸",
+      "law": "FLSA Overtime Rule 2026 – Salary Threshold",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Working Time",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Updated FLSA overtime rule raising salary threshold for exempt employees to $62,400 annually.",
+      "summaryZh": "更新的FLSA加班规则，将豁免员工工资门槛提高至每年$62,400。",
+      "status": "upcoming",
+      "effectiveDate": "",
+      "source": "https://www.dol.gov",
+      "changes": [
+        "Salary threshold raised to $62,400",
+        "Executive/administrative exemption updated",
+        "Computer employee exemption adjusted"
+      ],
+      "hrImpact": [
+        "Employee reclassification analysis",
+        "Budget impact on overtime costs",
+        "HRIS data updates required"
+      ],
+      "modules": [
+        "工时与加班",
+        "薪酬管理"
+      ],
+      "titleCategory": "Working Time & Overtime",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.dol.gov/agencies/whd/overtime/rulemaking",
+      "effectiveDateEvidence": "FLSA salary threshold updated July 1, 2024 and January 1, 2025; next update July 1, 2027. No 2026 date confirmed",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "FLSA Overtime Rule - salary threshold for overtime exemptions"
+    },
+    {
+      "id": "us02",
+      "country": "United States",
+      "countryCode": "US",
+      "region": "Americas",
+      "flag": "🇺🇸",
+      "law": "FTC Non-Compete Rule – Final Implementation",
+      "category": "法定标准Legal standard",
+      "subCategory": "Employee Benefits",
+      "level1Category": "离职与遣散Termination & Severance",
+      "level2Category": "法定标准Legal standard",
+      "summary": "Federal ban on non-compete agreements taking full effect.",
+      "summaryZh": "联邦竞业禁止协议禁令全面生效。",
+      "status": "effective",
+      "effectiveDate": "2024-09-04",
+      "source": "https://www.ftc.gov",
+      "changes": [
+        "Non-compete clauses banned",
+        "Existing non-competes unenforceable",
+        "Notice requirements to workers"
+      ],
+      "hrImpact": [
+        "Employment agreement overhaul",
+        "Competitive advantage protection",
+        "Trade secret safeguard review"
+      ],
+      "modules": [
+        "员工关系"
+      ],
+      "titleCategory": "Basic Information",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://www.ftc.gov/legal-library/browse/rules/noncompete-rule",
+      "effectiveDateEvidence": "FTC official rule: \"goes into effect on September 4, 2024\" (120 days after Federal Register publication)",
+      "primaryCategory": "离职与遣散Termination & Severance",
+      "secondaryCategory": "法定标准Legal standard",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "FTC Non-Compete Rule - non-compete clause restrictions"
+    },
+    {
+      "id": "ca01",
+      "country": "Canada",
+      "countryCode": "CA",
+      "region": "Americas",
+      "flag": "🇨🇦",
+      "law": "Canada Labour Code – Holiday Pay Equality",
+      "category": "节假日加班Holiday Overtime",
+      "subCategory": "Employee Benefits",
+      "level1Category": "休假类Leave",
+      "level2Category": "年假Annual Leave",
+      "summary": "New federal holiday pay rules ensuring proportional holiday pay for part-time and full-time employees.",
+      "summaryZh": "新的联邦假日工资规则，确保兼职和全职员工按比例获得假日工资。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://laws-lois.justice.gc.ca",
+      "changes": [
+        "Proportional holiday pay calculation",
+        "Part-time parity with full-time",
+        "30-day reference period"
+      ],
+      "hrImpact": [
+        "Payroll calculation update",
+        "Part-time worker communication",
+        "System configuration changes"
+      ],
+      "modules": [
+        "薪酬管理"
+      ],
+      "titleCategory": "Mandatory Payments & Allowances",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://laws-lois.justice.gc.ca/eng/acts/L-2/",
+      "effectiveDateEvidence": "No confirmed \"Holiday Pay Equality\" provision scheduled for 2026-03-01 in Canada Labour Code",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "节假日加班Holiday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Canada Labour Code - holiday pay equality provisions"
+    },
+    {
+      "id": "br01",
+      "country": "Brazil",
+      "countryCode": "BR",
+      "region": "Americas",
+      "flag": "🇧🇷",
+      "law": "CLT Reform – Remote Work Regulations",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Working Time",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Comprehensive remote work framework with expense reimbursement, ergonomic standards, and digital time tracking.",
+      "summaryZh": "综合远程工作框架，包含费用报销、人体工程学标准和数字时间跟踪。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://www.planalto.gov.br",
+      "changes": [
+        "Home office expense reimbursement",
+        "Ergonomic assessment requirements",
+        "Digital time tracking mandate"
+      ],
+      "hrImpact": [
+        "Remote work policy creation",
+        "Expense reimbursement systems",
+        "Ergonomic compliance audit"
+      ],
+      "modules": [
+        "工时与加班",
+        "员工关系"
+      ],
+      "titleCategory": "Working Time & Overtime",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm",
+      "effectiveDateEvidence": "Brazil remote work regulations established during 2017 CLT reform; no confirmed 2026-02-15 date",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "CLT Reform - remote work regulations"
+    },
+    {
+      "id": "jp01",
+      "country": "Japan",
+      "countryCode": "JP",
+      "region": "Asia",
+      "flag": "🇯🇵",
+      "law": "Work Style Reform 2.0 – Overtime Cap",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Working Time",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Second phase capping annual overtime at 960 hours, expanding equal pay for equal work.",
+      "summaryZh": "第二阶段将年度加班上限定为960小时，扩展同工同酬。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://www.mhlw.go.jp",
+      "changes": [
+        "Annual overtime cap at 960 hours",
+        "Equal pay for equal work expanded",
+        "36 agreement strengthened"
+      ],
+      "hrImpact": [
+        "Overtime monitoring system",
+        "Dispatch worker pay review",
+        "Manager compliance training"
+      ],
+      "modules": [
+        "工时与加班",
+        "薪酬管理"
+      ],
+      "titleCategory": "Working Time & Overtime",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.mhlw.go.jp",
+      "effectiveDateEvidence": "Cannot confirm \"Work Style Reform 2.0\" or exact 2026-04-01 effective date",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Work Style Reform 2.0 - overtime caps for specialized sectors"
+    },
+    {
+      "id": "jp02",
+      "country": "Japan",
+      "countryCode": "JP",
+      "region": "Asia",
+      "flag": "🇯🇵",
+      "law": "Minimum Wage Increase 2026",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Minimum Wage",
+      "level1Category": "法定缴费类Social Security / Statutory Funds",
+      "level2Category": "养老金Pension",
+      "summary": "Nationwide minimum wage increase averaging 5.5%, Tokyo reaching ¥1,200/hour.",
+      "summaryZh": "全国最低工资平均提高5.5%，东京达到每小时1,200日元。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://www.mhlw.go.jp",
+      "changes": [
+        "National average increase 5.5%",
+        "Tokyo minimum ¥1,200/hour",
+        "Staggered regional implementation"
+      ],
+      "hrImpact": [
+        "Payroll system updates",
+        "Budget planning adjustment",
+        "Regional payroll differentiation"
+      ],
+      "modules": [
+        "薪酬管理"
+      ],
+      "titleCategory": "Mandatory Payments & Allowances",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.mhlw.go.jp",
+      "effectiveDateEvidence": "Cannot confirm exact nationwide 2026-10-01 date; minimum wage increases vary by prefecture",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Minimum Wage Increase - minimum wage rates"
+    },
+    {
+      "id": "kr01",
+      "country": "South Korea",
+      "countryCode": "KR",
+      "region": "Asia",
+      "flag": "🇰🇷",
+      "law": "Work-Life Balance Enhancement Act",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Working Time",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Expanded regulations increasing annual leave to 25 days with parental leave transfer.",
+      "summaryZh": "扩展法规将年假增加至25天，引入育儿假转移。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://www.koreanlaw.go.kr",
+      "changes": [
+        "Annual leave increased to 25 days",
+        "Paid parental leave transfer",
+        "Overtime cap at 52 hours/week"
+      ],
+      "hrImpact": [
+        "Leave management system update",
+        "Parental leave policy revision",
+        "Overtime tracking enhancement"
+      ],
+      "modules": [
+        "休假类",
+        "工时与加班"
+      ],
+      "titleCategory": "Working Time & Overtime",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.koreanlaw.go.kr",
+      "effectiveDateEvidence": "Cannot confirm 2026-06-01 date; recent amendments took effect February 23, 2025 and October 23, 2025",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Work-Life Balance Enhancement Act - flexible working arrangements"
+    },
+    {
+      "id": "kr02",
+      "country": "South Korea",
+      "countryCode": "KR",
+      "region": "Asia",
+      "flag": "🇰🇷",
+      "law": "Minimum Wage 2026",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Minimum Wage",
+      "level1Category": "法定缴费类Social Security / Statutory Funds",
+      "level2Category": "养老金Pension",
+      "summary": "National minimum wage set at ₩10,030/hour for 2026, a 2.5% increase.",
+      "summaryZh": "2026年全国最低工资设定为每小时10,030韩元，增长2.5%。",
+      "status": "upcoming",
+      "effectiveDate": "",
+      "source": "https://www.koreanlaw.go.kr",
+      "changes": [
+        "Minimum wage ₩10,030/hour",
+        "2.5% increase from 2025",
+        "Sector-specific sub-minimums eliminated"
+      ],
+      "hrImpact": [
+        "Payroll system update required",
+        "Budget impact analysis",
+        "Employee notification"
+      ],
+      "modules": [
+        "薪酬管理"
+      ],
+      "titleCategory": "Mandatory Payments & Allowances",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.koreanlaw.go.kr",
+      "effectiveDateEvidence": "Cannot confirm 2026-09-01 date; South Korea minimum wage traditionally takes effect January 1",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Minimum Wage 2026 - minimum wage rates"
+    },
+    {
+      "id": "sg01",
+      "country": "Singapore",
+      "countryCode": "SG",
+      "region": "Asia",
+      "flag": "🇸🇬",
+      "law": "Employment Act – Progressive Wage Model",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Minimum Wage",
+      "level1Category": "法定缴费类Social Security / Statutory Funds",
+      "level2Category": "养老金Pension",
+      "summary": "Progressive Wage Model extended to retail, food services, and waste management.",
+      "summaryZh": "渐进式工资模式扩展至零售、餐饮服务和废物管理。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://www.mom.gov.sg",
+      "changes": [
+        "PWM extended to all sectors",
+        "Mandatory wage ladders",
+        "Skills framework integration"
+      ],
+      "hrImpact": [
+        "Salary structure redesign",
+        "Training budget allocation",
+        "Compliance reporting"
+      ],
+      "modules": [
+        "薪酬管理",
+        "培训发展"
+      ],
+      "titleCategory": "Mandatory Payments & Allowances",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.mom.gov.sg",
+      "effectiveDateEvidence": "Cannot confirm 2026-03-01 effective date from official source",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Employment Act Progressive Wage Model - wage progression requirements"
+    },
+    {
+      "id": "sg02",
+      "country": "Singapore",
+      "countryCode": "SG",
+      "region": "Asia",
+      "flag": "🇸🇬",
+      "law": "Workplace Fairness – Anti-Discrimination",
+      "category": "法定标准Legal standard",
+      "subCategory": "Anti-Discrimination",
+      "level1Category": "基础信息Basic Information",
+      "level2Category": "",
+      "summary": "Comprehensive workplace fairness law prohibiting discrimination on 9 protected characteristics.",
+      "summaryZh": "全面工作场所公平法，禁止基于9项受保护特征的歧视。",
+      "status": "upcoming",
+      "effectiveDate": "2027-12-31",
+      "source": "https://www.mom.gov.sg",
+      "changes": [
+        "9 protected characteristics defined",
+        "Employment tribunal enforcement",
+        "Mandatory workplace policies"
+      ],
+      "hrImpact": [
+        "Policy development required",
+        "Manager training programs",
+        "Complaint mechanism setup"
+      ],
+      "modules": [
+        "员工关系"
+      ],
+      "titleCategory": "Basic Information",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://www.mom.gov.sg/newsroom/press-releases/2025/workplace-fairness--dispute-resolution----bill-press-release",
+      "effectiveDateEvidence": "MOM press release: \"We aim for the Act to take effect in end-2027\"",
+      "primaryCategory": "离职与遣散Termination & Severance",
+      "secondaryCategory": "法定标准Legal standard",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Workplace Fairness Act - anti-discrimination protections"
+    },
+    {
+      "id": "in01",
+      "country": "India",
+      "countryCode": "IN",
+      "region": "Asia",
+      "flag": "🇮🇳",
+      "law": "Code on Wages 2019 – Full Implementation",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Minimum Wage",
+      "level1Category": "法定缴费类Social Security / Statutory Funds",
+      "level2Category": "养老金Pension",
+      "summary": "Full implementation unifying four labor laws, establishing national floor wage.",
+      "summaryZh": "全面实施统一四部劳动法，建立全国最低工资。",
+      "status": "upcoming",
+      "effectiveDate": "2025-11-21",
+      "source": "https://www.indiacode.nic.in",
+      "changes": [
+        "Four labor codes unified",
+        "National floor wage established",
+        "Universal minimum wage applicability"
+      ],
+      "hrImpact": [
+        "Payroll system overhaul",
+        "Multi-state compliance review",
+        "Employee communication strategy"
+      ],
+      "modules": [
+        "薪酬管理"
+      ],
+      "titleCategory": "Mandatory Payments & Allowances",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://sansad.in/getFile/lsapps/loksabhaquestions/annex/188/AU194_Vb1Me0.pdf",
+      "effectiveDateEvidence": "Official Lok Sabha records: Code on Wages 2019 implemented \"with effect from 21 November, 2025\"; Central Rules notified May 8, 2026",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Code on Wages 2019 - wage code implementation"
+    },
+    {
+      "id": "cn01",
+      "country": "China",
+      "countryCode": "CN",
+      "region": "Asia",
+      "flag": "🇨🇳",
+      "law": "Social Insurance Contribution Reform",
+      "category": "养老金Pension",
+      "subCategory": "Social Insurance",
+      "level1Category": "法定缴费类Social Security / Statutory Funds",
+      "level2Category": "养老金Pension",
+      "summary": "Revised rates reducing employer pension contribution from 20% to 16% with gig worker coverage.",
+      "summaryZh": "修订缴费比例将雇主养老金从20%降至16%，扩大零工覆盖。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://www.mohrss.gov.cn",
+      "changes": [
+        "Pension contribution reduced to 16%",
+        "Gig worker coverage expanded",
+        "Social insurance portability improved"
+      ],
+      "hrImpact": [
+        "Payroll calculation update",
+        "Budget reallocation",
+        "Gig worker classification"
+      ],
+      "modules": [
+        "法定缴费类",
+        "员工关系"
+      ],
+      "titleCategory": "Social Security / Statutory Funds",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.mohrss.gov.cn",
+      "effectiveDateEvidence": "Cannot confirm 2026-01-01 effective date from official source",
+      "primaryCategory": "法定缴费类Social Security / Statutory Funds",
+      "secondaryCategory": "养老金Pension",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Social Insurance Contribution Reform - social insurance contributions"
+    },
+    {
+      "id": "cn02",
+      "country": "China",
+      "countryCode": "CN",
+      "region": "Asia",
+      "flag": "🇨🇳",
+      "law": "PIPL Employee Data Guidelines",
+      "category": "基础信息Basic Information",
+      "subCategory": "Data Privacy",
+      "level1Category": "基础信息Basic Information",
+      "level2Category": "",
+      "summary": "Enhanced employee data protection requiring explicit consent for cross-border transfers.",
+      "summaryZh": "加强员工数据保护，要求跨境传输明确同意。",
+      "status": "active",
+      "effectiveDate": "",
+      "source": "https://www.cac.gov.cn",
+      "changes": [
+        "Explicit consent required",
+        "Cross-border transfer protocols",
+        "Biometric data protections"
+      ],
+      "hrImpact": [
+        "Privacy policy update",
+        "Consent form development",
+        "Data audit required"
+      ],
+      "modules": [
+        "数据保护",
+        "员工关系"
+      ],
+      "titleCategory": "Basic Information",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.cac.gov.cn",
+      "effectiveDateEvidence": "Cannot confirm 2026-04-01 effective date from official source",
+      "primaryCategory": "基础信息Basic Information",
+      "secondaryCategory": "",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "PIPL Employee Data Guidelines - data privacy compliance"
+    },
+    {
+      "id": "ae01",
+      "country": "UAE",
+      "countryCode": "AE",
+      "region": "Asia",
+      "flag": "🇦🇪",
+      "law": "Labour Law Reform – Flexible Employment",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Employee Benefits",
+      "level1Category": "离职与遣散Termination & Severance",
+      "level2Category": "法定标准Legal standard",
+      "summary": "Reformed law introducing flexible contracts, remote work provisions, and enhanced gratuity.",
+      "summaryZh": "改革劳动法引入灵活合同、远程工作条款和加强遣散费。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://www.mohre.gov.ae",
+      "changes": [
+        "Flexible employment contracts",
+        "Remote work legal framework",
+        "Enhanced gratuity calculation"
+      ],
+      "hrImpact": [
+        "Contract template update",
+        "Gratuity reserve recalculation",
+        "Remote work policy creation"
+      ],
+      "modules": [
+        "离职与遣散",
+        "员工关系"
+      ],
+      "titleCategory": "Basic Information",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.mohre.gov.ae",
+      "effectiveDateEvidence": "Cannot confirm 2026-03-01 effective date from official source",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Labour Law Reform - flexible employment arrangements"
+    },
+    {
+      "id": "sa01",
+      "country": "Saudi Arabia",
+      "countryCode": "SA",
+      "region": "Asia",
+      "flag": "🇸🇦",
+      "law": "Labour Law – Saudization Updates",
+      "category": "法定标准Legal standard",
+      "subCategory": "Employee Benefits",
+      "level1Category": "基础信息Basic Information",
+      "level2Category": "",
+      "summary": "Updated Nitaqat quotas requiring increased Saudization in private sector.",
+      "summaryZh": "更新Nitaqat配额，要求私营部门增加沙特化。",
+      "status": "active",
+      "effectiveDate": "",
+      "source": "https://www.hrsd.gov.sa",
+      "changes": [
+        "Increased Saudization quotas",
+        "New penalty structure",
+        "Compliance incentive program"
+      ],
+      "hrImpact": [
+        "Workforce planning adjustment",
+        "Recruitment strategy update",
+        "Reporting requirements"
+      ],
+      "modules": [
+        "员工关系",
+        "招聘"
+      ],
+      "titleCategory": "Basic Information",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.hrsd.gov.sa",
+      "effectiveDateEvidence": "Cannot confirm 2026-06-01 effective date from official source",
+      "primaryCategory": "离职与遣散Termination & Severance",
+      "secondaryCategory": "法定标准Legal standard",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Labour Law Saudization - workforce nationalization requirements"
+    },
+    {
+      "id": "za01",
+      "country": "South Africa",
+      "countryCode": "ZA",
+      "region": "Africa",
+      "flag": "🇿🇦",
+      "law": "National Minimum Wage Act 2026",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Minimum Wage",
+      "level1Category": "法定缴费类Social Security / Statutory Funds",
+      "level2Category": "养老金Pension",
+      "summary": "National minimum wage increased to R28.50/hour with sectoral determinations.",
+      "summaryZh": "全国最低工资提高至每小时28.50兰特。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://www.dlabour.gov.za",
+      "changes": [
+        "Minimum wage R28.50/hour",
+        "Sectoral determinations updated",
+        "Domestic worker provisions"
+      ],
+      "hrImpact": [
+        "Payroll update required",
+        "Sector-specific compliance",
+        "Worker communication"
+      ],
+      "modules": [
+        "薪酬管理"
+      ],
+      "titleCategory": "Mandatory Payments & Allowances",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://labour.gov.za",
+      "effectiveDateEvidence": "Cannot confirm 2026-03-01 date; official source URL was invalid",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "National Minimum Wage Act - minimum wage rates"
+    },
+    {
+      "id": "ng01",
+      "country": "Nigeria",
+      "countryCode": "NG",
+      "region": "Africa",
+      "flag": "🇳🇬",
+      "law": "National Minimum Wage Act 2024",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Minimum Wage",
+      "level1Category": "法定缴费类Social Security / Statutory Funds",
+      "level2Category": "养老金Pension",
+      "summary": "Implementation of new ₦70,000 minimum wage with state-level rollout.",
+      "summaryZh": "实施新的70,000奈拉最低工资，各州层面推出。",
+      "status": "active",
+      "effectiveDate": "",
+      "source": "https://www.nlpc.gov.ng",
+      "changes": [
+        "₦70,000 minimum wage",
+        "Backpay provisions",
+        "State-level implementation"
+      ],
+      "hrImpact": [
+        "Payroll adjustment",
+        "Budget planning",
+        "Employee notification"
+      ],
+      "modules": [
+        "薪酬管理"
+      ],
+      "titleCategory": "Mandatory Payments & Allowances",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.nlpc.gov.ng",
+      "effectiveDateEvidence": "Cannot confirm 2026-01-01 date; official source URL was invalid",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "National Minimum Wage Act 2024 - minimum wage rates"
+    },
+    {
+      "id": "mx01",
+      "country": "Mexico",
+      "countryCode": "MX",
+      "region": "Americas",
+      "flag": "🇲🇽",
+      "law": "Ley Federal del Trabajo – Outsourcing Reform",
+      "category": "法定标准Legal standard",
+      "subCategory": "Employee Benefits",
+      "level1Category": "基础信息Basic Information",
+      "level2Category": "",
+      "summary": "Second phase of outsourcing ban restricting subcontracting to specialized services.",
+      "summaryZh": "禁止外包第二阶段，仅允许专业服务分包。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://www.gob.mx/stps",
+      "changes": [
+        "Subcontracting limited to specialized services",
+        "Joint liability for clients",
+        "Enhanced registration requirements"
+      ],
+      "hrImpact": [
+        "Vendor contract review",
+        "Compliance audit",
+        "Cost structure analysis"
+      ],
+      "modules": [
+        "员工关系"
+      ],
+      "titleCategory": "Basic Information",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.gob.mx/stps",
+      "effectiveDateEvidence": "Mexico outsourcing reform published and effective in 2021; no 2026-04-01 date found",
+      "primaryCategory": "离职与遣散Termination & Severance",
+      "secondaryCategory": "法定标准Legal standard",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Ley Federal del Trabajo - outsourcing reform, employment protections"
+    },
+    {
+      "id": "it01",
+      "country": "Italy",
+      "countryCode": "IT",
+      "region": "Europe",
+      "flag": "🇮🇹",
+      "law": "Smart Work Agreement Expansion",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Working Time",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Expanded smart working agreements requiring written contracts for all remote workers.",
+      "summaryZh": "扩展智能工作协议，要求所有远程工人签订书面合同。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://www.gazzettaufficiale.it",
+      "changes": [
+        "Written agreement mandatory",
+        "Expense reimbursement rules",
+        "Right to disconnect codified"
+      ],
+      "hrImpact": [
+        "Agile work contract creation",
+        "Expense policy update",
+        "Manager training"
+      ],
+      "modules": [
+        "工时与加班",
+        "员工关系"
+      ],
+      "titleCategory": "Working Time & Overtime",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.gazzettaufficiale.it/",
+      "effectiveDateEvidence": "No official government decree for smart work expansion with March 1, 2026 effective date found",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Smart Work Agreement - remote work and flexible working arrangements"
+    },
+    {
+      "id": "es01",
+      "country": "Spain",
+      "countryCode": "ES",
+      "region": "Europe",
+      "flag": "🇪🇸",
+      "law": "Equal Pay Transparency",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Anti-Discrimination",
+      "level1Category": "基础信息Basic Information",
+      "level2Category": "",
+      "summary": "Mandatory equal pay transparency for companies with 50+ employees.",
+      "summaryZh": "强制同工同酬透明度，要求50人以上公司执行。",
+      "status": "upcoming",
+      "effectiveDate": "",
+      "source": "https://www.boe.es",
+      "changes": [
+        "Gender pay gap reporting",
+        "Remediation plan requirements",
+        "Independent audit option"
+      ],
+      "hrImpact": [
+        "Pay equity analysis",
+        "Report preparation",
+        "Policy development"
+      ],
+      "modules": [
+        "薪酬管理",
+        "数据保护"
+      ],
+      "titleCategory": "Basic Information",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.boe.es/",
+      "effectiveDateEvidence": "Spain missed June 7, 2026 deadline to transpose EU Pay Transparency Directive; no enacted date confirmed",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Equal Pay Transparency - wage transparency and gender pay gap requirements"
+    },
+    {
+      "id": "nl01",
+      "country": "Netherlands",
+      "countryCode": "NL",
+      "region": "Europe",
+      "flag": "🇳🇱",
+      "law": "Flexible Work Act Enhancement",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Working Time",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Employees gain right to adjust working hours, times, and location after 6 months.",
+      "summaryZh": "员工在6个月后获得调整工时、时段和地点的权利。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://wetten.overheid.nl",
+      "changes": [
+        "Right to adjust after 6 months",
+        "Employer must respond within 2 months",
+        "Location flexibility right"
+      ],
+      "hrImpact": [
+        "Flexible work policy update",
+        "Scheduling system adjustment",
+        "Request tracking process"
+      ],
+      "modules": [
+        "工时与加班",
+        "员工关系"
+      ],
+      "titleCategory": "Working Time & Overtime",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://wetten.overheid.nl/",
+      "effectiveDateEvidence": "Proposed \"Work Where You Want Act\" rejected by Dutch Senate on September 26, 2023",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Flexible Work Act - right to request flexible working arrangements"
+    },
+    {
+      "id": "se01",
+      "country": "Sweden",
+      "countryCode": "SE",
+      "region": "Europe",
+      "flag": "🇸🇪",
+      "law": "Working Hours Act Reform",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Working Time",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Reformed act allowing more flexible distribution over longer periods.",
+      "summaryZh": "改革工时法允许更灵活分配。",
+      "status": "active",
+      "effectiveDate": "",
+      "source": "https://www.riksdagen.se",
+      "changes": [
+        "Flexible hour distribution",
+        "Extended consultation period",
+        "Maximum 40-hour week maintained"
+      ],
+      "hrImpact": [
+        "Working time agreement update",
+        "Consultation process design",
+        "Scheduling flexibility"
+      ],
+      "modules": [
+        "工时与加班"
+      ],
+      "titleCategory": "Working Time & Overtime",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.riksdagen.se/",
+      "effectiveDateEvidence": "No sweeping reform to Swedish Working Hours Act passed or confirmed for June 2026",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Working Hours Act Reform - working time regulations"
+    },
+    {
+      "id": "th01",
+      "country": "Thailand",
+      "countryCode": "TH",
+      "region": "Asia",
+      "flag": "🇹🇭",
+      "law": "Labour Protection Act – Domestic Workers",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Employee Benefits",
+      "level1Category": "离职与遣散Termination & Severance",
+      "level2Category": "法定标准Legal standard",
+      "summary": "Extended protections to domestic workers including minimum wage and severance.",
+      "summaryZh": "将保护扩展至家政工人，包括最低工资和遣散费。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://www.mol.go.th",
+      "changes": [
+        "Domestic workers covered",
+        "Minimum wage applies",
+        "Severance pay provisions"
+      ],
+      "hrImpact": [
+        "Household employer compliance",
+        "Contract updates",
+        "Registration requirements"
+      ],
+      "modules": [
+        "薪酬管理",
+        "员工关系"
+      ],
+      "titleCategory": "Basic Information",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.mol.go.th",
+      "effectiveDateEvidence": "Cannot confirm 2026-05-01 effective date from official source",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Labour Protection Act - domestic worker protections"
+    },
+    {
+      "id": "vn01",
+      "country": "Vietnam",
+      "countryCode": "VN",
+      "region": "Asia",
+      "flag": "🇻🇳",
+      "law": "Labour Code – Social Insurance Expansion",
+      "category": "养老金Pension",
+      "subCategory": "Social Insurance",
+      "level1Category": "法定缴费类Social Security / Statutory Funds",
+      "level2Category": "养老金Pension",
+      "summary": "Expanded social insurance to informal sector workers with voluntary enrollment.",
+      "summaryZh": "将社会保险扩展至非正规部门工人。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://moit.gov.vn",
+      "changes": [
+        "Informal sector coverage",
+        "Voluntary enrollment",
+        "Gig worker protections"
+      ],
+      "hrImpact": [
+        "Enrollment process setup",
+        "Worker communication",
+        "Contribution calculation"
+      ],
+      "modules": [
+        "法定缴费类"
+      ],
+      "titleCategory": "Social Security / Statutory Funds",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://moit.gov.vn",
+      "effectiveDateEvidence": "Cannot confirm 2026-07-01 date; Vietnam Social Insurance Law reform effective July 1, 2025",
+      "primaryCategory": "法定缴费类Social Security / Statutory Funds",
+      "secondaryCategory": "养老金Pension",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Labour Code Social Insurance Expansion - social insurance coverage"
+    },
+    {
+      "id": "ph01",
+      "country": "Philippines",
+      "countryCode": "PH",
+      "region": "Asia",
+      "flag": "🇵🇭",
+      "law": "DO 174 – Anti-Endo Reform",
+      "category": "法定标准Legal standard",
+      "subCategory": "Employee Benefits",
+      "level1Category": "离职与遣散Termination & Severance",
+      "level2Category": "法定标准Legal standard",
+      "summary": "Strengthened regulations against labor-only contracting.",
+      "summaryZh": "加强劳务外包监管。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://www.dole.gov.ph",
+      "changes": [
+        "Stricter contractor registration",
+        "Worker reclassification provisions",
+        "Enhanced penalties"
+      ],
+      "hrImpact": [
+        "Contractor audit",
+        "Workforce classification review",
+        "Policy compliance update"
+      ],
+      "modules": [
+        "员工关系"
+      ],
+      "titleCategory": "Basic Information",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.dole.gov.ph",
+      "effectiveDateEvidence": "Cannot confirm 2026-04-01 date; DO 174 issued and implemented in 2017",
+      "primaryCategory": "离职与遣散Termination & Severance",
+      "secondaryCategory": "法定标准Legal standard",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "DO 174 Anti-Endo - endo contractualization reform"
+    },
+    {
+      "id": "id01",
+      "country": "Indonesia",
+      "countryCode": "ID",
+      "region": "Asia",
+      "flag": "🇮🇩",
+      "law": "Omnibus Law – Job Creation Revision",
+      "category": "法定标准Legal standard",
+      "subCategory": "Employee Benefits",
+      "level1Category": "离职与遣散Termination & Severance",
+      "level2Category": "法定标准Legal standard",
+      "summary": "Revised law balancing worker protections with investment ease.",
+      "summaryZh": "修订创造就业法平衡工人保护与投资便利。",
+      "status": "active",
+      "effectiveDate": "",
+      "source": "https://www.jdi.go.id",
+      "changes": [
+        "Severance formula updated",
+        "Flexible working arrangements",
+        "Foreign worker permits streamlined"
+      ],
+      "hrImpact": [
+        "Severance calculation update",
+        "Working arrangement policies",
+        "Permit management"
+      ],
+      "modules": [
+        "离职与遣散",
+        "工时与加班"
+      ],
+      "titleCategory": "Basic Information",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.jdi.go.id",
+      "effectiveDateEvidence": "Cannot confirm 2026-03-01 effective date from official source",
+      "primaryCategory": "离职与遣散Termination & Severance",
+      "secondaryCategory": "法定标准Legal standard",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Omnibus Law Job Creation - employment and termination reforms"
+    },
+    {
+      "id": "nz01",
+      "country": "New Zealand",
+      "countryCode": "NZ",
+      "region": "Oceania",
+      "flag": "🇳🇿",
+      "law": "Fair Pay Agreements Act",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Minimum Wage",
+      "level1Category": "法定缴费类Social Security / Statutory Funds",
+      "level2Category": "养老金Pension",
+      "summary": "Reinstated sectoral bargaining framework for industries.",
+      "summaryZh": "恢复行业集体谈判框架。",
+      "status": "upcoming",
+      "effectiveDate": "",
+      "source": "https://www.legislation.govt.nz",
+      "changes": [
+        "Sectoral bargaining restored",
+        "Industry-wide minimum terms",
+        "Mandatory employer participation"
+      ],
+      "hrImpact": [
+        "Industry agreement participation",
+        "Budget planning",
+        "Compliance framework"
+      ],
+      "modules": [
+        "薪酬管理",
+        "员工关系"
+      ],
+      "titleCategory": "Mandatory Payments & Allowances",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.legislation.govt.nz/act/public/2022/0058/latest/whole.html",
+      "effectiveDateEvidence": "Fair Pay Agreements Act 2022 was repealed on 20 December 2023; no future effective date",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Fair Pay Agreements Act - industry-wide pay and working conditions (repealed 2023)"
+    },
+    {
+      "id": "cl01",
+      "country": "Chile",
+      "countryCode": "CL",
+      "region": "Americas",
+      "flag": "🇨🇱",
+      "law": "Remote Work Law Full Implementation",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Working Time",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Full implementation with written agreements, 30% expense reimbursement, ergonomic assessments.",
+      "summaryZh": "全面实施远程工作法，要求30%费用报销和人体工程学评估。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://www.bcn.cl",
+      "changes": [
+        "Written remote work agreement",
+        "30% expense reimbursement",
+        "Ergonomic assessment required"
+      ],
+      "hrImpact": [
+        "Remote work contracts",
+        "Expense tracking system",
+        "Ergonomic evaluation"
+      ],
+      "modules": [
+        "工时与加班",
+        "法定缴费类"
+      ],
+      "titleCategory": "Working Time & Overtime",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.bcn.cl/leychile",
+      "effectiveDateEvidence": "Chile remote work legislation (Law 21.220) fully enacted in 2020; no 2026-04-01 date confirmed",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Remote Work Law - telework regulations"
+    },
+    {
+      "id": "co01",
+      "country": "Colombia",
+      "countryCode": "CO",
+      "region": "Americas",
+      "flag": "🇨🇴",
+      "law": "Digital Platform Worker Protections",
+      "category": "法定标准Legal standard",
+      "subCategory": "Employee Benefits",
+      "level1Category": "离职与遣散Termination & Severance",
+      "level2Category": "法定标准Legal standard",
+      "summary": "New protections for digital platform workers including minimum earnings and social security.",
+      "summaryZh": "对数字平台工人的新保护，包括最低收入和社会保障。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://www.mintrabajo.gov.co",
+      "changes": [
+        "Minimum earnings guarantee",
+        "Social security for gig workers",
+        "Dispute resolution access"
+      ],
+      "hrImpact": [
+        "Platform worker classification",
+        "Contribution calculations",
+        "Dispute process setup"
+      ],
+      "modules": [
+        "薪酬管理",
+        "法定缴费类"
+      ],
+      "titleCategory": "Basic Information",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.mintrabajo.gov.co",
+      "effectiveDateEvidence": "No enacted law with 2026-06-01 effective date for digital platform worker protections confirmed",
+      "primaryCategory": "离职与遣散Termination & Severance",
+      "secondaryCategory": "法定标准Legal standard",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Digital Platform Worker Protections - gig worker rights"
+    },
+    {
+      "id": "pl01",
+      "country": "Poland",
+      "countryCode": "PL",
+      "region": "Europe",
+      "flag": "🇵🇱",
+      "law": "Work-Life Balance Directive",
+      "category": "育儿假Childcare Leave",
+      "subCategory": "Working Time",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "EU directive transposition introducing paternity leave, carers leave, flexible arrangements.",
+      "summaryZh": "转化欧盟指令引入陪产假、护理假和弹性安排。",
+      "status": "effective",
+      "effectiveDate": "2023-04-07",
+      "source": "https://isap.sejm.gov.pl",
+      "changes": [
+        "2 weeks paternity leave",
+        "5 days carers leave",
+        "Flexible work request right"
+      ],
+      "hrImpact": [
+        "Leave policy update",
+        "Scheduling system",
+        "Manager training"
+      ],
+      "modules": [
+        "休假类",
+        "工时与加班"
+      ],
+      "titleCategory": "Working Time & Overtime",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://isap.sejm.gov.pl/",
+      "effectiveDateEvidence": "Amendment to Polish Labour Code transposing EU Work-Life Balance Directive entered into force April 7, 2023",
+      "primaryCategory": "休假类Leave",
+      "secondaryCategory": "育儿假Childcare Leave",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Work-Life Balance Directive - EU directive transposition, parental leave and flexible working"
+    },
+    {
+      "id": "ie01",
+      "country": "Ireland",
+      "countryCode": "IE",
+      "region": "Europe",
+      "flag": "🇮🇪",
+      "law": "Right to Disconnect Code",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Working Time",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Statutory code requiring employers to limit after-hours communication.",
+      "summaryZh": "法定守则要求雇主限制下班后通信。",
+      "status": "active",
+      "effectiveDate": "2021-04-01",
+      "source": "https://www.wrc.ie",
+      "changes": [
+        "Disconnect policy mandatory",
+        "Annual review requirement",
+        "Employee notification"
+      ],
+      "hrImpact": [
+        "Policy creation",
+        "Manager awareness training",
+        "Communication protocols"
+      ],
+      "modules": [
+        "工时与加班"
+      ],
+      "titleCategory": "Working Time & Overtime",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://www.wrc.ie/",
+      "effectiveDateEvidence": "WRC officially published Code of Practice on Right to Disconnect, effective April 1, 2021",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Right to Disconnect Code - working time management, disconnect from work"
+    },
+    {
+      "id": "at01",
+      "country": "Austria",
+      "countryCode": "AT",
+      "region": "Europe",
+      "flag": "🇦🇹",
+      "law": "Arbeitszeitgesetz – 12-Hour Day",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Working Time",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Extended permissible working day to 12 hours with mandatory compensatory rest.",
+      "summaryZh": "将允许工作日延长至12小时并规定补偿休息。",
+      "status": "effective",
+      "effectiveDate": "2018-09-01",
+      "source": "https://www.ris.bka.gv.at",
+      "changes": [
+        "12-hour working day permitted",
+        "Mandatory compensatory rest",
+        "Enhanced rest requirements"
+      ],
+      "hrImpact": [
+        "Scheduling policy update",
+        "Rest period monitoring",
+        "Compliance tracking"
+      ],
+      "modules": [
+        "工时与加班"
+      ],
+      "titleCategory": "Working Time & Overtime",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://www.ris.bka.gv.at/",
+      "effectiveDateEvidence": "Amendment to Austrian Arbeitszeitgesetz increasing maximum workday to 12 hours, effective September 1, 2018",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Arbeitszeitgesetz 12-Hour Day - maximum working day extension"
+    },
+    {
+      "id": "be01",
+      "country": "Belgium",
+      "countryCode": "BE",
+      "region": "Europe",
+      "flag": "🇧🇪",
+      "law": "4-Day Week Pilot",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Working Time",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Pilot program for 4-day working week with full rights maintained.",
+      "summaryZh": "四天工作周试点计划，维持完整权利。",
+      "status": "upcoming",
+      "effectiveDate": "2022-11-20",
+      "source": "https://www.ejustice.just.fgov.be",
+      "changes": [
+        "4-day week pilot launched",
+        "Compressed hours option",
+        "Full rights maintained"
+      ],
+      "hrImpact": [
+        "Pilot participation planning",
+        "Scheduling adjustment",
+        "Rights monitoring"
+      ],
+      "modules": [
+        "工时与加班"
+      ],
+      "titleCategory": "Working Time & Overtime",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://www.ejustice.just.fgov.be/",
+      "effectiveDateEvidence": "Labour Deal legislation introducing 4-day work week request right, entered into force November 20, 2022",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "4-Day Week Pilot - compressed work week arrangements"
+    },
+    {
+      "id": "tr01",
+      "country": "Turkey",
+      "countryCode": "TR",
+      "region": "Asia",
+      "flag": "🇹🇷",
+      "law": "Minimum Wage & Social Security",
+      "category": "养老金Pension",
+      "subCategory": "Minimum Wage",
+      "level1Category": "法定缴费类Social Security / Statutory Funds",
+      "level2Category": "养老金Pension",
+      "summary": "Significant 30% minimum wage increase with social security adjustments.",
+      "summaryZh": "最低工资大幅提高30%并调整社会保障。",
+      "status": "effective",
+      "effectiveDate": "",
+      "source": "https://www.resmigazete.gov.tr",
+      "changes": [
+        "30% minimum wage increase",
+        "Social security base adjustment",
+        "Severance pay recalculation"
+      ],
+      "hrImpact": [
+        "Payroll system update",
+        "Budget reallocation",
+        "Social security reporting"
+      ],
+      "modules": [
+        "薪酬管理",
+        "法定缴费类"
+      ],
+      "titleCategory": "Mandatory Payments & Allowances",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.resmigazete.gov.tr",
+      "effectiveDateEvidence": "No official source verified",
+      "primaryCategory": "法定缴费类Social Security / Statutory Funds",
+      "secondaryCategory": "养老金Pension",
+      "categorySource": "Pending Review",
+      "categoryStatus": "pending_review",
+      "classificationReason": "No classification data available"
+    },
+    {
+      "id": "dk01",
+      "country": "Denmark",
+      "countryCode": "DK",
+      "region": "Europe",
+      "flag": "🇩🇰",
+      "law": "Psychosocial Working Environment Act",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Workplace Safety",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Enhanced requirements mandating stress risk assessments and anti-bullying policies.",
+      "summaryZh": "加强要求强制压力风险评估和反欺凌政策。",
+      "status": "active",
+      "effectiveDate": "2020-11-01",
+      "source": "https://www.retsinformation.dk",
+      "changes": [
+        "Stress risk assessments mandatory",
+        "Anti-bullying policy required",
+        "Mental health training"
+      ],
+      "hrImpact": [
+        "Risk assessment implementation",
+        "Policy development",
+        "Training program"
+      ],
+      "modules": [
+        "工作场所安全"
+      ],
+      "titleCategory": "Basic Information",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://www.retsinformation.dk/",
+      "effectiveDateEvidence": "Executive Order on psychosocial working environment (Bekendtgørelse om psykisk arbejdsmiljø) effective November 1, 2020",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Psychosocial Working Environment Act - workplace wellbeing and working conditions"
+    },
+    {
+      "id": "fi01",
+      "country": "Finland",
+      "countryCode": "FI",
+      "region": "Europe",
+      "flag": "🇫🇮",
+      "law": "Annual Leave Enhancement",
+      "category": "年假Annual Leave",
+      "subCategory": "Working Time",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Statutory annual leave increased to 30 days.",
+      "summaryZh": "法定年假增加至30天。",
+      "status": "active",
+      "effectiveDate": "",
+      "source": "https://www.finlex.fi",
+      "changes": [
+        "30 days statutory leave",
+        "Improved carry-over rules",
+        "Holiday bonus requirements"
+      ],
+      "hrImpact": [
+        "Leave management update",
+        "Bonus calculation",
+        "Policy revision"
+      ],
+      "modules": [
+        "休假类"
+      ],
+      "titleCategory": "Working Time & Overtime",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.finlex.fi/",
+      "effectiveDateEvidence": "No confirmed legislative act for \"Annual Leave Enhancement\" set for June 2026",
+      "primaryCategory": "休假类Leave",
+      "secondaryCategory": "年假Annual Leave",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Annual Leave Enhancement - leave entitlement improvements"
+    },
+    {
+      "id": "pt01",
+      "country": "Portugal",
+      "countryCode": "PT",
+      "region": "Europe",
+      "flag": "🇵🇹",
+      "law": "Right to Disconnect",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Working Time",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Statutory right limiting employer communication outside working hours.",
+      "summaryZh": "法定断开连接权限制工作时间外通信。",
+      "status": "active",
+      "effectiveDate": "2022-01-01",
+      "source": "https://www.pgdlisboa.pt",
+      "changes": [
+        "Communication limits after hours",
+        "Sanction framework",
+        "Annual reporting"
+      ],
+      "hrImpact": [
+        "Policy creation",
+        "IT configuration",
+        "Manager training"
+      ],
+      "modules": [
+        "工时与加班"
+      ],
+      "titleCategory": "Working Time & Overtime",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://www.pgdlisboa.pt/",
+      "effectiveDateEvidence": "Law No. 83/2021 amending Labor Code to regulate telework and right to disconnect, effective January 1, 2022",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Right to Disconnect - telework and disconnect regulations"
+    },
+    {
+      "id": "ch01",
+      "country": "Switzerland",
+      "countryCode": "CH",
+      "region": "Europe",
+      "flag": "🇨🇭",
+      "law": "Overtime Reform",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Working Time",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Reformed regulations increasing flexibility in working hour arrangements.",
+      "summaryZh": "改革法规增加工时安排灵活性。",
+      "status": "active",
+      "effectiveDate": "",
+      "source": "https://www.bundeskanzlei.ch",
+      "changes": [
+        "Flexible hour arrangements",
+        "Enhanced compensation options",
+        "Employee choice provisions"
+      ],
+      "hrImpact": [
+        "Overtime policy update",
+        "Compensation flexibility",
+        "Agreement management"
+      ],
+      "modules": [
+        "工时与加班",
+        "薪酬管理"
+      ],
+      "titleCategory": "Working Time & Overtime",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.admin.ch/",
+      "effectiveDateEvidence": "No formal adoption of overtime reform with 2026 effective date found",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Overtime Reform - working time and overtime regulations"
+    },
+    {
+      "id": "il01",
+      "country": "Israel",
+      "countryCode": "IL",
+      "region": "Asia",
+      "flag": "🇮🇱",
+      "law": "Gig Economy Working Hours",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Working Time",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Extension of working hours protections to gig economy workers.",
+      "summaryZh": "将工时保护扩展至零工经济工人。",
+      "status": "active",
+      "effectiveDate": "",
+      "source": "https://www.nevo.co.il",
+      "changes": [
+        "Gig worker protections",
+        "Minimum rest periods",
+        "Maximum weekly hours"
+      ],
+      "hrImpact": [
+        "Worker classification review",
+        "Scheduling compliance",
+        "Payroll updates"
+      ],
+      "modules": [
+        "工时与加班",
+        "员工关系"
+      ],
+      "titleCategory": "Working Time & Overtime",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.nevo.co.il",
+      "effectiveDateEvidence": "Cannot confirm 2026-07-01 effective date from official source",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Gig Economy Working Hours - platform worker hour regulations"
+    },
+    {
+      "id": "za02",
+      "country": "South Africa",
+      "countryCode": "ZA",
+      "region": "Africa",
+      "flag": "🇿🇦",
+      "law": "POPIA Data Protection",
+      "category": "基础信息Basic Information",
+      "subCategory": "Data Privacy",
+      "level1Category": "基础信息Basic Information",
+      "level2Category": "",
+      "summary": "Amendments strengthening employee consent and breach notification.",
+      "summaryZh": "修订加强员工同意和泄露通知。",
+      "status": "active",
+      "effectiveDate": "",
+      "source": "https://www.justice.gov.za",
+      "changes": [
+        "Enhanced consent requirements",
+        "Breach notification obligations",
+        "Data minimization principles"
+      ],
+      "hrImpact": [
+        "Privacy policy update",
+        "Breach response plan",
+        "Consent management"
+      ],
+      "modules": [
+        "数据保护",
+        "员工关系"
+      ],
+      "titleCategory": "Basic Information",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.justice.gov.za",
+      "effectiveDateEvidence": "Cannot confirm 2026-06-01 date; core POPIA effective July 1, 2021",
+      "primaryCategory": "基础信息Basic Information",
+      "secondaryCategory": "",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "POPIA Data Protection - data privacy compliance"
+    },
+    {
+      "id": "ng02",
+      "country": "Nigeria",
+      "countryCode": "NG",
+      "region": "Africa",
+      "flag": "🇳🇬",
+      "law": "Pension Reform – Contributory Enhancement",
+      "category": "养老金Pension",
+      "subCategory": "Social Insurance",
+      "level1Category": "法定缴费类Social Security / Statutory Funds",
+      "level2Category": "养老金Pension",
+      "summary": "Enhanced contributory pension increasing employer contribution to 12%.",
+      "summaryZh": "加强缴费型养老金，雇主缴费提高至12%。",
+      "status": "active",
+      "effectiveDate": "",
+      "source": "https://www.pencom.gov.ng",
+      "changes": [
+        "Employer contribution to 12%",
+        "Employee contribution to 8%",
+        "Enhanced portability"
+      ],
+      "hrImpact": [
+        "Payroll deduction update",
+        "Budget impact",
+        "Employee communication"
+      ],
+      "modules": [
+        "法定缴费类"
+      ],
+      "titleCategory": "Social Security / Statutory Funds",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.pencom.gov.ng",
+      "effectiveDateEvidence": "Cannot confirm 2026-04-01 date for \"Contributory Enhancement\"",
+      "primaryCategory": "法定缴费类Social Security / Statutory Funds",
+      "secondaryCategory": "养老金Pension",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Pension Reform - contributory pension enhancement"
+    },
+    {
+      "id": "eg01",
+      "country": "Egypt",
+      "countryCode": "EG",
+      "region": "Africa",
+      "flag": "🇪🇬",
+      "law": "Labour Law – Minimum Wage & Social Insurance",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Minimum Wage",
+      "level1Category": "法定缴费类Social Security / Statutory Funds",
+      "level2Category": "养老金Pension",
+      "summary": "Updated minimum wage and expanded social insurance coverage.",
+      "summaryZh": "更新最低工资，扩大社会保险覆盖。",
+      "status": "upcoming",
+      "effectiveDate": "",
+      "source": "https://www.mans.gov.eg",
+      "changes": [
+        "New minimum wage level",
+        "Social insurance expansion",
+        "Contribution rate adjustment"
+      ],
+      "hrImpact": [
+        "Payroll update",
+        "Budget planning",
+        "Registration requirements"
+      ],
+      "modules": [
+        "薪酬管理",
+        "法定缴费类"
+      ],
+      "titleCategory": "Mandatory Payments & Allowances",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.mans.gov.eg",
+      "effectiveDateEvidence": "Cannot confirm 2026-09-01 date; official source URL was invalid",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Labour Law - minimum wage and social insurance"
+    },
+    {
+      "id": "ke01",
+      "country": "Kenya",
+      "countryCode": "KE",
+      "region": "Africa",
+      "flag": "🇰🇪",
+      "law": "Digital Nomad Visa Framework",
+      "category": "基础信息Basic Information",
+      "subCategory": "Employee Benefits",
+      "level1Category": "离职与遣散Termination & Severance",
+      "level2Category": "法定标准Legal standard",
+      "summary": "New framework for digital nomad visas for foreign remote workers.",
+      "summaryZh": "数字游牧签证新框架。",
+      "status": "upcoming",
+      "effectiveDate": "",
+      "source": "https://www.employment.go.ke",
+      "changes": [
+        "Digital nomad visa category",
+        "Tax obligation framework",
+        "Work permit streamlined"
+      ],
+      "hrImpact": [
+        "Remote worker policy",
+        "Tax withholding setup",
+        "Permit management"
+      ],
+      "modules": [
+        "员工关系",
+        "薪酬管理"
+      ],
+      "titleCategory": "Basic Information",
+      "effectiveDateStatus": "unavailable",
+      "effectiveDateSource": "https://www.employment.go.ke",
+      "effectiveDateEvidence": "Cannot confirm 2026-10-01 date; official source URL was invalid",
+      "primaryCategory": "基础信息Basic Information",
+      "secondaryCategory": "",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Digital Nomad Visa Framework - immigration and work permits"
+    },
+    {
+      "id": "my01",
+      "country": "Malaysia",
+      "countryCode": "MY",
+      "region": "Asia",
+      "flag": "🇲🇾",
+      "law": "EPF (Employees Provident Fund) – Mandatory Contribution",
+      "category": "养老金Pension",
+      "subCategory": "Pension Insurance",
+      "level1Category": "法定缴费类Social Security / Statutory Funds",
+      "level2Category": "养老金Pension",
+      "summary": "Malaysia's Employees Provident Fund (EPF/KWSP) requires mandatory contributions from both employers and employees for retirement savings.",
+      "summaryZh": "马来西亚公积金局(EPF/KWSP)要求雇主和雇员强制缴纳退休储蓄基金。",
+      "status": "effective",
+      "effectiveDate": "2025-10-01",
+      "source": "https://www.kwsp.gov.my/en/",
+      "changes": [
+        "Employer contribution: 13% for monthly wage ≤ RM5,000; 12% for monthly wage > RM5,000; 2% for expatriates",
+        "Employee contribution: 11% for locals; 2% for expatriates",
+        "Contribution base: Total gross salary"
+      ],
+      "hrImpact": [
+        "Monthly EPF calculation and remittance required",
+        "Different rates for local vs expatriate employees",
+        "Must remit by 15th of following month"
+      ],
+      "modules": [
+        "薪酬管理",
+        "公积金"
+      ],
+      "sourceUrl": "https://www.kwsp.gov.my/en/employer/responsibilities/mandatory-contribution",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://www.kwsp.gov.my/en/",
+      "effectiveDateEvidence": "EPF (Amendment) Act 2025 [Act A1760] mandating contributions for foreign workers, gazetted effective October 1, 2025",
+      "primaryCategory": "法定缴费类Social Security / Statutory Funds",
+      "secondaryCategory": "养老金Pension",
+      "categorySource": "Malaysia Document",
+      "categoryStatus": "confirmed",
+      "classificationReason": "EPF Act 1991 - mandatory provident fund contributions"
+    },
+    {
+      "id": "my02",
+      "country": "Malaysia",
+      "countryCode": "MY",
+      "region": "Asia",
+      "flag": "🇲🇾",
+      "law": "SOCSO (Social Security Organization) – Work Injury & Disability Insurance",
+      "category": "工伤保险Work Injury",
+      "subCategory": "Work Injury Insurance",
+      "level1Category": "法定缴费类Social Security / Statutory Funds",
+      "level2Category": "工伤保险Work Injury",
+      "summary": "SOCSO provides social security protection for employees against work-related accidents and occupational diseases, covering both injury and disability benefits.",
+      "summaryZh": "SOCSO为雇员提供工伤和职业病社会保障保护，涵盖工伤和残疾福利。",
+      "status": "effective",
+      "effectiveDate": "2024-07-01",
+      "source": "https://www.perkeso.gov.my/",
+      "changes": [
+        "Employer contribution: around 1.75% for locals; around 1.25% for expatriates",
+        "Employee contribution: around 0.5% for locals; 0.5% for expatriates",
+        "Contribution base cap: RM 6,000"
+      ],
+      "hrImpact": [
+        "Monthly SOCSO calculation and remittance required",
+        "Contribution base capped at RM 6,000",
+        "Coverage extends to most employees under 60 years old"
+      ],
+      "modules": [
+        "工伤保险",
+        "社会保障"
+      ],
+      "sourceUrl": "https://www.perkeso.gov.my/",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://www.perkeso.gov.my/",
+      "effectiveDateEvidence": "SOCSO Invalidity Scheme extended to foreign workers effective July 1, 2024",
+      "primaryCategory": "法定缴费类Social Security / Statutory Funds",
+      "secondaryCategory": "工伤保险Work Injury",
+      "categorySource": "Malaysia Document",
+      "categoryStatus": "confirmed",
+      "classificationReason": "SOCSO Act 1969 - work injury and disability insurance"
+    },
+    {
+      "id": "my03",
+      "country": "Malaysia",
+      "countryCode": "MY",
+      "region": "Asia",
+      "flag": "🇲🇾",
+      "law": "EIS (Employment Insurance System) – Unemployment Insurance",
+      "category": "失业保险Unemployment",
+      "subCategory": "Unemployment Insurance",
+      "level1Category": "法定缴费类Social Security / Statutory Funds",
+      "level2Category": "失业保险Unemployment",
+      "summary": "EIS provides unemployment benefits and re-employment assistance to Malaysian citizens and permanent residents who lose their jobs.",
+      "summaryZh": "EIS为失业的马来西亚公民和永久居民提供失业救济和再就业援助。",
+      "status": "effective",
+      "effectiveDate": "2018-01-01",
+      "source": "https://www.perkeso.gov.my/en/",
+      "changes": [
+        "Employer contribution: 0.20%",
+        "Employee contribution: 0.20%",
+        "Contribution base cap: RM 6,000",
+        "Applicable to Malaysian citizens and permanent residents only"
+      ],
+      "hrImpact": [
+        "Monthly EIS calculation and remittance required",
+        "Only applicable to Malaysian citizens and PR holders",
+        "Foreign employees are not covered"
+      ],
+      "modules": [
+        "失业保险",
+        "社会保障"
+      ],
+      "sourceUrl": "https://www.perkeso.gov.my/en/",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://www.perkeso.gov.my/en/",
+      "effectiveDateEvidence": "Employment Insurance System Act 2017 [Act 800] came into operation January 1, 2018 per Gazette P.U. (B) 606/2017",
+      "primaryCategory": "法定缴费类Social Security / Statutory Funds",
+      "secondaryCategory": "失业保险Unemployment",
+      "categorySource": "Malaysia Document",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Employment Insurance System Act 2017"
+    },
+    {
+      "id": "my04",
+      "country": "Malaysia",
+      "countryCode": "MY",
+      "region": "Asia",
+      "flag": "🇲🇾",
+      "law": "HRDF (Human Resources Development Fund) – Training Levy",
+      "category": "其他福利Others",
+      "subCategory": "Training Fund",
+      "level1Category": "法定缴费类Social Security / Statutory Funds",
+      "level2Category": "其他福利Others",
+      "summary": "HRDF (now HRD Corp) requires employers with 10+ local employees to contribute 1% of wages to fund employee skills development and training.",
+      "summaryZh": "HRDF（现为HRD Corp）要求雇佣10名及以上本地员工的雇主缴纳工资的1%用于员工技能提升培训。",
+      "status": "effective",
+      "effectiveDate": "2021-03-01",
+      "source": "https://hrdcorp.gov.my/",
+      "changes": [
+        "Employer contribution: 1%",
+        "Applicable to employers with 10+ local employees",
+        "Contribution base: base salary + fixed allowance (excluding overtime and bonus)"
+      ],
+      "hrImpact": [
+        "Monthly HRDF calculation and remittance required",
+        "Only applicable to local employees",
+        "Funds available for employee training programs"
+      ],
+      "modules": [
+        "培训管理",
+        "员工发展"
+      ],
+      "sourceUrl": "https://hrdcorp.gov.my/",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://hrdcorp.gov.my/",
+      "effectiveDateEvidence": "PSMB (Amendment of First Schedule) Order 2021 expanded HRDF levy to all industries effective March 1, 2021",
+      "primaryCategory": "法定缴费类Social Security / Statutory Funds",
+      "secondaryCategory": "其他福利Others",
+      "categorySource": "Malaysia Document",
+      "categoryStatus": "confirmed",
+      "classificationReason": "PSMB Act 2001 - training levy for human resources development"
+    },
+    {
+      "id": "my05",
+      "country": "Malaysia",
+      "countryCode": "MY",
+      "region": "Asia",
+      "flag": "🇲🇾",
+      "law": "Employment Act 1955 – Annual Leave Entitlement",
+      "category": "年假Annual Leave",
+      "subCategory": "Annual Leave",
+      "level1Category": "休假类Leave",
+      "level2Category": "年假Annual Leave",
+      "summary": "Malaysian law mandates annual leave based on years of service: 8 days for <2 years, 12 days for 2-5 years, and 16 days for ≥5 years of continuous service.",
+      "summaryZh": "马来西亚法律规定年假按工龄计算：<2年8天，2-5年12天，≥5年16天。",
+      "status": "effective",
+      "effectiveDate": "1957-06-01",
+      "source": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "changes": [
+        "Less than 2 years service: 8 days",
+        "2-5 years service: 12 days",
+        "5+ years service: 16 days",
+        "Unused leave expires after 12 months unless otherwise specified"
+      ],
+      "hrImpact": [
+        "Track years of service for each employee",
+        "Pro-rate leave for employees who leave before completing 12 months",
+        "Monitor leave usage to prevent expiration"
+      ],
+      "modules": [
+        "考勤管理",
+        "员工关系"
+      ],
+      "sourceUrl": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "effectiveDateEvidence": "Employment Act 1955 (Act 265) came into operation June 1, 1957",
+      "primaryCategory": "休假类Leave",
+      "secondaryCategory": "年假Annual Leave",
+      "categorySource": "Malaysia Document",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Employment Act 1955 Section 60E - annual leave entitlement"
+    },
+    {
+      "id": "my06",
+      "country": "Malaysia",
+      "countryCode": "MY",
+      "region": "Asia",
+      "flag": "🇲🇾",
+      "law": "Employment Act 1955 – Sick Leave Entitlement",
+      "category": "病假Sick Leave",
+      "subCategory": "Sick Leave",
+      "level1Category": "休假类Leave",
+      "level2Category": "病假Sick Leave",
+      "summary": "Malaysian law mandates sick leave based on years of service: 14 days for 1-2 years, 18 days for 2-5 years, and 22 days for 5+ years. Total hospitalization leave capped at 60 days per year.",
+      "summaryZh": "马来西亚法律规定病假按工龄计算：1-2年14天，2-5年18天，5+年22天。住院假每年最多60天。",
+      "status": "effective",
+      "effectiveDate": "1957-06-01",
+      "source": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "changes": [
+        "1-2 years service: 14 days paid sick leave",
+        "2-5 years service: 18 days paid sick leave",
+        "5+ years service: 22 days paid sick leave",
+        "Total hospitalization leave: maximum 60 days per year"
+      ],
+      "hrImpact": [
+        "Require medical certificate (MC) from registered doctor",
+        "MC must be submitted within 48 hours",
+        "Track total hospitalization days per year"
+      ],
+      "modules": [
+        "考勤管理",
+        "员工关系"
+      ],
+      "sourceUrl": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "effectiveDateEvidence": "Employment Act 1955 (Act 265) came into operation June 1, 1957",
+      "primaryCategory": "休假类Leave",
+      "secondaryCategory": "病假Sick Leave",
+      "categorySource": "Malaysia Document",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Employment Act 1955 Section 60F - sick leave entitlement"
+    },
+    {
+      "id": "my07",
+      "country": "Malaysia",
+      "countryCode": "MY",
+      "region": "Asia",
+      "flag": "🇲🇾",
+      "law": "Employment (Amendment) Act 2022 – Maternity Leave",
+      "category": "产假Maternity Leave",
+      "subCategory": "Maternity Leave",
+      "level1Category": "休假类Leave",
+      "level2Category": "产假Maternity Leave",
+      "summary": "The 2022 amendment increased maternity leave to 98 days (from 60 days). Eligibility requires employment for at least 90 days in the 9 months before confinement, and fewer than 5 surviving children.",
+      "summaryZh": "2022年修正案将产假从60天增至98天。资格要求分娩前9个月至少就业90天，存活子女少于5名。",
+      "status": "effective",
+      "effectiveDate": "2023-01-01",
+      "source": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "changes": [
+        "98 consecutive days of maternity leave",
+        "Can start 30 days before expected due date",
+        "100% pay by employer during leave period"
+      ],
+      "hrImpact": [
+        "Update maternity leave policy to 98 days",
+        "Track eligibility based on employment duration",
+        "Plan for temporary coverage during leave"
+      ],
+      "modules": [
+        "考勤管理",
+        "员工关系"
+      ],
+      "sourceUrl": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "effectiveDateEvidence": "Employment (Amendment) Act 2022 [Act A1651] increasing maternity leave to 98 days, effective January 1, 2023 per Gazette P.U. (B) 394/2022",
+      "primaryCategory": "休假类Leave",
+      "secondaryCategory": "产假Maternity Leave",
+      "categorySource": "Malaysia Document",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Employment (Amendment) Act 2022 - maternity leave increased to 98 days"
+    },
+    {
+      "id": "my08",
+      "country": "Malaysia",
+      "countryCode": "MY",
+      "region": "Asia",
+      "flag": "🇲🇾",
+      "law": "Employment (Amendment) Act 2022 – Paternity Leave",
+      "category": "陪产假Paternity Leave",
+      "subCategory": "Paternity Leave",
+      "level1Category": "休假类Leave",
+      "level2Category": "陪产假Paternity Leave",
+      "summary": "The 2022 amendment introduced 7 days of paid paternity leave for married male employees with at least 12 months of service, applicable to the first 5 confinements.",
+      "summaryZh": "2022年修正案引入7天带薪陪产假，适用于服务满12个月的已婚男性员工，限前5次分娩。",
+      "status": "effective",
+      "effectiveDate": "2023-01-01",
+      "source": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "changes": [
+        "7 consecutive days of paternity leave (including rest days and public holidays)",
+        "Must notify employer at least 30 days before expected due date",
+        "100% pay by employer during leave period"
+      ],
+      "hrImpact": [
+        "Update paternity leave policy to 7 days",
+        "Track service duration eligibility (minimum 12 months)",
+        "Monitor first 5 confinements per employee"
+      ],
+      "modules": [
+        "考勤管理",
+        "员工关系"
+      ],
+      "sourceUrl": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "effectiveDateEvidence": "Employment (Amendment) Act 2022 [Act A1651] introducing 7 days paid paternity leave, effective January 1, 2023",
+      "primaryCategory": "休假类Leave",
+      "secondaryCategory": "陪产假Paternity Leave",
+      "categorySource": "Malaysia Document",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Employment (Amendment) Act 2022 - 7 days paid paternity leave"
+    },
+    {
+      "id": "my09",
+      "country": "Malaysia",
+      "countryCode": "MY",
+      "region": "Asia",
+      "flag": "🇲🇾",
+      "law": "Employment Act 1955 – Weekday Overtime",
+      "category": "工作日加班Weekday Overtime",
+      "subCategory": "Overtime",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "工作日加班Weekday Overtime",
+      "summary": "Weekday overtime is calculated at 1.5x hourly rate (monthly salary / 208 hours). Maximum overtime is 4 hours per day, with total working hours not exceeding 12 hours per day.",
+      "summaryZh": "工作日加班按1.5倍时薪计算（月薪/208小时）。每天最多加班4小时，总工作时间不超过12小时。",
+      "status": "effective",
+      "effectiveDate": "1957-06-01",
+      "source": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "changes": [
+        "Hourly rate = Monthly salary / 208",
+        "Overtime rate = 1.5x hourly rate",
+        "Maximum overtime: 4 hours per day",
+        "Total working hours (including OT) must not exceed 12 hours per day"
+      ],
+      "hrImpact": [
+        "Implement time tracking system",
+        "Calculate overtime correctly using 208-hour divisor",
+        "Ensure compliance with daily hour limits"
+      ],
+      "modules": [
+        "工时与加班",
+        "薪酬管理"
+      ],
+      "sourceUrl": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "effectiveDateEvidence": "Employment Act 1955 (Act 265) came into operation June 1, 1957",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "工作日加班Weekday Overtime",
+      "categorySource": "Malaysia Document",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Employment Act 1955 Section 60A - weekday overtime at 1.5x rate"
+    },
+    {
+      "id": "my10",
+      "country": "Malaysia",
+      "countryCode": "MY",
+      "region": "Asia",
+      "flag": "🇲🇾",
+      "law": "Employment Act 1955 – Weekend/Rest Day Overtime",
+      "category": "节假日加班Holiday Overtime",
+      "subCategory": "Overtime",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "节假日加班Holiday Overtime",
+      "summary": "Weekend overtime is calculated on top of normal pay: 0.5x daily rate for first 4 hours, 1x daily rate for next 4 hours, and 2x hourly rate for hours beyond 8.",
+      "summaryZh": "周末加班在正常工资基础上额外支付：前4小时0.5倍日薪，4-8小时1倍日薪，8小时后2倍时薪。",
+      "status": "effective",
+      "effectiveDate": "1957-06-01",
+      "source": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "changes": [
+        "First 4 hours: 0.5x daily rate (0.5 * monthly salary / 26)",
+        "4-8 hours: 1x daily rate",
+        "Beyond 8 hours: 2x hourly rate (2 * monthly salary / 208)"
+      ],
+      "hrImpact": [
+        "Track rest day work separately from weekday overtime",
+        "Apply correct overtime rate tiers",
+        "Ensure rest day work is voluntary unless emergency"
+      ],
+      "modules": [
+        "工时与加班",
+        "薪酬管理"
+      ],
+      "sourceUrl": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "effectiveDateEvidence": "Employment Act 1955 (Act 265) came into operation June 1, 1957",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "节假日加班Holiday Overtime",
+      "categorySource": "Malaysia Document",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Employment Act 1955 Section 60A - rest day overtime at 2x rate"
+    },
+    {
+      "id": "my11",
+      "country": "Malaysia",
+      "countryCode": "MY",
+      "region": "Asia",
+      "flag": "🇲🇾",
+      "law": "Employment Act 1955 – Public Holiday Overtime",
+      "category": "节假日加班Holiday Overtime",
+      "subCategory": "Overtime",
+      "level1Category": "工时与加班Working Time & Overtime",
+      "level2Category": "节假日加班Holiday Overtime",
+      "summary": "Public holiday overtime is calculated at 2x daily rate for first 8 hours, and 3x hourly rate for hours beyond 8.",
+      "summaryZh": "公共假期加班按2倍日薪计算前8小时，8小时后按3倍时薪计算。",
+      "status": "effective",
+      "effectiveDate": "1957-06-01",
+      "source": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "changes": [
+        "First 8 hours: 2x daily rate",
+        "Beyond 8 hours: 3x hourly rate (3 * monthly salary / 208)"
+      ],
+      "hrImpact": [
+        "Track public holiday work separately",
+        "Apply highest overtime rate (2x-3x)",
+        "Ensure public holiday work is voluntary unless emergency"
+      ],
+      "modules": [
+        "工时与加班",
+        "薪酬管理"
+      ],
+      "sourceUrl": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "effectiveDateEvidence": "Employment Act 1955 (Act 265) came into operation June 1, 1957",
+      "primaryCategory": "工时与加班Working Time & Overtime",
+      "secondaryCategory": "节假日加班Holiday Overtime",
+      "categorySource": "Malaysia Document",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Employment Act 1955 Section 60A - public holiday overtime at 3x rate"
+    },
+    {
+      "id": "my12",
+      "country": "Malaysia",
+      "countryCode": "MY",
+      "region": "Asia",
+      "flag": "🇲🇾",
+      "law": "Employment (Termination & Layoff Benefits) Regulations 1980 – Dismissal",
+      "category": "法定标准Legal standard",
+      "subCategory": "Dismissal",
+      "level1Category": "离职与遣散Termination & Severance",
+      "level2Category": "法定标准Legal standard",
+      "summary": "Employees earning ≤ RM4,000/month are entitled to statutory severance: 10 days' wages for <2 years, 15 days for 2-5 years, and 20 days for 5+ years. Notice period: 4 weeks (<2 years), 6 weeks (2-5 years), 8 weeks (5+ years).",
+      "summaryZh": "月薪≤RM4,000的员工享有法定遣散费：<2年10天工资，2-5年15天，5+年20天。通知期：4周（<2年），6周（2-5年），8周（5+年）。",
+      "status": "effective",
+      "effectiveDate": "1980-10-01",
+      "source": "https://jtksm.mohr.gov.my/sites/default/files/2023-03/8.%20EMPLOYMENT%20%28TERMINATION%20%26%20LAY%20OFF%20BENEFITS%29%20REGULATIONS%201980_0.pdf",
+      "changes": [
+        "Severance formula: 10/15/20 days' wages based on years of service",
+        "Notice period: 4/6/8 weeks based on years of service",
+        "Final settlement must be made within 7 days of termination"
+      ],
+      "hrImpact": [
+        "Calculate severance based on years of service",
+        "Provide proper notice or pay in lieu of notice",
+        "Complete final settlement within 7 days"
+      ],
+      "modules": [
+        "离职管理",
+        "员工关系"
+      ],
+      "sourceUrl": "https://jtksm.mohr.gov.my/sites/default/files/2023-03/8.%20EMPLOYMENT%20%28TERMINATION%20%26%20LAY%20OFF%20BENEFITS%29%20REGULATIONS%201980_0.pdf",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://jtksm.mohr.gov.my/sites/default/files/2023-03/8.%20EMPLOYMENT%20%28TERMINATION%20%26%20LAY%20OFF%20BENEFITS%29%20REGULATIONS%201980_0.pdf",
+      "effectiveDateEvidence": "Regulations published as P.U. (A) 278/80 with effect from October 1, 1980",
+      "primaryCategory": "离职与遣散Termination & Severance",
+      "secondaryCategory": "法定标准Legal standard",
+      "categorySource": "Malaysia Document",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Employment (Termination & Layoff Benefits) Regulations 1980"
+    },
+    {
+      "id": "my13",
+      "country": "Malaysia",
+      "countryCode": "MY",
+      "region": "Asia",
+      "flag": "🇲🇾",
+      "law": "Employment Act 1955 – Negotiated Resignation",
+      "category": "协商离职Negotiate Resignation",
+      "subCategory": "Negotiated Resignation",
+      "level1Category": "离职与遣散Termination & Severance",
+      "level2Category": "协商离职Negotiate Resignation",
+      "summary": "When employer and employee mutually agree to terminate employment, the employee is entitled to final month's salary, accrued unused annual leave, and any negotiated severance payment.",
+      "summaryZh": "雇主和雇员协商解除劳动关系时，员工有权获得最后一个月工资、未休年假和协商遣散费。",
+      "status": "effective",
+      "effectiveDate": "1957-06-01",
+      "source": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "changes": [
+        "Final month's salary",
+        "Unused annual leave payout",
+        "Negotiated severance payment (if any)"
+      ],
+      "hrImpact": [
+        "Document mutual agreement in writing",
+        "Calculate and pay all outstanding amounts",
+        "Ensure compliance with notice period requirements"
+      ],
+      "modules": [
+        "离职管理",
+        "员工关系"
+      ],
+      "sourceUrl": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "effectiveDateEvidence": "Employment Act 1955 (Act 265) Sections 12-15 on contract termination, effective June 1, 1957",
+      "primaryCategory": "离职与遣散Termination & Severance",
+      "secondaryCategory": "协商离职Negotiate Resignation",
+      "categorySource": "Malaysia Document",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Employment Act 1955 Section 12-15 - negotiated termination"
+    },
+    {
+      "id": "my14",
+      "country": "Malaysia",
+      "countryCode": "MY",
+      "region": "Asia",
+      "flag": "🇲🇾",
+      "law": "Employment Act 1955 – Voluntary Resignation",
+      "category": "主动离职Voluntarily Resign",
+      "subCategory": "Voluntary Resignation",
+      "level1Category": "离职与遣散Termination & Severance",
+      "level2Category": "主动离职Voluntarily Resign",
+      "summary": "When an employee voluntarily resigns, they are entitled to final month's salary and accrued unused annual leave payout.",
+      "summaryZh": "员工主动离职时，有权获得最后一个月工资和未休年假折现。",
+      "status": "effective",
+      "effectiveDate": "1957-06-01",
+      "source": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "changes": [
+        "Final month's salary",
+        "Unused annual leave payout"
+      ],
+      "hrImpact": [
+        "Ensure proper resignation letter received",
+        "Calculate and pay outstanding amounts",
+        "Complete exit procedures within notice period"
+      ],
+      "modules": [
+        "离职管理",
+        "员工关系"
+      ],
+      "sourceUrl": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://jtksm.mohr.gov.my/en/borang/employment-act-1955",
+      "effectiveDateEvidence": "Employment Act 1955 (Act 265) came into operation June 1, 1957",
+      "primaryCategory": "离职与遣散Termination & Severance",
+      "secondaryCategory": "主动离职Voluntarily Resign",
+      "categorySource": "Malaysia Document",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Employment Act 1955 - voluntary resignation provisions"
+    },
+    {
+      "id": "my15",
+      "country": "Malaysia",
+      "countryCode": "MY",
+      "region": "Asia",
+      "flag": "🇲🇾",
+      "law": "Income Tax Act 1967 – Progressive Tax Rates",
+      "category": "累进税率Progressive Tax Rates",
+      "subCategory": "Income Tax",
+      "level1Category": "个税Income Tax",
+      "level2Category": "累进税率Progressive Tax Rates",
+      "summary": "Malaysia uses progressive tax rates for tax residents (182+ days in calendar year): 0% for RM0-5,000; 1% for RM5,001-20,000; 3% for RM20,001-35,000; 6% for RM35,001-50,000; 11%/19% for RM50,001-100,000; 25% for RM100,001-400,000; 26%/28% for RM400,001-2,000,000; 30% for >RM2,000,000.",
+      "summaryZh": "马来西亚对税务居民（日历年居住满182天）采用累进税率：0-5,000RM 0%，5,001-20,000RM 1%，20,001-35,000RM 3%，35,001-50,000RM 6%，50,001-100,000RM 11%/19%，100,001-400,000RM 25%，400,001-2,000,000RM 26%/28%，>2,000,000RM 30%。",
+      "status": "effective",
+      "effectiveDate": "2024-01-01",
+      "source": "https://www.hasil.gov.my/en/individual/individual-life-cycle/income-declaration/tax-rate/",
+      "changes": [
+        "Progressive rates from 0% to 30% based on income brackets",
+        "Tax resident status requires 182+ days in Malaysia per calendar year",
+        "New expatriates may initially be non-residents"
+      ],
+      "hrImpact": [
+        "Apply correct tax rate based on annual income",
+        "Monitor tax resident status for expatriate employees",
+        "Withhold monthly PCB (Potongan Cukai Berjadual) from salary"
+      ],
+      "modules": [
+        "税务管理",
+        "薪酬管理"
+      ],
+      "sourceUrl": "https://www.hasil.gov.my/en/individual/individual-life-cycle/income-declaration/tax-rate/",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://www.hasil.gov.my/en/individual/individual-life-cycle/income-declaration/tax-rate/",
+      "effectiveDateEvidence": "Finance (No. 2) Act 2023 revised progressive tax brackets effective from Year of Assessment 2024 (January 1, 2024)",
+      "primaryCategory": "个税Income Tax",
+      "secondaryCategory": "累进税率Progressive Tax Rates",
+      "categorySource": "Malaysia Document",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Income Tax Act 1967 - progressive tax rates for residents"
+    },
+    {
+      "id": "my16",
+      "country": "Malaysia",
+      "countryCode": "MY",
+      "region": "Asia",
+      "flag": "🇲🇾",
+      "law": "Income Tax Act 1967 – Non-Resident Fixed Tax Rate",
+      "category": "固定税率Fixed Rate",
+      "subCategory": "Income Tax",
+      "level1Category": "个税Income Tax",
+      "level2Category": "固定税率Fixed Rate",
+      "summary": "Non-residents (less than 182 days in Malaysia) are subject to a flat 30% tax rate on Malaysian-sourced income.",
+      "summaryZh": "非税务居民（在马来西亚居住不满182天）按30%固定税率缴纳马来西亚来源收入。",
+      "status": "effective",
+      "effectiveDate": "2024-01-01",
+      "source": "https://www.hasil.gov.my/en/individual/individual-life-cycle/income-declaration/tax-rate/",
+      "changes": [
+        "Flat 30% tax rate for non-residents",
+        "Non-resident status: less than 182 days in Malaysia per calendar year"
+      ],
+      "hrImpact": [
+        "Identify non-resident employees for tax purposes",
+        "Apply flat 30% tax rate for non-residents",
+        "Monitor days in Malaysia for tax residency determination"
+      ],
+      "modules": [
+        "税务管理",
+        "薪酬管理"
+      ],
+      "sourceUrl": "https://www.hasil.gov.my/en/individual/individual-life-cycle/income-declaration/tax-rate/",
+      "effectiveDateStatus": "confirmed",
+      "effectiveDateSource": "https://www.hasil.gov.my/en/individual/individual-life-cycle/income-declaration/tax-rate/",
+      "effectiveDateEvidence": "Non-resident flat rate of 30% under Income Tax Act 1967 Schedule 1, updated via Finance Acts, effective January 1, 2024",
+      "primaryCategory": "个税Income Tax",
+      "secondaryCategory": "固定税率Fixed Rate",
+      "categorySource": "Malaysia Document",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Income Tax Act 1967 - 30% flat rate for non-residents"
+    }
+  ],
+  "aiMonitorData": [
+    {
+      "country": "Japan",
+      "flag": "🇯🇵",
+      "title": "Work Style Reform 2.0",
+      "category": "Working Time",
+      "date": "2026-08-05",
+      "severity": "high",
+      "summary": "Major overhaul of overtime regulations with 960-hour annual cap"
+    },
+    {
+      "country": "South Korea",
+      "flag": "🇰🇷",
+      "title": "Work-Life Balance Enhancement",
+      "category": "Working Time",
+      "date": "2026-07-20",
+      "severity": "medium",
+      "summary": "Annual leave extended to 25 days with parental leave transfer"
+    },
+    {
+      "country": "Singapore",
+      "flag": "🇸🇬",
+      "title": "Progressive Wage Model",
+      "category": "Minimum Wage",
+      "date": "2026-07-15",
+      "severity": "medium",
+      "summary": "PWM extended to retail, food services and waste management"
+    },
+    {
+      "country": "Australia",
+      "flag": "🇦🇺",
+      "title": "Fair Work Modern Awards",
+      "category": "Working Time",
+      "date": "2026-07-15",
+      "severity": "medium",
+      "summary": "Annual review resulting in 3.5% minimum wage increase"
+    },
+    {
+      "country": "United Kingdom",
+      "flag": "🇬🇧",
+      "title": "Employment Rights Bill",
+      "category": "Employee Rights",
+      "date": "2026-07-10",
+      "severity": "high",
+      "summary": "Sweeping reform with day-one unfair dismissal protection"
+    },
+    {
+      "country": "United States",
+      "flag": "🇺🇸",
+      "title": "FLSA Overtime Update",
+      "category": "Working Time",
+      "date": "2026-07-15",
+      "severity": "high",
+      "summary": "Salary threshold for exempt employees raised to $62,400"
+    },
+    {
+      "country": "China",
+      "flag": "🇨🇳",
+      "title": "Social Insurance Reform",
+      "category": "Social Insurance",
+      "date": "2026-06-01",
+      "severity": "medium",
+      "summary": "Pension contribution reduced to 16% with gig worker coverage"
+    },
+    {
+      "country": "Brazil",
+      "flag": "🇧🇷",
+      "title": "Remote Work CLT Reform",
+      "category": "Working Time",
+      "date": "2026-05-20",
+      "severity": "medium",
+      "summary": "Comprehensive remote work framework with expense reimbursement"
+    }
+  ],
+  "countryNameMap": {
+    "Australia": "澳大利亚",
+    "Germany": "德国",
+    "France": "法国",
+    "United Kingdom": "英国",
+    "United States": "美国",
+    "Canada": "加拿大",
+    "Brazil": "巴西",
+    "Japan": "日本",
+    "South Korea": "韩国",
+    "Singapore": "新加坡",
+    "India": "印度",
+    "China": "中国",
+    "UAE": "阿联酋",
+    "Saudi Arabia": "沙特阿拉伯",
+    "South Africa": "南非",
+    "Nigeria": "尼日利亚",
+    "Mexico": "墨西哥",
+    "Italy": "意大利",
+    "Spain": "西班牙",
+    "Netherlands": "荷兰",
+    "Sweden": "瑞典",
+    "Thailand": "泰国",
+    "Vietnam": "越南",
+    "Philippines": "菲律宾",
+    "Indonesia": "印尼",
+    "Malaysia": "马来西亚",
+    "New Zealand": "新西兰",
+    "Chile": "智利",
+    "Colombia": "哥伦比亚",
+    "Poland": "波兰",
+    "Ireland": "爱尔兰",
+    "Austria": "奥地利",
+    "Belgium": "比利时",
+    "Turkey": "土耳其",
+    "Denmark": "丹麦",
+    "Finland": "芬兰",
+    "Portugal": "葡萄牙",
+    "Switzerland": "瑞士",
+    "Israel": "以色列",
+    "Egypt": "埃及",
+    "Kenya": "肯尼亚"
+  },
+  "countryDetailPages": {
+    "Australia": "https://www.fairwork.gov.au",
+    "Germany": "https://www.arbeitsschutz.de",
+    "France": "https://www.service-public.fr",
+    "United Kingdom": "https://www.gov.uk/employment-rights",
+    "United States": "https://www.dol.gov/agencies/whd",
+    "Canada": "https://www.canada.ca/en/employment-social-development.html",
+    "Brazil": "https://www.gov.br/trabalho",
+    "Japan": "https://www.mhlw.go.jp/english",
+    "South Korea": "https://www.koreanlaw.go.kr/eng",
+    "Singapore": "https://www.mom.gov.sg",
+    "India": "https://labour.gov.in",
+    "China": "https://www.mohrss.gov.cn",
+    "UAE": "https://www.mohre.gov.ae",
+    "Saudi Arabia": "https://www.hrsd.gov.sa",
+    "South Africa": "https://www.dlabour.gov.za",
+    "Nigeria": "https://www.nlpc.gov.ng"
+  }
+};
+
+// Data loaded from external JSON
+let laborLawData = [];
+let aiMonitorData = [];
+let countryNameMap = {};
+let countryDetailPages = {};
+
+async function loadData() {
+  const data = INLINE_DATA;
+  laborLawData = data.laborLawData;
+  aiMonitorData = data.aiMonitorData;
+  countryNameMap = data.countryNameMap;
+  countryDetailPages = data.countryDetailPages;
+}
+
+const i18n={
+  zh:{title:"全球劳动法规智能监控",heroTitle:"全球劳动法规智能监控",notifications:"通知中心",close:"关闭",all:"全部",sortDate:"按更新日期",sortCountry:"按国家",libTitle:"就业法规库",libSub:"所选国家/地区的全部就业法规",searchPlaceholder:"🔍 搜索法规、国家或HR主题...",globeInfo:"点击国家放大 · 滚轮缩放 · 返回世界视图",backToWorld:"返回世界视图",resetFilters:"重置筛选",countryRegion:"国家/地区",regulationType:"法规类型",updated:"排序方式",viewDetails:"查看详情 →",viewAll:"查看全部更新 →",regulationTimeline:"── 法规时间线 ──",regulationLibrary:"── 法规库 ──",regulatoryInsights:"法规洞察",upcomingDates:"即将生效日期",aiImpactSummary:"AI影响摘要"},
+  en:{title:"Global Labor Law Intelligence",heroTitle:"Global Labor Law Intelligence",notifications:"Notifications",close:"Close",all:"All",sortDate:"By Update Date",sortCountry:"By Country",libTitle:"Regulation Library",libSub:"All employment regulations for selected countries",searchPlaceholder:"🔍 Search regulations, countries or HR topics...",globeInfo:"Click country to zoom · Scroll to zoom · Return to world view",backToWorld:"Return to World View",resetFilters:"Reset filters",countryRegion:"Country / Region",regulationType:"Regulation Type",updated:"Sort",viewDetails:"View Details →",viewAll:"View All Updates →",regulationTimeline:"── REGULATORY TIMELINE ──",regulationLibrary:"── REGULATION LIBRARY ──",regulatoryInsights:"REGULATORY INSIGHTS",upcomingDates:"UPCOMING EFFECTIVE DATES",aiImpactSummary:"AI IMPACT SUMMARY"},
+  es:{title:"Inteligencia Laboral Global",heroTitle:"Inteligencia Laboral Global",notifications:"Notificaciones",close:"Cerrar",all:"Todos",sortDate:"Por Fecha",sortCountry:"Por País",libTitle:"Biblioteca de Regulaciones",libSub:"Todas las regulaciones laborales",searchPlaceholder:"🔍 Buscar regulaciones, países o temas de RRHH...",globeInfo:"Haga clic para ampliar · Rueda del ratón para zoom",backToWorld:"Vista Mundial",resetFilters:"Restablecer filtros",countryRegion:"País / Región",regulationType:"Tipo de Regulación",updated:"Ordenar",viewDetails:"Ver Detalles →",viewAll:"Ver Todas las Actualizaciones →",regulationTimeline:"── LÍNEA DE TIEMPO ──",regulationLibrary:"── BIBLIOTECA ──",regulatoryInsights:"PERSPECTIVAS",upcomingDates:"FECHAS PRÓXIMAS",aiImpactSummary:"RESUMEN DE IMPACTO IA"}
+};
+
+let currentLang='zh',currentRegion='',currentSort='date',mapInstance=null,geoLayer=null,geoData=null,currentZoom=2,selectedCountry=null,filteredData=[...laborLawData];
+
+function switchLang(lang){currentLang=lang;applyFilters();updateLangButton();renderNotifPanel();updateI18nText();populateRegionTabs()}
+function updateLangButton(){const b=document.getElementById('langBtn');b.textContent=currentLang==='zh'?'🌐 中文':currentLang==='en'?'🌐 English':'🌐 Español'}
+function updateI18nText(){const t=i18n[currentLang];document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(t[k])el.textContent=t[k]});document.querySelectorAll('[data-i18n-ph]').forEach(el=>{const k=el.getAttribute('data-i18n-ph');if(t[k])el.placeholder=t[k]})}
+function toggleDD(id){document.getElementById(id).classList.toggle('open')}
+function toggleTheme(){const h=document.documentElement;const d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'light':'dark');document.getElementById('themeBtn').textContent=d?'☀️':'🌙'}
+function toggleNotifPanel(){document.getElementById('notifPanel').classList.toggle('open')}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+
+function populateCountryFilter(){const sel=document.getElementById('filterCountry');const countries=[...new Set(laborLawData.map(d=>d.country))].sort();sel.innerHTML='<option value="">'+i18n[currentLang].all+'</option>';countries.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;sel.appendChild(o)})}
+
+const regions=[{key:'',label:{zh:'全球',en:'Global',es:'Global'}},{key:'Asia',label:{zh:'亚洲',en:'Asia',es:'Asia'}},{key:'Europe',label:{zh:'欧洲',en:'Europe',es:'Europa'}},{key:'Americas',label:{zh:'美洲',en:'Americas',es:'Américas'}},{key:'Africa',label:{zh:'非洲',en:'Africa',es:'África'}},{key:'Oceania',label:{zh:'大洋洲',en:'Oceania',es:'Oceanía'}}];
+let currentTabRegion='';
+
+function populateRegionTabs(){const el=document.getElementById('heroChips');el.innerHTML='';regions.forEach(r=>{const btn=document.createElement('button');btn.className='tab-btn'+(r.key===currentTabRegion?' active':'');btn.textContent=r.label[currentLang];btn.onclick=()=>{currentTabRegion=r.key;document.getElementById('filterRegion').value=r.key;applyFilters();populateRegionTabs()};el.appendChild(btn)})}
+
+function onCountrySelectChange(){applyFilters()}
+
+const categoryHierarchy = {
+  "基础信息Basic Information": [],
+  "法定缴费类Social Security / Statutory Funds": ["养老金Pension", "医疗保险Medical", "失业保险Unemployment", "工伤保险Work Injury", "生育保险Maternity", "住房基金Housing Fund", "其他福利Others"],
+  "休假类Leave": ["年假Annual Leave", "病假Sick Leave", "产假Maternity Leave", "陪产假Paternity Leave", "育儿假Childcare Leave"],
+  "强制支付/法定津贴Mandatory Payments & Allowances": [],
+  "工时与加班Working Time & Overtime": ["工作日加班Weekday Overtime", "节假日加班Holiday Overtime", "夜间加班Night Overtime"],
+  "离职与遣散Termination & Severance": ["法定标准Legal standard", "协商离职Negotiate Resignation", "主动离职Voluntarily Resign"],
+  "个税Income Tax": ["累进税率Progressive Tax Rates", "固定税率Fixed Rate"]
+};
+
+function populateLevel1Filter(){
+  const sel=document.getElementById('filterLevel1');
+  sel.innerHTML='<option value="">'+i18n[currentLang].all+'</option>';
+  Object.keys(categoryHierarchy).forEach(l=>{
+    const o=document.createElement('option');
+    o.value=l;o.textContent=l;sel.appendChild(o);
+  });
+}
+
+function onLevel1Change(){
+  const l1=document.getElementById('filterLevel1').value;
+  const sel2=document.getElementById('filterLevel2');
+  sel2.innerHTML='<option value="">'+i18n[currentLang].all+'</option>';
+  if(l1 && categoryHierarchy[l1] && categoryHierarchy[l1].length > 0){
+    categoryHierarchy[l1].forEach(l=>{
+      const o=document.createElement('option');
+      o.value=l;o.textContent=l;sel2.appendChild(o);
+    });
+    sel2.disabled=false;
+  } else {
+    sel2.innerHTML='<option value="">请先选择一级分类</option>';
+    sel2.disabled=true;
+  }
+  applyFilters();
+}
+
+function applyFilters(){
+  const region=document.getElementById('filterRegion').value||currentTabRegion;
+  const country=document.getElementById('filterCountry').value;
+  const level1=document.getElementById('filterLevel1').value;
+  const level2=document.getElementById('filterLevel2').value;
+  const sort=document.getElementById('sortBy').value;
+  const search=document.getElementById('searchInput').value.toLowerCase().trim();
+  currentRegion=region;currentSort=sort;currentTabRegion=region;
+  let d=[...laborLawData];
+  if(region)d=d.filter(r=>r.region===region);
+  if(country)d=d.filter(r=>r.country===country);
+  if(level1)d=d.filter(r=>r.primaryCategory===level1);
+  if(level2)d=d.filter(r=>r.secondaryCategory===level2);
+  if(search)d=d.filter(r=>(r.country+' '+r.law+' '+r.category+' '+r.summary+' '+r.summaryZh+' '+r.flag+' '+r.modules.join(' ')).toLowerCase().includes(search));
+  if(sort==='date')d.sort((a,b)=>(b.effectiveDate||'').localeCompare(a.effectiveDate||''));
+  else d.sort((a,b)=>a.country.localeCompare(b.country));
+  filteredData=d;
+  renderTimeline();renderLawCards();updateKPIs();renderUpcoming();renderAISummary();renderTicker();
+  document.getElementById('libCount').textContent='Showing '+d.length+' regulations';
+}
+
+function resetFilters(){document.getElementById('filterRegion').value='';document.getElementById('filterCountry').value='';document.getElementById('filterLevel1').value='';document.getElementById('filterLevel2').value='';document.getElementById('filterLevel2').disabled=true;document.getElementById('filterLevel2').innerHTML='<option value="">请先选择一级分类</option>';document.getElementById('sortBy').value='date';document.getElementById('searchInput').value='';currentTabRegion='';populateLevel1Filter();applyFilters();populateRegionTabs()}
+
+function renderTimeline(){
+  const el=document.getElementById('timeline');
+  const sorted=[...filteredData].sort((a,b)=>(b.effectiveDate||'').localeCompare(a.effectiveDate||''));
+  const groups={};
+  sorted.forEach(item=>{const d=item.effectiveDate?new Date(item.effectiveDate):null;if(!d)return;const y=d.getFullYear();if(!groups[y])groups[y]=[];groups[y].push(item)});
+  let html='';
+  Object.keys(groups).sort((a,b)=>b-a).forEach(year=>{
+    html+='<div class="tl-group"><div class="tl-year">'+year+'</div>';
+    groups[year].forEach(item=>{
+      const d=new Date(item.effectiveDate);const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+      const dateStr=months[d.getMonth()]+' '+String(d.getDate()).padStart(2,'0');
+      html+='<div class="tl-entry" onclick="openDetail(\''+item.id+'\')">';
+      html+='<div class="tl-left"><div class="tl-dot"></div><div class="tl-date">'+dateStr+'</div></div>';
+      html+='<div class="tl-right"><div class="tl-meta"><span class="tl-flag">'+item.flag+'</span><span class="tl-country">'+item.country+'</span><span class="tl-cat">'+item.category+'</span></div>';
+      html+='<div class="tl-law">'+item.law+'</div>';
+      html+='<div class="tl-summary">'+(currentLang==='zh'?item.summaryZh:item.summary)+'</div>';
+      html+='<div class="tl-link">'+i18n[currentLang].viewDetails+'</div></div></div>';
+    });
+    html+='</div>';
+  });
+  if(!html)html='<div style="padding:20px;text-align:center;color:var(--text3)">No regulations match your filters.</div>';
+  el.innerHTML=html;
+}
+
+function renderLawCards(){
+  const el=document.getElementById('lawCards');let html='';
+  filteredData.forEach(item=>{
+    const sc=item.status==='effective'?'effective':item.status==='upcoming'?'upcoming':item.status==='action-required'?'action-required':'active';
+    const sl=item.status==='effective'?'Effective':item.status==='upcoming'?'Upcoming':item.status==='action-required'?'Action Required':'Active';
+    html+='<div class="law-card" onclick="openDetail(\''+item.id+'\')">';
+    html+='<div class="lc-top"><span class="lc-flag">'+item.flag+'</span><span class="lc-country">'+item.country+'</span></div>';
+    html+='<div class="lc-title">'+item.law+'</div>';
+    html+='<div class="lc-cat"><span class="lc-cat-primary">'+item.primaryCategory+'</span> → <span class="lc-cat-secondary">'+item.category+'</span></div>';
+    html+='<div class="lc-date">· 生效时间：'+formatEffectiveDate(item)+'</div>';
+    html+='<div class="lc-summary">'+(currentLang==='zh'?item.summaryZh:item.summary)+'</div>';
+    html+='<div class="lc-footer"><span class="lc-status '+sc+'">'+sl+'</span><span class="lc-link">'+i18n[currentLang].viewDetails+'</span></div>';
+    html+='</div>';
+  });
+  if(!html)html='<div class="lib-empty">No regulations match your filters.</div>';
+  el.innerHTML=html;
+}
+
+function updateKPIs(){
+  document.getElementById('kTotal').textContent=laborLawData.length;
+  document.getElementById('kCountries').textContent=[...new Set(laborLawData.map(d=>d.country))].length;
+  const thirty=new Date();thirty.setDate(thirty.getDate()-30);
+  document.getElementById('kUpdated30').textContent=laborLawData.filter(d=>d.effectiveDate&&new Date(d.effectiveDate)>=thirty).length;
+  document.getElementById('kAction').textContent=laborLawData.filter(d=>d.status==='action-required'||d.status==='upcoming').length;
+}
+
+function renderUpcoming(){
+  const el=document.getElementById('upcomingList');
+  const upcoming=laborLawData.filter(d=>d.effectiveDate).sort((a,b)=>new Date(a.effectiveDate)-new Date(b.effectiveDate)).slice(0,6);
+  let html='';
+  upcoming.forEach(item=>{
+    html+='<div class="upcoming-item" onclick="openDetail(\''+item.id+'\')">';
+    html+='<div class="upcoming-date">'+item.effectiveDate+' · '+item.flag+' '+item.country+'</div>';
+    html+='<div class="upcoming-title">'+item.law.substring(0,50)+(item.law.length>50?'...':'')+'</div>';
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+
+function renderAISummary(){
+  const el=document.getElementById('aiSummary');
+  const thirty=new Date();thirty.setDate(thirty.getDate()-30);
+  const recent=laborLawData.filter(d=>d.effectiveDate&&new Date(d.effectiveDate)>=thirty);
+  const byCat={};recent.forEach(d=>{byCat[d.category]=(byCat[d.category]||0)+1});
+  const actionR=recent.filter(d=>d.status==='upcoming'||d.status==='action-required').length;
+  let html='过去 30 天共有 <strong>'+recent.length+'</strong> 项法规生效:<br>';
+  Object.entries(byCat).forEach(([cat,count])=>{html+='• '+count+' 项影响 '+cat+'<br>'});
+  if(actionR)html+='• '+actionR+' 项需要 HR Policy Update<br>';
+  html+='• '+(recent.length-actionR)+' 项仅为信息更新';
+  el.innerHTML=html;
+}
+
+function renderTicker(){
+  const el=document.getElementById('tickerTrack');
+  const sorted=[...laborLawData].sort((a,b)=>(b.effectiveDate||'').localeCompare(a.effectiveDate||'')).slice(0,12);
+  let html='';const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  const build=()=>{sorted.forEach(item=>{const d=item.effectiveDate?new Date(item.effectiveDate):null;if(!d)return;const ds=months[d.getMonth()]+' '+String(d.getDate()).padStart(2,'0');const isNew=item.effectiveDate&&(Date.now()-new Date(item.effectiveDate).getTime())<7*86400000;html+='<div class="tc-item" onclick="openDetail(\''+item.id+'\')"><span class="flag">'+item.flag+'</span><span class="name">'+item.country+'</span><span class="sep">·</span><span class="cat">'+item.category+'</span><span class="title">'+item.law.substring(0,30)+(item.law.length>30?'...':'')+'</span><span class="date">'+ds+'</span>'+(isNew?'<span class="new-tag">NEW</span>':'')+'</div>'})};
+  build();build();
+  html+='<div class="ticker-viewall" onclick="document.getElementById(\'libraryLabel\').scrollIntoView({behavior:\'smooth\'})">View All Updates →</div>';
+  el.innerHTML=html;el.classList.add('auto');
+}
+
+function renderNotifPanel(){
+  const el=document.getElementById('notifBody');
+  let html='<div class="notif-group-label">RECENT UPDATES</div>';
+  aiMonitorData.forEach(n=>{
+    html+='<div class="notif-item"><span class="ni-flag">'+n.flag+'</span><div class="ni-body">';
+    html+='<div class="ni-title">'+n.title+'</div><div class="ni-sub">'+n.country+' · '+n.category+'</div>';
+    html+='<div class="ni-date">'+n.date+'</div></div>';
+    if(n.severity==='high')html+='<span class="ni-badge">!</span>';
+    html+='</div>';
+  });
+  el.innerHTML=html;
+  document.getElementById('notifBadge').textContent=aiMonitorData.filter(n=>n.severity==='high').length||aiMonitorData.length;
+}
+
+function formatEffectiveDate(item){
+  if(!item.effectiveDate)return '暂无';
+  if(item.effectiveDateStatus==='unavailable')return '暂无';
+  const d=item.effectiveDate;
+  if(/^\d{4}-\d{2}-\d{2}$/.test(d))return d;
+  if(/^\d{4}-\d{2}$/.test(d)){
+    const parts=d.split('-');
+    return parts[0]+'年'+parseInt(parts[1])+'月';
+  }
+  if(/^\d{4}$/.test(d))return d+'年';
+  return d;
+}
+
+function openDetail(id){
+  const item=laborLawData.find(d=>d.id===id);if(!item)return;
+  currentViewingLaw=item;
+  const tl=currentLang==='zh';
+  let html='<h2 style="font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px">'+item.flag+' '+item.country+' — '+item.law+'</h2>';
+  html+='<div class="dp-grid"><div class="dp-section"><h4>📋 Basic Info</h4>';
+  html+='<div class="dp-row"><div class="dp-label">Category</div><div class="dp-val"><span class="dp-tag mod">'+item.category+'</span></div></div>';
+  html+='<div class="dp-row"><div class="dp-label">一级分类</div><div class="dp-val">'+item.primaryCategory+'</div></div>';
+  html+='<div class="dp-row"><div class="dp-label">二级分类</div><div class="dp-val">'+item.secondaryCategory+'</div></div>';
+  html+='<div class="dp-row"><div class="dp-label">分类来源</div><div class="dp-val">'+item.categorySource+'</div></div>';
+  html+='<div class="dp-row"><div class="dp-label">Status</div><div class="dp-val" style="text-transform:capitalize">'+item.status+'</div></div>';
+  html+='<div class="dp-row"><div class="dp-label">生效时间</div><div class="dp-val">'+formatEffectiveDate(item)+'</div></div>';
+  if(item.effectiveDateSource){
+    html+='<div class="dp-row"><div class="dp-label">生效时间来源</div><div class="dp-val"><a href="'+item.effectiveDateSource+'" target="_blank" style="color:var(--accent);text-decoration:underline">'+item.effectiveDateSource.substring(0,60)+'...</a></div></div>';
+  }
+  if(item.effectiveDateEvidence){
+    html+='<div class="dp-row"><div class="dp-label">生效时间依据</div><div class="dp-val" style="font-size:11px;color:var(--text2)">'+item.effectiveDateEvidence+'</div></div>';
+  }
+  html+='<div class="dp-row"><div class="dp-label">Country</div><div class="dp-val">'+item.country+(countryNameMap[item.country]?' ('+countryNameMap[item.country]+')':'')+'</div></div>';
+  html+='</div><div class="dp-section"><h4>📝 Summary</h4>';
+  html+='<div class="dp-row"><div class="dp-label">'+(tl?'English原文':'English')+'</div><div class="dp-val">'+item.summary+'</div></div>';
+  html+='<div class="dp-row"><div class="dp-label">'+(tl?'中文翻译':'Chinese')+'</div><div class="dp-val">'+item.summaryZh+'</div></div>';
+  html+='</div></div>';
+  html+='<div class="dp-section" style="margin-top:16px"><h4>🔄 Key Changes</h4>';
+  item.changes.forEach(c=>{html+='<div style="margin-bottom:4px;font-size:12px;color:var(--text)">• '+c+'</div>'});
+  html+='</div><div class="dp-section" style="margin-top:16px"><h4>💼 HR Impact Assessment</h4>';
+  item.hrImpact.forEach(h=>{html+='<div style="margin-bottom:4px;font-size:12px;color:var(--text)">• '+h+'</div>'});
+  html+='</div><div class="dp-section" style="margin-top:16px"><h4>🔗 Official Source</h4><div class="dp-val"><a href="'+item.source+'" target="_blank">'+item.source+'</a></div></div>';
+  if(countryDetailPages[item.country])html+='<button class="btn-fullview" onclick="openCountryPage(\''+item.country+'\')">📖 '+i18n[currentLang].viewDetails+'</button>';
+  document.getElementById('detailContent').innerHTML=html;
+  document.getElementById('detailOverlay').classList.add('open');
+  document.getElementById('detailPanel').classList.add('open');
+}
+function closeDetail(){document.getElementById('detailOverlay').classList.remove('open');document.getElementById('detailPanel').classList.remove('open');currentViewingLaw=null}
+function closeDrawer(){document.getElementById('drawerOverlay').classList.remove('open');document.getElementById('drawer').classList.remove('open')}
+function openCountryPage(country){const url=countryDetailPages[country];if(!url){showToast('No detail page available');return}document.getElementById('countryModalTitle').innerHTML='📖 '+country+' ('+(countryNameMap[country]||country)+')';document.getElementById('countryModalIframe').src=url;document.getElementById('countryModal').classList.add('open')}
+function closeCountryPage(){document.getElementById('countryModal').classList.remove('open');document.getElementById('countryModalIframe').src=''}
+
+function initMap(){
+  if (typeof L === 'undefined' || !L) { console.warn('Leaflet not available'); return; }
+  try{
+    mapInstance=L.map('leafletMap',{zoomControl:true,scrollWheelZoom:true}).setView([20,0],2);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'',maxZoom:18}).addTo(mapInstance);
+    fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
+      .then(r=>r.json()).then(data=>{
+        geoData=data;
+        const cc={};laborLawData.forEach(d=>{cc[d.country]=(cc[d.country]||0)+1});
+        geoLayer=L.geoJSON(data,{style:f=>{const n=f.properties.ADMIN;const c=cc[n]||0;return{fillColor:c>3?'#2563eb':c>1?'#3b82f6':c>0?'#60a5fa':'#e2e8f0',fillOpacity:c>0?0.7:0.1,weight:1,color:'#fff',opacity:0.5}},onEachFeature:(f,l)=>{
+          const n=f.properties.ADMIN;const c=cc[n]||0;
+          if(c>0){l.bindTooltip(n+' ('+c+')',{className:'map-tip',direction:'top',offset:[0,-5]});l.on('click',()=>zoomToCountry(n,c));l.on('mouseover',function(){this.setStyle({fillOpacity:0.9,weight:2})});l.on('mouseout',function(){geoLayer.resetStyle(this)})}
+        }}).addTo(mapInstance);
+        renderLegend(cc);
+      }).catch(()=>{});
+  }catch(e){console.error('Map init error',e)}
+}
+
+function zoomToCountry(name,count){
+  selectedCountry=name;currentZoom=6;
+  mapInstance.eachLayer(layer=>{if(layer.feature&&layer.feature.properties.ADMIN===name){mapInstance.fitBounds(layer.getBounds(),{maxZoom:6})}});
+  document.getElementById('mapReturnBtn').classList.add('show');
+  document.getElementById('mapChip').classList.add('show');
+  const cd=laborLawData.filter(d=>d.country===name);
+  document.getElementById('mcName').innerHTML=(cd[0]?cd[0].flag+' ':'')+name+(countryNameMap[name]?' ('+countryNameMap[name]+')':'');
+  document.getElementById('mcCount').textContent=count+' regulation'+(count>1?'s':'');
+  document.getElementById('filterCountry').value=name;
+  applyFilters();
+}
+
+function returnToWorldView(){
+  selectedCountry=null;currentZoom=2;mapInstance.setView([20,0],2);
+  document.getElementById('mapReturnBtn').classList.remove('show');
+  document.getElementById('mapChip').classList.remove('show');
+  document.getElementById('filterCountry').value='';applyFilters();
+}
+
+function renderLegend(counts){
+  const el=document.getElementById('globeLegend');
+  el.innerHTML='<div class="gleg"><span class="gdot" style="background:#2563eb"></span>3+ regulations</div><div class="gleg"><span class="gdot" style="background:#3b82f6"></span>2 regulations</div><div class="gleg"><span class="gdot" style="background:#60a5fa"></span>1 regulation</div>';
+}
+
+function applyURLParams(){
+  const p=new URLSearchParams(window.location.search);
+  const lang=p.get('lang');if(lang&&i18n[lang])currentLang=lang;
+  const region=p.get('region');if(region)document.getElementById('filterRegion').value=region;
+  const country=p.get('country');if(country)document.getElementById('filterCountry').value=country;
+  const search=p.get('q');if(search)document.getElementById('searchInput').value=search;
+}
+
+document.addEventListener('click',e=>{if(!e.target.closest('.dd-wrap'))document.querySelectorAll('.dd-menu').forEach(m=>m.classList.remove('open'))});
+
+// ============ AI Panel Logic ============
+let aiPanelOpen = false;
+let currentViewingLaw = null; // Track which law detail is open
+
+function toggleAIPanel() {
+  aiPanelOpen = !aiPanelOpen;
+  const panel = document.getElementById('aiPanel');
+  const fab = document.getElementById('aiFab');
+  if (aiPanelOpen) {
+    if (!hasApiKey()) { openKeyModal(); return; }
+    panel.classList.add('open');
+    fab.classList.add('hidden');
+  } else {
+    panel.classList.remove('open');
+    fab.classList.remove('hidden');
+  }
+}
+
+function switchAITab(tab) {
+  document.querySelectorAll('.ai-tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.ai-tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+  document.getElementById('aiTab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+}
+
+function openKeyModal() {
+  document.getElementById('aiKeyModal').classList.add('open');
+  document.getElementById('aiKeyInput').value = getApiKey();
+}
+
+function closeKeyModal() {
+  document.getElementById('aiKeyModal').classList.remove('open');
+}
+
+function saveApiKey() {
+  const key = document.getElementById('aiKeyInput').value.trim();
+  if (!key) { showToast('请输入 API Key'); return; }
+  setApiKey(key);
+  closeKeyModal();
+  showToast('API Key 已保存');
+  // If panel was trying to open, open it now
+  if (!aiPanelOpen) toggleAIPanel();
+}
+
+// Chat
+async function sendAIChat() {
+  const input = document.getElementById('aiChatInput');
+  const msg = input.value.trim();
+  if (!msg) return;
+  if (!hasApiKey()) { openKeyModal(); return; }
+
+  const messagesEl = document.getElementById('aiChatMessages');
+  // Add user message
+  messagesEl.innerHTML += `<div class="ai-msg ai-msg-user">${escapeHtml(msg)}</div>`;
+  input.value = '';
+  // Add loading
+  messagesEl.innerHTML += `<div class="ai-msg ai-msg-loading" id="aiLoading">思考中...</div>`;
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+
+  try {
+    const context = currentViewingLaw ? currentViewingLaw : null;
+    const reply = await chatWithAI(msg, context);
+    document.getElementById('aiLoading')?.remove();
+    messagesEl.innerHTML += `<div class="ai-msg ai-msg-bot">${escapeHtml(reply)}</div>`;
+  } catch (e) {
+    document.getElementById('aiLoading')?.remove();
+    messagesEl.innerHTML += `<div class="ai-msg ai-msg-bot" style="color:var(--red)">❌ ${escapeHtml(e.message)}</div>`;
+  }
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+}
+
+// Translate
+async function doTranslate() {
+  const text = document.getElementById('aiTranslateInput').value.trim();
+  if (!text) { showToast('请输入要翻译的文本'); return; }
+  if (!hasApiKey()) { openKeyModal(); return; }
+
+  const lang = document.getElementById('aiTranslateLang').value;
+  const resultEl = document.getElementById('aiTranslateResult');
+  resultEl.innerHTML = '<span style="color:var(--text3)">翻译中...</span>';
+
+  try {
+    const result = await translateText(text, lang);
+    resultEl.textContent = result;
+  } catch (e) {
+    resultEl.innerHTML = `<span style="color:var(--red)">❌ ${escapeHtml(e.message)}</span>`;
+  }
+}
+
+// Analyze
+async function doAnalyzeCurrent() {
+  if (!hasApiKey()) { openKeyModal(); return; }
+  if (!currentViewingLaw) {
+    showToast('请先点击一条法规查看详情');
+    return;
+  }
+
+  const resultEl = document.getElementById('aiAnalyzeResult');
+  resultEl.innerHTML = '<span style="color:var(--text3)">AI 正在深度分析...</span>';
+
+  try {
+    const result = await analyzeLaw(currentViewingLaw);
+    resultEl.textContent = result;
+  } catch (e) {
+    resultEl.innerHTML = `<span style="color:var(--red)">❌ ${escapeHtml(e.message)}</span>`;
+  }
+}
+
+async function doRegionalInsight() {
+  if (!hasApiKey()) { openKeyModal(); return; }
+  const region = currentRegion || 'Asia';
+  const resultEl = document.getElementById('aiAnalyzeResult');
+  resultEl.innerHTML = `<span style="color:var(--text3)">正在分析 ${region} 地区趋势...</span>`;
+
+  try {
+    const result = await generateRegionalInsight(region);
+    resultEl.textContent = result;
+  } catch (e) {
+    resultEl.innerHTML = `<span style="color:var(--red)">❌ ${escapeHtml(e.message)}</span>`;
+  }
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>');
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
+  await loadData();
+  applyURLParams();
+  populateCountryFilter();
+  populateLevel1Filter();
+  populateRegionTabs();
+  updateLangButton();
+  applyFilters();
+  renderNotifPanel();
+  initMap();
+  updateI18nText();
+});
+
+</script>
+</body>
+</html>
