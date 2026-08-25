@@ -268,6 +268,7 @@ function closeCountryPage(){document.getElementById('countryModal').classList.re
 
 function initMap(){
   if (typeof L === 'undefined' || !L) { console.warn('Leaflet not available'); return; }
+  if (mapInstance) { return; } // Prevent double initialization
   try{
     mapInstance=L.map('leafletMap',{zoomControl:true,scrollWheelZoom:true}).setView([20,0],2);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{attribution:'',maxZoom:18}).addTo(mapInstance);
@@ -453,6 +454,10 @@ window.addEventListener('DOMContentLoaded', async () => {
   updateLangButton();
   applyFilters();
   renderNotifPanel();
-  initMap();
   updateI18nText();
+  // Coordinate map init with Leaflet async loading
+  window._domReady = true;
+  if (window._leafletReady) {
+    initMap();
+  }
 });
