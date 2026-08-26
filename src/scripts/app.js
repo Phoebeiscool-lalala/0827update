@@ -262,6 +262,18 @@ function openDetail(id){
     html+='<div class="dp-row"><div class="dp-label">Chinese</div><div class="dp-val" style="color:var(--text2);font-size:11px">'+(item.summaryZh||item.summary)+'</div></div>';
   }
   html+='</div></div>';
+  // Business Fields section
+  if(item.businessFields && item.businessFields[currentLang]){
+    const bf=item.businessFields[currentLang];
+    const bfEntries=Object.entries(bf);
+    if(bfEntries.length>0){
+      html+='<div class="dp-section" style="margin-top:16px"><h4>📊 '+(tl?'业务详情':'Business Details')+'</h4>';
+      bfEntries.forEach(([key,val])=>{
+        if(val)html+='<div class="dp-row"><div class="dp-label">'+key+'</div><div class="dp-val">'+val+'</div></div>';
+      });
+      html+='</div>';
+    }
+  }
   html+='<div class="dp-section" style="margin-top:16px"><h4>🔄 '+t.detailKeyChanges+'</h4>';
   item.changes.forEach(c=>{html+='<div style="margin-bottom:4px;font-size:12px;color:var(--text)">• '+c+'</div>'});
   html+='</div><div class="dp-section" style="margin-top:16px"><h4>💼 '+t.detailHRImpact+'</h4>';
