@@ -47,6 +47,7 @@ const categoryHierarchy = {
   "强制支付/法定津贴Mandatory Payments & Allowances": [],
   "工时与加班Working Time & Overtime": ["工作日加班Weekday Overtime", "节假日加班Holiday Overtime", "夜间加班Night Overtime"],
   "离职与遣散Termination & Severance": ["法定标准Legal standard", "协商离职Negotiate Resignation", "主动离职Voluntarily Resign"],
+  "最低工资Minimum Wages": [],
   "个税Income Tax": ["累进税率Progressive Tax Rates", "固定税率Fixed Rate"]
 };
 

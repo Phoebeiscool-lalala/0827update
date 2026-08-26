@@ -206,7 +206,7 @@
       "region": "Europe",
       "flag": "🇫🇷",
       "law": "Loi sur les Salaires – Minimum Wage Indexation",
-      "category": "工作日加班Weekday Overtime",
+      "category": "最低工资Minimum Wages",
       "subCategory": "Minimum Wage",
       "level1Category": "法定缴费类Social Security / Statutory Funds",
       "level2Category": "养老金Pension",
@@ -232,11 +232,11 @@
       "effectiveDateStatus": "unavailable",
       "effectiveDateSource": "https://www.service-public.fr/particuliers/vosdroits/F2300",
       "effectiveDateEvidence": "SMIC automatically revalued January 1 each year by decree; no specific new legislative reform confirmed for 2026",
-      "primaryCategory": "工时与加班Working Time & Overtime",
-      "secondaryCategory": "工作日加班Weekday Overtime",
+      "primaryCategory": "最低工资Minimum Wages",
+      "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Minimum wage indexation - automatic revaluation of SMIC"
+      "classificationReason": "Minimum Wage Indexation - automatic SMIC revaluation based on inflation"
     },
     {
       "id": "gb01",
@@ -285,7 +285,7 @@
       "region": "Europe",
       "flag": "🇬🇧",
       "law": "National Living Wage Increase 2026",
-      "category": "工作日加班Weekday Overtime",
+      "category": "最低工资Minimum Wages",
       "subCategory": "Minimum Wage",
       "level1Category": "法定缴费类Social Security / Statutory Funds",
       "level2Category": "养老金Pension",
@@ -311,11 +311,11 @@
       "effectiveDateStatus": "unavailable",
       "effectiveDateSource": "https://www.gov.uk/national-minimum-wage",
       "effectiveDateEvidence": "National Living Wage increases traditionally April 1, but 2026 rate not yet officially enacted",
-      "primaryCategory": "工时与加班Working Time & Overtime",
-      "secondaryCategory": "工作日加班Weekday Overtime",
+      "primaryCategory": "最低工资Minimum Wages",
+      "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "National Living Wage increase - minimum wage rates"
+      "classificationReason": "National Living Wage Increase - statutory minimum wage rates"
     },
     {
       "id": "us01",
@@ -522,7 +522,7 @@
       "region": "Asia",
       "flag": "🇯🇵",
       "law": "Minimum Wage Increase 2026",
-      "category": "工作日加班Weekday Overtime",
+      "category": "最低工资Minimum Wages",
       "subCategory": "Minimum Wage",
       "level1Category": "法定缴费类Social Security / Statutory Funds",
       "level2Category": "养老金Pension",
@@ -548,11 +548,11 @@
       "effectiveDateStatus": "unavailable",
       "effectiveDateSource": "https://www.mhlw.go.jp",
       "effectiveDateEvidence": "Cannot confirm exact nationwide 2026-10-01 date; minimum wage increases vary by prefecture",
-      "primaryCategory": "工时与加班Working Time & Overtime",
-      "secondaryCategory": "工作日加班Weekday Overtime",
+      "primaryCategory": "最低工资Minimum Wages",
+      "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Minimum Wage Increase - minimum wage rates"
+      "classificationReason": "Minimum Wage Increase - nationwide minimum wage rates"
     },
     {
       "id": "kr01",
@@ -601,7 +601,7 @@
       "region": "Asia",
       "flag": "🇰🇷",
       "law": "Minimum Wage 2026",
-      "category": "工作日加班Weekday Overtime",
+      "category": "最低工资Minimum Wages",
       "subCategory": "Minimum Wage",
       "level1Category": "法定缴费类Social Security / Statutory Funds",
       "level2Category": "养老金Pension",
@@ -627,11 +627,11 @@
       "effectiveDateStatus": "unavailable",
       "effectiveDateSource": "https://www.koreanlaw.go.kr",
       "effectiveDateEvidence": "Cannot confirm 2026-09-01 date; South Korea minimum wage traditionally takes effect January 1",
-      "primaryCategory": "工时与加班Working Time & Overtime",
-      "secondaryCategory": "工作日加班Weekday Overtime",
+      "primaryCategory": "最低工资Minimum Wages",
+      "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Minimum Wage 2026 - minimum wage rates"
+      "classificationReason": "Minimum Wage - national minimum wage rates"
     },
     {
       "id": "sg01",
@@ -719,7 +719,7 @@
       "region": "Asia",
       "flag": "🇮🇳",
       "law": "Code on Wages 2019 – Full Implementation",
-      "category": "工作日加班Weekday Overtime",
+      "category": "最低工资Minimum Wages",
       "subCategory": "Minimum Wage",
       "level1Category": "法定缴费类Social Security / Statutory Funds",
       "level2Category": "养老金Pension",
@@ -745,11 +745,11 @@
       "effectiveDateStatus": "confirmed",
       "effectiveDateSource": "https://sansad.in/getFile/lsapps/loksabhaquestions/annex/188/AU194_Vb1Me0.pdf",
       "effectiveDateEvidence": "Official Lok Sabha records: Code on Wages 2019 implemented \"with effect from 21 November, 2025\"; Central Rules notified May 8, 2026",
-      "primaryCategory": "工时与加班Working Time & Overtime",
-      "secondaryCategory": "工作日加班Weekday Overtime",
+      "primaryCategory": "最低工资Minimum Wages",
+      "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Code on Wages 2019 - wage code implementation"
+      "classificationReason": "Code on Wages 2019 - unified wage code with national floor wage"
     },
     {
       "id": "cn01",
@@ -918,7 +918,7 @@
       "region": "Africa",
       "flag": "🇿🇦",
       "law": "National Minimum Wage Act 2026",
-      "category": "工作日加班Weekday Overtime",
+      "category": "最低工资Minimum Wages",
       "subCategory": "Minimum Wage",
       "level1Category": "法定缴费类Social Security / Statutory Funds",
       "level2Category": "养老金Pension",
@@ -944,11 +944,11 @@
       "effectiveDateStatus": "unavailable",
       "effectiveDateSource": "https://labour.gov.za",
       "effectiveDateEvidence": "Cannot confirm 2026-03-01 date; official source URL was invalid",
-      "primaryCategory": "工时与加班Working Time & Overtime",
-      "secondaryCategory": "工作日加班Weekday Overtime",
+      "primaryCategory": "最低工资Minimum Wages",
+      "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "National Minimum Wage Act - minimum wage rates"
+      "classificationReason": "National Minimum Wage Act - statutory minimum wage rates"
     },
     {
       "id": "ng01",
@@ -957,7 +957,7 @@
       "region": "Africa",
       "flag": "🇳🇬",
       "law": "National Minimum Wage Act 2024",
-      "category": "工作日加班Weekday Overtime",
+      "category": "最低工资Minimum Wages",
       "subCategory": "Minimum Wage",
       "level1Category": "法定缴费类Social Security / Statutory Funds",
       "level2Category": "养老金Pension",
@@ -983,11 +983,11 @@
       "effectiveDateStatus": "unavailable",
       "effectiveDateSource": "https://www.nlpc.gov.ng",
       "effectiveDateEvidence": "Cannot confirm 2026-01-01 date; official source URL was invalid",
-      "primaryCategory": "工时与加班Working Time & Overtime",
-      "secondaryCategory": "工作日加班Weekday Overtime",
+      "primaryCategory": "最低工资Minimum Wages",
+      "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "National Minimum Wage Act 2024 - minimum wage rates"
+      "classificationReason": "National Minimum Wage Act 2024 - statutory minimum wage rates"
     },
     {
       "id": "mx01",
@@ -1629,7 +1629,7 @@
       "region": "Asia",
       "flag": "🇹🇷",
       "law": "Minimum Wage & Social Security",
-      "category": "养老金Pension",
+      "category": "最低工资Minimum Wages",
       "subCategory": "Minimum Wage",
       "level1Category": "法定缴费类Social Security / Statutory Funds",
       "level2Category": "养老金Pension",
@@ -1656,11 +1656,11 @@
       "effectiveDateStatus": "unavailable",
       "effectiveDateSource": "https://www.resmigazete.gov.tr",
       "effectiveDateEvidence": "No official source verified",
-      "primaryCategory": "法定缴费类Social Security / Statutory Funds",
-      "secondaryCategory": "养老金Pension",
-      "categorySource": "Pending Review",
-      "categoryStatus": "pending_review",
-      "classificationReason": "No classification data available"
+      "primaryCategory": "最低工资Minimum Wages",
+      "secondaryCategory": "",
+      "categorySource": "AI Classification",
+      "categoryStatus": "confirmed",
+      "classificationReason": "Minimum Wage & Social Security - statutory minimum wage"
     },
     {
       "id": "dk01",
@@ -1945,7 +1945,7 @@
       "region": "Africa",
       "flag": "🇪🇬",
       "law": "Labour Law – Minimum Wage & Social Insurance",
-      "category": "工作日加班Weekday Overtime",
+      "category": "最低工资Minimum Wages",
       "subCategory": "Minimum Wage",
       "level1Category": "法定缴费类Social Security / Statutory Funds",
       "level2Category": "养老金Pension",
@@ -1972,8 +1972,8 @@
       "effectiveDateStatus": "unavailable",
       "effectiveDateSource": "https://www.mans.gov.eg",
       "effectiveDateEvidence": "Cannot confirm 2026-09-01 date; official source URL was invalid",
-      "primaryCategory": "工时与加班Working Time & Overtime",
-      "secondaryCategory": "工作日加班Weekday Overtime",
+      "primaryCategory": "最低工资Minimum Wages",
+      "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
       "classificationReason": "Labour Law - minimum wage and social insurance"
