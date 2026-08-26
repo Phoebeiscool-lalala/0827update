@@ -254,8 +254,13 @@ function openDetail(id){
   }
   html+='<div class="dp-row"><div class="dp-label">'+t.detailCountry+'</div><div class="dp-val">'+getCountryName(item.country)+'</div></div>';
   html+='</div><div class="dp-section"><h4>📝 '+t.detailSummary+'</h4>';
-  html+='<div class="dp-row"><div class="dp-label">'+t.detailEnglish+'</div><div class="dp-val">'+item.summary+'</div></div>';
-  html+='<div class="dp-row"><div class="dp-label">'+t.detailChinese+'</div><div class="dp-val">'+(item.summaryZh||item.summary)+'</div></div>';
+  if(tl){
+    html+='<div class="dp-row"><div class="dp-label">中文</div><div class="dp-val">'+(item.summaryZh||item.summary)+'</div></div>';
+    html+='<div class="dp-row"><div class="dp-label">English</div><div class="dp-val" style="color:var(--text2);font-size:11px">'+item.summary+'</div></div>';
+  }else{
+    html+='<div class="dp-row"><div class="dp-label">English</div><div class="dp-val">'+item.summary+'</div></div>';
+    html+='<div class="dp-row"><div class="dp-label">Chinese</div><div class="dp-val" style="color:var(--text2);font-size:11px">'+(item.summaryZh||item.summary)+'</div></div>';
+  }
   html+='</div></div>';
   html+='<div class="dp-section" style="margin-top:16px"><h4>🔄 '+t.detailKeyChanges+'</h4>';
   item.changes.forEach(c=>{html+='<div style="margin-bottom:4px;font-size:12px;color:var(--text)">• '+c+'</div>'});
