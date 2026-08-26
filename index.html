@@ -385,13 +385,13 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
 <div class="main">
   <div class="left">
     <div class="panel-section">
-      <div class="panel-label">FILTERS</div>
+      <div class="panel-label" data-i18n="filtersLabel">FILTERS</div>
       <div class="filter-row">
         <label data-i18n="countryRegion">Country / Region</label>
         <select class="filter-select" id="filterRegion" onchange="applyFilters()">
           <option value="" data-i18n="all">全部</option>
-          <option value="Asia">亚洲</option><option value="Europe">欧洲</option><option value="Americas">美洲</option>
-          <option value="Africa">非洲</option><option value="Oceania">大洋洲</option>
+          <option value="Asia" data-i18n="regionAsia">亚洲</option><option value="Europe" data-i18n="regionEurope">欧洲</option><option value="Americas" data-i18n="regionAmericas">美洲</option>
+          <option value="Africa" data-i18n="regionAfrica">非洲</option><option value="Oceania" data-i18n="regionOceania">大洋洲</option>
         </select>
       </div>
       <div class="filter-row">
@@ -434,24 +434,24 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
   <div class="center">
     <div class="center-scroll">
       <div class="hero-section">
-        <div class="hero-tag">AI REGULATORY INTELLIGENCE</div>
+        <div class="hero-tag" data-i18n="heroTag">AI REGULATORY INTELLIGENCE</div>
         <div class="hero-title" data-i18n="heroTitle">全球劳动法规智能监控</div>
         <div class="hero-sub">
-          <span>Monitor · Compare · Analyze global HR regulations</span>
-          <span class="hero-badge"><span class="dot"></span> AI Monitoring Active</span>
+          <span data-i18n="heroSub">Monitor · Compare · Analyze global HR regulations</span>
+          <span class="hero-badge"><span class="dot"></span> <span data-i18n="heroBadge">AI Monitoring Active</span></span>
         </div>
         <input class="hero-search" id="searchInput" data-i18n-ph="searchPlaceholder" placeholder="🔍 Search regulations, countries or HR topics..." oninput="applyFilters()">
         <div class="hero-tabs" id="heroChips"></div>
       </div>
 
       <div class="timeline-section">
-        <div class="section-title-label" id="timelineLabel">── REGULATORY TIMELINE ──</div>
+        <div class="section-title-label" id="timelineLabel" data-i18n="regulationTimeline">── 法规时间线 ──</div>
         <div id="timeline"></div>
       </div>
 
       <div class="library-section">
         <div class="section-title-label" id="libraryLabel" style="justify-content:flex-start;gap:8px">
-          ── REGULATION LIBRARY ── <span id="libCount" style="font-weight:400;color:var(--text3)"></span>
+          <span data-i18n="regulationLibrary">── 法规库 ──</span> <span id="libCount" style="font-weight:400;color:var(--text3)"></span>
         </div>
         <div class="lib-grid" id="lawCards"></div>
       </div>
@@ -460,20 +460,20 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
 
   <div class="right">
     <div class="right-section">
-      <div class="right-label" id="insightsLabel">📊 REGULATORY INSIGHTS</div>
+      <div class="right-label" id="insightsLabel" data-i18n="regulatoryInsights">📊 法规洞察</div>
       <div class="kpi-grid">
-        <div class="kpi"><div class="kpi-v" id="kTotal">0</div><div class="kpi-l">Active Regulations</div></div>
-        <div class="kpi"><div class="kpi-v" id="kCountries">0</div><div class="kpi-l">Countries Covered</div></div>
+        <div class="kpi"><div class="kpi-v" id="kTotal">0</div><div class="kpi-l" data-i18n="kpiActive">Active Regulations</div></div>
+        <div class="kpi"><div class="kpi-v" id="kCountries">0</div><div class="kpi-l" data-i18n="kpiCountries">Countries Covered</div></div>
         <div class="kpi kpi-clickable" onclick="showUpcomingPanel()" style="cursor:pointer"><div class="kpi-v" id="kUpdated30">0</div><div class="kpi-l" data-i18n="upcomingRegulations">即将生效法规</div></div>
         <div class="kpi kpi-clickable" onclick="showHRActionPanel()" style="cursor:pointer"><div class="kpi-v" id="kAction">0</div><div class="kpi-l" data-i18n="immediateHRAction">需要HR马上采取行动</div></div>
       </div>
     </div>
     <div class="right-section">
-      <div class="right-label" id="upcomingLabel">📅 UPCOMING EFFECTIVE DATES</div>
+      <div class="right-label" id="upcomingLabel" data-i18n="upcomingDates">📅 即将生效日期</div>
       <div id="upcomingList"></div>
     </div>
     <div class="right-section">
-      <div class="right-label" id="aiLabel">🤖 AI IMPACT SUMMARY</div>
+      <div class="right-label" id="aiLabel" data-i18n="aiImpactSummary">🤖 AI影响摘要</div>
       <div class="ai-summary" id="aiSummary"></div>
     </div>
   </div>
@@ -502,7 +502,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
 <div class="country-modal" id="countryModal">
   <div class="country-modal-bar">
     <h3 id="countryModalTitle">📖</h3>
-    <button class="country-modal-close" onclick="closeCountryPage()">✕ Close</button>
+    <button class="country-modal-close" onclick="closeCountryPage()" data-i18n="closeCountryPage">✕ Close</button>
   </div>
   <iframe id="countryModalIframe" src=""></iframe>
 </div>
@@ -512,11 +512,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
 <!-- AI Assistant Panel -->
 <div class="ai-panel" id="aiPanel">
   <div class="ai-panel-header">
-    <span>🤖 DeepSeek AI 助手</span>
+    <span data-i18n="aiPanelTitle">🤖 DeepSeek AI 助手</span>
     <div class="ai-panel-actions">
-      <button class="ai-tab-btn active" data-tab="chat" onclick="switchAITab('chat')">💬 问答</button>
-      <button class="ai-tab-btn" data-tab="translate" onclick="switchAITab('translate')">🌐 翻译</button>
-      <button class="ai-tab-btn" data-tab="analyze" onclick="switchAITab('analyze')">📊 分析</button>
+      <button class="ai-tab-btn active" data-tab="chat" onclick="switchAITab('chat')" data-i18n="aiTabChat">💬 问答</button>
+      <button class="ai-tab-btn" data-tab="translate" onclick="switchAITab('translate')" data-i18n="aiTabTranslate">🌐 翻译</button>
+      <button class="ai-tab-btn" data-tab="analyze" onclick="switchAITab('analyze')" data-i18n="aiTabAnalyze">📊 分析</button>
       <button class="ai-minimize-btn" onclick="toggleAIPanel()">─</button>
     </div>
   </div>
@@ -524,18 +524,18 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
   <!-- Chat Tab -->
   <div class="ai-tab-content active" id="aiTabChat">
     <div class="ai-chat-messages" id="aiChatMessages">
-      <div class="ai-msg ai-msg-bot">👋 你好！我是劳动法 AI 助手，可以帮你：<br>• 解答各国劳动法问题<br>• 对比不同国家法规<br>• 提供 HR 合规建议<br><br>有什么可以帮你的？</div>
+      <div class="ai-msg ai-msg-bot" data-i18n="aiChatWelcome">👋 你好！我是劳动法 AI 助手，可以帮你：<br>• 解答各国劳动法问题<br>• 对比不同国家法规<br>• 提供 HR 合规建议<br><br>有什么可以帮你的？</div>
     </div>
     <div class="ai-chat-input-wrap">
-      <input type="text" class="ai-chat-input" id="aiChatInput" placeholder="问我关于劳动法的任何问题..." onkeydown="if(event.key==='Enter')sendAIChat()">
-      <button class="ai-send-btn" onclick="sendAIChat()">发送</button>
+      <input type="text" class="ai-chat-input" id="aiChatInput" data-i18n-ph="aiChatPlaceholder" placeholder="问我关于劳动法的任何问题..." onkeydown="if(event.key==='Enter')sendAIChat()">
+      <button class="ai-send-btn" onclick="sendAIChat()" data-i18n="aiSend">发送</button>
     </div>
   </div>
 
   <!-- Translate Tab -->
   <div class="ai-tab-content" id="aiTabTranslate">
     <div class="ai-translate-wrap">
-      <textarea class="ai-textarea" id="aiTranslateInput" placeholder="输入要翻译的法规文本..." rows="4"></textarea>
+      <textarea class="ai-textarea" id="aiTranslateInput" data-i18n-ph="aiTranslatePlaceholder" placeholder="输入要翻译的法规文本..." rows="4"></textarea>
       <div class="ai-translate-controls">
         <select class="ai-select" id="aiTranslateLang">
           <option value="zh">→ 中文</option>
@@ -546,7 +546,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
           <option value="fr">→ Français</option>
           <option value="de">→ Deutsch</option>
         </select>
-        <button class="ai-action-btn" onclick="doTranslate()">翻译</button>
+        <button class="ai-action-btn" onclick="doTranslate()" data-i18n="aiTranslateBtn">翻译</button>
       </div>
       <div class="ai-result-box" id="aiTranslateResult"></div>
     </div>
@@ -556,11 +556,11 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
   <div class="ai-tab-content" id="aiTabAnalyze">
     <div class="ai-analyze-wrap">
       <div class="ai-analyze-options">
-        <button class="ai-action-btn" onclick="doAnalyzeCurrent()">📋 分析当前法规</button>
-        <button class="ai-action-btn" onclick="doRegionalInsight()">🌍 地区趋势分析</button>
+        <button class="ai-action-btn" onclick="doAnalyzeCurrent()" data-i18n="aiAnalyzeCurrent">📋 分析当前法规</button>
+        <button class="ai-action-btn" onclick="doRegionalInsight()" data-i18n="aiRegionalInsight">🌍 地区趋势分析</button>
       </div>
       <div class="ai-result-box" id="aiAnalyzeResult">
-        <span style="color:var(--text3)">选择一条法规后点击"分析当前法规"，或选择地区后点击"地区趋势分析"</span>
+        <span style="color:var(--text3)" data-i18n="aiAnalyzeHint">选择一条法规后点击"分析当前法规"，或选择地区后点击"地区趋势分析"</span>
       </div>
     </div>
   </div>
@@ -572,14 +572,14 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
 <!-- API Key Settings Modal -->
 <div class="ai-key-modal" id="aiKeyModal">
   <div class="ai-key-modal-content">
-    <h3>⚙️ DeepSeek API 设置</h3>
-    <p style="font-size:12px;color:var(--text2);margin-bottom:12px">输入你的 DeepSeek API Key 以启用 AI 功能。<br>Key 仅保存在本地浏览器，不会上传到任何服务器。</p>
-    <input type="password" class="ai-key-input" id="aiKeyInput" placeholder="sk-xxxxxxxxxxxxxxxx">
+    <h3 data-i18n="aiKeyTitle">⚙️ DeepSeek API 设置</h3>
+    <p style="font-size:12px;color:var(--text2);margin-bottom:12px" data-i18n="aiKeyDesc">输入你的 DeepSeek API Key 以启用 AI 功能。<br>Key 仅保存在本地浏览器，不会上传到任何服务器。</p>
+    <input type="password" class="ai-key-input" id="aiKeyInput" data-i18n-ph="aiKeyPlaceholder" placeholder="sk-xxxxxxxxxxxxxxxx">
     <div class="ai-key-actions">
-      <button class="ai-action-btn" onclick="saveApiKey()">保存</button>
-      <button class="ai-action-btn secondary" onclick="closeKeyModal()">取消</button>
+      <button class="ai-action-btn" onclick="saveApiKey()" data-i18n="aiKeySave">保存</button>
+      <button class="ai-action-btn secondary" onclick="closeKeyModal()" data-i18n="aiKeyCancel">取消</button>
     </div>
-    <p style="font-size:11px;color:var(--text3);margin-top:8px">获取 Key: <a href="https://platform.deepseek.com/api_keys" target="_blank" style="color:var(--accent)">platform.deepseek.com</a></p>
+    <p style="font-size:11px;color:var(--text3);margin-top:8px"><span data-i18n="aiKeyGet">获取 Key: </span><a href="https://platform.deepseek.com/api_keys" target="_blank" style="color:var(--accent)">platform.deepseek.com</a></p>
   </div>
 </div>
 
@@ -611,7 +611,7 @@ function hasApiKey() {
 async function callDeepSeek(messages, options = {}) {
   const apiKey = getApiKey();
   if (!apiKey) {
-    throw new Error('请先设置 DeepSeek API Key');
+    throw new Error(typeof i18n!=='undefined'?(i18n[currentLang||'zh'].aiKeyRequired||'请先设置 DeepSeek API Key'):'请先设置 DeepSeek API Key');
   }
 
   const response = await fetch(DEEPSEEK_CONFIG.apiUrl, {
@@ -631,9 +631,10 @@ async function callDeepSeek(messages, options = {}) {
 
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
-    if (response.status === 401) throw new Error('API Key 无效，请检查后重新设置');
-    if (response.status === 429) throw new Error('请求过于频繁，请稍后再试');
-    throw new Error(err.error?.message || `API 请求失败 (${response.status})`);
+    const t=(typeof i18n!=='undefined'&&i18n[currentLang])?i18n[currentLang]:{};
+    if (response.status === 401) throw new Error(t.aiKeyInvalid||'API Key 无效，请检查后重新设置');
+    if (response.status === 429) throw new Error(t.aiRateLimited||'Too many requests, please try again later');
+    throw new Error(err.error?.message || `API request failed (${response.status})`);
   }
 
   const data = await response.json();
@@ -3828,16 +3829,103 @@ async function loadData() {
 }
 
 const i18n={
-  zh:{title:"全球劳动法规智能监控",heroTitle:"全球劳动法规智能监控",notifications:"通知中心",close:"关闭",all:"全部",sortDate:"按更新日期",sortCountry:"按国家",libTitle:"就业法规库",libSub:"所选国家/地区的全部就业法规",searchPlaceholder:"🔍 搜索法规、国家或HR主题...",globeInfo:"点击国家放大 · 滚轮缩放 · 返回世界视图",backToWorld:"返回世界视图",resetFilters:"重置筛选",countryRegion:"国家/地区",regulationType:"法规类型",updated:"排序方式",classificationLevel1:"法规类目",classificationLevel2:"细分类目",effectiveYear:"生效年份",viewDetails:"查看详情 →",viewAll:"查看全部更新 →",regulationTimeline:"── 法规时间线 ──",regulationLibrary:"── 法规库 ──",regulatoryInsights:"法规洞察",upcomingDates:"即将生效日期",aiImpactSummary:"AI影响摘要",naLabel:"暂无",selectLevel1First:"请先选择法规类目",noSubcategories:"暂无细分类目",detailBasicInfo:"基本信息",detailCategory:"法规类别",detailLevel1:"法规类目",detailLevel2:"细分类目",detailCategorySource:"分类来源",detailStatus:"法规状态",detailEffectiveDate:"生效时间",detailEffectiveDateSource:"生效时间来源",detailEffectiveDateEvidence:"生效时间依据",detailCountry:"国家/地区",detailSummary:"法规摘要",detailEnglish:"English",detailChinese:"中文",detailKeyChanges:"核心变更",detailHRImpact:"HR影响评估",detailOfficialSource:"官方来源",detailViewFull:"查看完整法规",upcomingRegulations:"即将生效法规",immediateHRAction:"需要HR马上采取行动",daysUntilEffective:"距离生效",detailDays:"天",hrActionRequired:"需要HR行动",requiredHRActions:"HR 需要采取的行动",noUpcoming:"暂无即将生效的法规",noHRAction:"暂无需HR行动的法规",effectiveDateLabel:"生效时间"},
-  en:{title:"Global Labor Law Intelligence",heroTitle:"Global Labor Law Intelligence",notifications:"Notifications",close:"Close",all:"All",sortDate:"By Update Date",sortCountry:"By Country",libTitle:"Regulation Library",libSub:"All employment regulations for selected countries",searchPlaceholder:"🔍 Search regulations, countries or HR topics...",globeInfo:"Click country to zoom · Scroll to zoom · Return to world view",backToWorld:"Return to World View",resetFilters:"Reset filters",countryRegion:"Country / Region",regulationType:"Regulation Type",updated:"Sort",classificationLevel1:"Regulation Category",classificationLevel2:"Subcategory",effectiveYear:"Effective Year",viewDetails:"View Details →",viewAll:"View All Updates →",regulationTimeline:"── REGULATORY TIMELINE ──",regulationLibrary:"── REGULATION LIBRARY ──",regulatoryInsights:"REGULATORY INSIGHTS",upcomingDates:"UPCOMING EFFECTIVE DATES",aiImpactSummary:"AI IMPACT SUMMARY",naLabel:"N/A",selectLevel1First:"Please select a Regulation Category first",noSubcategories:"No subcategories available",detailBasicInfo:"Basic Info",detailCategory:"Category",detailLevel1:"Regulation Category",detailLevel2:"Subcategory",detailCategorySource:"Category Source",detailStatus:"Status",detailEffectiveDate:"Effective Date",detailEffectiveDateSource:"Effective Date Source",detailEffectiveDateEvidence:"Effective Date Evidence",detailCountry:"Country / Region",detailSummary:"Summary",detailEnglish:"English",detailChinese:"Chinese",detailKeyChanges:"Key Changes",detailHRImpact:"HR Impact Assessment",detailOfficialSource:"Official Source",detailViewFull:"View Full Regulation",upcomingRegulations:"Upcoming Regulations",immediateHRAction:"Immediate HR Action Required",daysUntilEffective:"Days Until Effective",detailDays:"",hrActionRequired:"HR Action Required",requiredHRActions:"Required HR Actions",noUpcoming:"No upcoming regulations",noHRAction:"No HR action required",effectiveDateLabel:"Effective Date"},
-  es:{title:"Inteligencia Laboral Global",heroTitle:"Inteligencia Laboral Global",notifications:"Notificaciones",close:"Cerrar",all:"Todos",sortDate:"Por Fecha",sortCountry:"Por País",libTitle:"Biblioteca de Regulaciones",libSub:"Todas las regulaciones laborales",searchPlaceholder:"🔍 Buscar regulaciones, países o temas de RRHH...",globeInfo:"Haga clic para ampliar · Rueda del ratón para zoom",backToWorld:"Vista Mundial",resetFilters:"Restablecer filtros",countryRegion:"País / Región",regulationType:"Tipo de Regulación",updated:"Ordenar",classificationLevel1:"Clasificación L1",classificationLevel2:"Clasificación L2",effectiveYear:"Año de Vigencia",viewDetails:"Ver Detalles →",viewAll:"Ver Todas las Actualizaciones →",regulationTimeline:"── LÍNEA DE TIEMPO ──",regulationLibrary:"── BIBLIOTECA ──",regulatoryInsights:"PERSPECTIVAS",upcomingDates:"FECHAS PRÓXIMAS",aiImpactSummary:"RESUMEN DE IMPACTO IA",naLabel:"N/A",detailBasicInfo:"Información Básica",detailCategory:"Categoría",detailLevel1:"Categoría Nivel 1",detailLevel2:"Categoría Nivel 2",detailCategorySource:"Fuente de Categoría",detailStatus:"Estado",detailEffectiveDate:"Fecha de Vigencia",detailEffectiveDateSource:"Fuente de Fecha",detailEffectiveDateEvidence:"Evidencia de Fecha",detailCountry:"País / Región",detailSummary:"Resumen",detailEnglish:"English",detailChinese:"Chino",detailKeyChanges:"Cambios Clave",detailHRImpact:"Evaluación de Impacto HR",detailOfficialSource:"Fuente Oficial",detailViewFull:"Ver Regulación Completa",upcomingRegulations:"Próximas Regulaciones",immediateHRAction:"Acción HR Inmediata",daysUntilEffective:"Días Hasta Efectividad",detailDays:"días",hrActionRequired:"Acción HR Requerida",requiredHRActions:"Acciones HR Requeridas",noUpcoming:"No hay regulaciones próximas",noHRAction:"No se requiere acción HR",effectiveDateLabel:"Fecha de Vigencia"}
+  zh:{title:"全球劳动法规智能监控",heroTitle:"全球劳动法规智能监控",notifications:"通知中心",close:"关闭",all:"全部",sortDate:"按更新日期",sortCountry:"按国家",libTitle:"就业法规库",libSub:"所选国家/地区的全部就业法规",searchPlaceholder:"🔍 搜索法规、国家或HR主题...",globeInfo:"点击国家放大 · 滚轮缩放 · 返回世界视图",backToWorld:"返回世界视图",resetFilters:"重置筛选",countryRegion:"国家/地区",regulationType:"法规类型",updated:"排序方式",classificationLevel1:"法规类目",classificationLevel2:"细分类目",effectiveYear:"生效年份",viewDetails:"查看详情 →",viewAll:"查看全部更新 →",regulationTimeline:"── 法规时间线 ──",regulationLibrary:"── 法规库 ──",regulatoryInsights:"法规洞察",upcomingDates:"即将生效日期",aiImpactSummary:"AI影响摘要",naLabel:"暂无",selectLevel1First:"请先选择法规类目",noSubcategories:"暂无细分类目",detailBasicInfo:"基本信息",detailCategory:"法规类别",detailLevel1:"法规类目",detailLevel2:"细分类目",detailCategorySource:"分类来源",detailStatus:"法规状态",detailEffectiveDate:"生效时间",detailEffectiveDateSource:"生效时间来源",detailEffectiveDateEvidence:"生效时间依据",detailCountry:"国家/地区",detailSummary:"法规摘要",detailEnglish:"English",detailChinese:"中文",detailKeyChanges:"核心变更",detailHRImpact:"HR影响评估",detailOfficialSource:"官方来源",detailViewFull:"查看完整法规",upcomingRegulations:"即将生效法规",immediateHRAction:"需要HR马上采取行动",daysUntilEffective:"距离生效",detailDays:"天",hrActionRequired:"需要HR行动",requiredHRActions:"HR 需要采取的行动",noUpcoming:"暂无即将生效的法规",noHRAction:"暂无需HR行动的法规",effectiveDateLabel:"生效时间",noResults:"没有符合筛选条件的法规",libCount:"共 {n} 条法规",statusEffective:"已生效",statusUpcoming:"即将生效",statusActionRequired:"需要采取行动",statusActive:"生效中",viewAllUpdates:"查看全部更新 →",recentUpdates:"最近更新",legend3:"3+ 条法规",legend2:"2 条法规",legend1:"1 条法规",regulationText:"条法规",businessDetails:"业务详情",summaryZhLabel:"中文",summaryEnLabel:"English",aiSummary30d:"过去 30 天共有 <strong>{n}</strong> 项法规生效:",aiSummaryCat:"{count} 项影响 {cat}",aiSummaryHr:"{n} 项需要 HR Policy Update",aiSummaryInfo:"{n} 项仅为信息更新",noDetailPage:"暂无详情页面",effectiveDatePrefix:"生效时间：",countryRegionShort:"国家/地区",heroTag:"AI 法规情报监控",heroSub:"监控 · 对比 · 分析全球 HR 法规",heroBadge:"AI 监控运行中",kpiActive:"生效法规数",kpiCountries:"覆盖国家数",filtersLabel:"筛选",aiPanelTitle:"🤖 DeepSeek AI 助手",aiTabChat:"💬 问答",aiTabTranslate:"🌐 翻译",aiTabAnalyze:"📊 分析",aiChatWelcome:"👋 你好！我是劳动法 AI 助手，可以帮你：<br>• 解答各国劳动法问题<br>• 对比不同国家法规<br>• 提供 HR 合规建议<br><br>有什么可以帮你的？",aiChatPlaceholder:"问我关于劳动法的任何问题...",aiSend:"发送",aiTranslatePlaceholder:"输入要翻译的法规文本...",aiTranslateBtn:"翻译",aiAnalyzeCurrent:"📋 分析当前法规",aiRegionalInsight:"🌍 地区趋势分析",aiKeyTitle:"⚙️ DeepSeek API 设置",aiKeyDesc:"输入你的 DeepSeek API Key 以启用 AI 功能。<br>Key 仅保存在本地浏览器，不会上传到任何服务器。",aiKeyPlaceholder:"sk-xxxxxxxxxxxxxxxx",aiKeySave:"保存",aiKeyCancel:"取消",aiKeyGet:"获取 Key: ",aiKeyInvalid:"API Key 无效，请检查后重新设置",aiKeyRequired:"请先设置 DeepSeek API Key",aiKeySaved:"API Key 已保存",aiKeyEmpty:"请输入 API Key",aiAnalyzeHint:"选择一条法规后点击\"分析当前法规\"，或选择地区后点击\"地区趋势分析\"",aiNoLaw:"请先点击一条法规查看详情",aiTranslating:"翻译中...",aiThinking:"思考中...",closeCountryPage:"✕ 关闭",regionAsia:"亚洲",regionEurope:"欧洲",regionAmericas:"美洲",regionAfrica:"非洲",regionOceania:"大洋洲",aiRateLimited:"请求过于频繁，请稍后再试"},
+  en:{title:"Global Labor Law Intelligence",heroTitle:"Global Labor Law Intelligence",notifications:"Notifications",close:"Close",all:"All",sortDate:"By Update Date",sortCountry:"By Country",libTitle:"Regulation Library",libSub:"All employment regulations for selected countries",searchPlaceholder:"🔍 Search regulations, countries or HR topics...",globeInfo:"Click country to zoom · Scroll to zoom · Return to world view",backToWorld:"Return to World View",resetFilters:"Reset filters",countryRegion:"Country / Region",regulationType:"Regulation Type",updated:"Sort",classificationLevel1:"Regulation Category",classificationLevel2:"Subcategory",effectiveYear:"Effective Year",viewDetails:"View Details →",viewAll:"View All Updates →",regulationTimeline:"── REGULATORY TIMELINE ──",regulationLibrary:"── REGULATION LIBRARY ──",regulatoryInsights:"REGULATORY INSIGHTS",upcomingDates:"UPCOMING EFFECTIVE DATES",aiImpactSummary:"AI IMPACT SUMMARY",naLabel:"N/A",selectLevel1First:"Please select a Regulation Category first",noSubcategories:"No subcategories available",detailBasicInfo:"Basic Info",detailCategory:"Category",detailLevel1:"Regulation Category",detailLevel2:"Subcategory",detailCategorySource:"Category Source",detailStatus:"Status",detailEffectiveDate:"Effective Date",detailEffectiveDateSource:"Effective Date Source",detailEffectiveDateEvidence:"Effective Date Evidence",detailCountry:"Country / Region",detailSummary:"Summary",detailEnglish:"English",detailChinese:"Chinese",detailKeyChanges:"Key Changes",detailHRImpact:"HR Impact Assessment",detailOfficialSource:"Official Source",detailViewFull:"View Full Regulation",upcomingRegulations:"Upcoming Regulations",immediateHRAction:"Immediate HR Action Required",daysUntilEffective:"Days Until Effective",detailDays:"",hrActionRequired:"HR Action Required",requiredHRActions:"Required HR Actions",noUpcoming:"No upcoming regulations",noHRAction:"No HR action required",effectiveDateLabel:"Effective Date",noResults:"No regulations match your filters.",libCount:"Showing {n} regulations",statusEffective:"Effective",statusUpcoming:"Upcoming",statusActionRequired:"Action Required",statusActive:"Active",viewAllUpdates:"View All Updates →",recentUpdates:"RECENT UPDATES",legend3:"3+ regulations",legend2:"2 regulations",legend1:"1 regulation",regulationText:" regulation",businessDetails:"Business Details",summaryZhLabel:"Chinese",summaryEnLabel:"English",aiSummary30d:"<strong>{n}</strong> regulations took effect in the last 30 days:",aiSummaryCat:"{count} affecting {cat}",aiSummaryHr:"{n} requiring HR Policy Update",aiSummaryInfo:"{n} are information-only updates",noDetailPage:"No detail page available",effectiveDatePrefix:"Effective: ",countryRegionShort:"Country / Region",heroTag:"AI REGULATORY INTELLIGENCE",heroSub:"Monitor · Compare · Analyze global HR regulations",heroBadge:"AI Monitoring Active",kpiActive:"Active Regulations",kpiCountries:"Countries Covered",filtersLabel:"FILTERS",aiPanelTitle:"🤖 DeepSeek AI Assistant",aiTabChat:"💬 Chat",aiTabTranslate:"🌐 Translate",aiTabAnalyze:"📊 Analyze",aiChatWelcome:"👋 Hi! I'm your labor law AI assistant. I can help you:<br>• Answer labor law questions by country<br>• Compare regulations across countries<br>• Provide HR compliance advice<br><br>How can I help you?",aiChatPlaceholder:"Ask me anything about labor law...",aiSend:"Send",aiTranslatePlaceholder:"Enter regulation text to translate...",aiTranslateBtn:"Translate",aiAnalyzeCurrent:"📋 Analyze Current Regulation",aiRegionalInsight:"🌍 Regional Trend Analysis",aiKeyTitle:"⚙️ DeepSeek API Settings",aiKeyDesc:"Enter your DeepSeek API Key to enable AI features.<br>The key is stored only in your local browser, never uploaded to any server.",aiKeyPlaceholder:"sk-xxxxxxxxxxxxxxxx",aiKeySave:"Save",aiKeyCancel:"Cancel",aiKeyGet:"Get Key: ",aiKeyInvalid:"API Key is invalid, please check and re-enter",aiKeyRequired:"Please set your DeepSeek API Key first",aiKeySaved:"API Key saved",aiKeyEmpty:"Please enter an API Key",aiAnalyzeHint:"Select a regulation then click \"Analyze Current Regulation\", or select a region and click \"Regional Trend Analysis\"",aiNoLaw:"Please click a regulation to view its details first",aiTranslating:"Translating...",aiThinking:"Thinking...",closeCountryPage:"✕ Close",regionAsia:"Asia",regionEurope:"Europe",regionAmericas:"Americas",regionAfrica:"Africa",regionOceania:"Oceania",aiRateLimited:"Too many requests, please try again later"},
+  es:{title:"Inteligencia Laboral Global",heroTitle:"Inteligencia Laboral Global",notifications:"Notificaciones",close:"Cerrar",all:"Todos",sortDate:"Por Fecha",sortCountry:"Por País",libTitle:"Biblioteca de Regulaciones",libSub:"Todas las regulaciones laborales",searchPlaceholder:"🔍 Buscar regulaciones, países o temas de RRHH...",globeInfo:"Haga clic para ampliar · Rueda del ratón para zoom",backToWorld:"Vista Mundial",resetFilters:"Restablecer filtros",countryRegion:"País / Región",regulationType:"Tipo de Regulación",updated:"Ordenar",classificationLevel1:"Clasificación L1",classificationLevel2:"Clasificación L2",effectiveYear:"Año de Vigencia",viewDetails:"Ver Detalles →",viewAll:"Ver Todas las Actualizaciones →",regulationTimeline:"── LÍNEA DE TIEMPO ──",regulationLibrary:"── BIBLIOTECA ──",regulatoryInsights:"PERSPECTIVAS",upcomingDates:"FECHAS PRÓXIMAS",aiImpactSummary:"RESUMEN DE IMPACTO IA",naLabel:"N/A",detailBasicInfo:"Información Básica",detailCategory:"Categoría",detailLevel1:"Categoría Nivel 1",detailLevel2:"Categoría Nivel 2",detailCategorySource:"Fuente de Categoría",detailStatus:"Estado",detailEffectiveDate:"Fecha de Vigencia",detailEffectiveDateSource:"Fuente de Fecha",detailEffectiveDateEvidence:"Evidencia de Fecha",detailCountry:"País / Región",detailSummary:"Resumen",detailEnglish:"English",detailChinese:"Chino",detailKeyChanges:"Cambios Clave",detailHRImpact:"Evaluación de Impacto HR",detailOfficialSource:"Fuente Oficial",detailViewFull:"Ver Regulación Completa",upcomingRegulations:"Próximas Regulaciones",immediateHRAction:"Acción HR Inmediata",daysUntilEffective:"Días Hasta Efectividad",detailDays:"días",hrActionRequired:"Acción HR Requerida",requiredHRActions:"Acciones HR Requeridas",noUpcoming:"No hay regulaciones próximas",noHRAction:"No se requiere acción HR",effectiveDateLabel:"Fecha de Vigencia",selectLevel1First:"Seleccione primero una categoría normativa",noSubcategories:"No hay subcategorías disponibles",noResults:"Ninguna regulación coincide con los filtros.",libCount:"Mostrando {n} regulaciones",statusEffective:"Vigente",statusUpcoming:"Próxima",statusActionRequired:"Acción requerida",statusActive:"Activa",viewAllUpdates:"Ver todas las actualizaciones →",recentUpdates:"ACTUALIZACIONES RECIENTES",legend3:"3+ regulaciones",legend2:"2 regulaciones",legend1:"1 regulación",regulationText:" regulaciones",businessDetails:"Detalles del Negocio",summaryZhLabel:"Chino",summaryEnLabel:"English",aiSummary30d:"<strong>{n}</strong> regulaciones entraron en vigor en los últimos 30 días:",aiSummaryCat:"{count} que afectan {cat}",aiSummaryHr:"{n} requieren actualización de políticas de RR. HH.",aiSummaryInfo:"{n} son solo actualizaciones informativas",noDetailPage:"No hay página de detalle disponible",effectiveDatePrefix:"Entrada en vigor: ",countryRegionShort:"País / Región",heroTag:"INTELIGENCIA REGULATORIA IA",heroSub:"Monitorear · Comparar · Analizar regulaciones laborales globales",heroBadge:"Monitoreo IA Activo",kpiActive:"Regulaciones Vigentes",kpiCountries:"Países Cubiertos",filtersLabel:"FILTROS",aiPanelTitle:"🤖 Asistente IA DeepSeek",aiTabChat:"💬 Chat",aiTabTranslate:"🌐 Traducir",aiTabAnalyze:"📊 Analizar",aiChatWelcome:"👋 ¡Hola! Soy tu asistente de derecho laboral. Puedo ayudarte:<br>• Responder preguntas de derecho laboral por país<br>• Comparar regulaciones entre países<br>• Dar consejos de cumplimiento de RR. HH.<br><br>¿En qué puedo ayudarte?",aiChatPlaceholder:"Pregúntame sobre derecho laboral...",aiSend:"Enviar",aiTranslatePlaceholder:"Ingrese el texto de la regulación a traducir...",aiTranslateBtn:"Traducir",aiAnalyzeCurrent:"📋 Analizar Regulación Actual",aiRegionalInsight:"🌍 Análisis de Tendencias Regionales",aiKeyTitle:"⚙️ Configuración de API DeepSeek",aiKeyDesc:"Ingrese su clave de API de DeepSeek para habilitar las funciones de IA.<br>La clave se guarda solo en su navegador local, nunca se sube a ningún servidor.",aiKeyPlaceholder:"sk-xxxxxxxxxxxxxxxx",aiKeySave:"Guardar",aiKeyCancel:"Cancelar",aiKeyGet:"Obtener clave: ",aiKeyInvalid:"La clave de API no es válida, revísela e intente de nuevo",aiKeyRequired:"Configure primero su clave de API de DeepSeek",aiKeySaved:"Clave de API guardada",aiKeyEmpty:"Ingrese una clave de API",aiAnalyzeHint:"Seleccione una regulación y haga clic en \"Analizar Regulación Actual\", o seleccione una región y haga clic en \"Análisis de Tendencias Regionales\"",aiNoLaw:"Haga clic en una regulación para ver sus detalles primero",aiTranslating:"Traduciendo...",aiThinking:"Pensando...",closeCountryPage:"✕ Cerrar",regionAsia:"Asia",regionEurope:"Europa",regionAmericas:"Américas",regionAfrica:"África",regionOceania:"Oceanía",aiRateLimited:"Demasiadas solicitudes, inténtelo de nuevo más tarde"}
 };
 
 let currentLang='zh',currentRegion='',currentSort='date',mapInstance=null,geoLayer=null,geoData=null,currentZoom=2,selectedCountry=null,filteredData=[...laborLawData];
 
-function getCountryName(country){if(currentLang==='zh')return countryNameMap[country]||country;return country}
+// Spanish country-name mapping (zh via countryNameMap; en = country field itself)
+const countryNamesEs = {
+  "Australia":"Australia","Germany":"Alemania","France":"Francia","United Kingdom":"Reino Unido",
+  "United States":"Estados Unidos","Canada":"Canadá","Brazil":"Brasil","Japan":"Japón",
+  "South Korea":"Corea del Sur","Singapore":"Singapur","India":"India","China":"China",
+  "UAE":"Emiratos Árabes Unidos","Saudi Arabia":"Arabia Saudita","South Africa":"Sudáfrica",
+  "Nigeria":"Nigeria","Mexico":"México","Italy":"Italia","Spain":"España","Netherlands":"Países Bajos",
+  "Sweden":"Suecia","Thailand":"Tailandia","Vietnam":"Vietnam","Philippines":"Filipinas",
+  "Indonesia":"Indonesia","New Zealand":"Nueva Zelanda","Chile":"Chile","Colombia":"Colombia",
+  "Poland":"Polonia","Ireland":"Irlanda","Austria":"Austria","Belgium":"Bélgica","Turkey":"Turquía",
+  "Denmark":"Dinamarca","Finland":"Finlandia","Portugal":"Portugal","Switzerland":"Suiza",
+  "Israel":"Israel","Egypt":"Egipto","Kenya":"Kenia","Malaysia":"Malasia"
+};
+// Category / Subcategory label mapping: ID -> {zh, en, es}
+const categoryLabels = {
+  "基础信息Basic Information":{zh:"基础信息",en:"Basic Information",es:"Información Básica"},
+  "法定缴费类Social Security / Statutory Funds":{zh:"法定缴费类",en:"Social Security / Statutory Funds",es:"Seguridad Social / Fondos Estatutarios"},
+  "强制支付/法定津贴Mandatory Payments & Allowances":{zh:"强制支付/法定津贴",en:"Mandatory Payments & Allowances",es:"Pagos Obligatorios y Asignaciones"},
+  "工时与加班Working Time & Overtime":{zh:"工时与加班",en:"Working Time & Overtime",es:"Jornada Laboral y Horas Extras"},
+  "离职与遣散Termination & Severance":{zh:"离职与遣散",en:"Termination & Severance",es:"Terminación e Indemnización"},
+  "最低工资Minimum Wages":{zh:"最低工资",en:"Minimum Wages",es:"Salarios Mínimos"},
+  "休假类Leave":{zh:"休假类",en:"Leave",es:"Permisos y Vacaciones"},
+  "个税Income Tax":{zh:"个税",en:"Income Tax",es:"Impuesto sobre la Renta"},
+  // L2
+  "养老金Pension":{zh:"养老金",en:"Pension",es:"Pensión"},
+  "医疗保险Medical":{zh:"医疗保险",en:"Medical",es:"Seguro Médico"},
+  "失业保险Unemployment":{zh:"失业保险",en:"Unemployment",es:"Desempleo"},
+  "工伤保险Work Injury":{zh:"工伤保险",en:"Work Injury",es:"Accidentes Laborales"},
+  "生育保险Maternity":{zh:"生育保险",en:"Maternity",es:"Maternidad"},
+  "住房基金Housing Fund":{zh:"住房基金",en:"Housing Fund",es:"Fondo de Vivienda"},
+  "其他福利Others":{zh:"其他福利",en:"Others",es:"Otros"},
+  "年假Annual Leave":{zh:"年假",en:"Annual Leave",es:"Vacaciones Anuales"},
+  "病假Sick Leave":{zh:"病假",en:"Sick Leave",es:"Licencia por Enfermedad"},
+  "产假Maternity Leave":{zh:"产假",en:"Maternity Leave",es:"Permiso de Maternidad"},
+  "陪产假Paternity Leave":{zh:"陪产假",en:"Paternity Leave",es:"Permiso de Paternidad"},
+  "育儿假Childcare Leave":{zh:"育儿假",en:"Childcare Leave",es:"Permiso por Cuidado de Hijos"},
+  "工作日加班Weekday Overtime":{zh:"工作日加班",en:"Weekday Overtime",es:"Horas Extras entre Semana"},
+  "节假日加班Holiday Overtime":{zh:"节假日加班",en:"Holiday Overtime",es:"Horas Extras en Festivos"},
+  "夜间加班Night Overtime":{zh:"夜间加班",en:"Night Overtime",es:"Horas Extras Nocturnas"},
+  "法定标准Legal standard":{zh:"法定标准",en:"Legal standard",es:"Estándar Legal"},
+  "协商离职Negotiate Resignation":{zh:"协商离职",en:"Negotiate Resignation",es:"Renuncia Negociada"},
+  "主动离职Voluntarily Resign":{zh:"主动离职",en:"Voluntarily Resign",es:"Renuncia Voluntaria"},
+  "累进税率Progressive Tax Rates":{zh:"累进税率",en:"Progressive Tax Rates",es:"Tipos Impositivos Progresivos"},
+  "固定税率Fixed Rate":{zh:"固定税率",en:"Fixed Rate",es:"Tipo Fijo"}
+};
+function getCountryName(country){
+  if(currentLang==='zh')return countryNameMap[country]||country;
+  if(currentLang==='es')return countryNamesEs[country]||country;
+  return country;
+}
+function getCategoryName(id){
+  const m=categoryLabels[id];
+  if(!m)return id;
+  return m[currentLang]||m.en||id;
+}
+function getStatusLabel(status){
+  const t=i18n[currentLang];
+  if(status==='effective')return t.statusEffective||'Effective';
+  if(status==='upcoming')return t.statusUpcoming||'Upcoming';
+  if(status==='action-required')return t.statusActionRequired||'Action Required';
+  return t.statusActive||'Active';
+}
 
-function switchLang(lang){currentLang=lang;applyFilters();updateLangButton();renderNotifPanel();updateI18nText();populateRegionTabs();populateCountryFilter();populateYearFilter();if(currentViewingLaw)openDetail(currentViewingLaw.id)}
+function switchLang(lang){currentLang=lang;applyFilters();updateLangButton();renderNotifPanel();updateI18nText();populateRegionTabs();populateCountryFilter();populateYearFilter();refreshCategoryFilters();if(currentViewingLaw)openDetail(currentViewingLaw.id)}
+// Re-populate L1/L2 category filters preserving the selected values (for language switch)
+function refreshCategoryFilters(){
+  const sel1=document.getElementById('filterLevel1');
+  const prev1=sel1.value;
+  populateLevel1Filter();
+  if(prev1)sel1.value=prev1;
+  // rebuild L2 options per current L1 selection without re-running filters
+  const sel2=document.getElementById('filterLevel2');
+  const prev2=sel2.value;
+  const l1=sel1.value;
+  sel2.innerHTML='<option value="">'+i18n[currentLang].all+'</option>';
+  if(l1 && categoryHierarchy[l1] && categoryHierarchy[l1].length > 0){
+    categoryHierarchy[l1].forEach(l=>{
+      const o=document.createElement('option');
+      o.value=l;o.textContent=getCategoryName(l);sel2.appendChild(o);
+    });
+    sel2.disabled=false;
+    if(prev2)sel2.value=prev2;
+  } else if(l1) {
+    sel2.innerHTML='<option value="">'+i18n[currentLang].noSubcategories+'</option>';
+    sel2.disabled=true;
+  } else {
+    sel2.innerHTML='<option value="">'+i18n[currentLang].selectLevel1First+'</option>';
+    sel2.disabled=true;
+  }
+}
 function updateLangButton(){const b=document.getElementById('langBtn');b.textContent=currentLang==='zh'?'🌐 中文':currentLang==='en'?'🌐 English':'🌐 Español'}
 function updateI18nText(){const t=i18n[currentLang];document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(t[k])el.textContent=t[k]});document.querySelectorAll('[data-i18n-ph]').forEach(el=>{const k=el.getAttribute('data-i18n-ph');if(t[k])el.placeholder=t[k]})}
 function toggleDD(id){document.getElementById(id).classList.toggle('open')}
@@ -3845,7 +3933,7 @@ function toggleTheme(){const h=document.documentElement;const d=h.getAttribute('
 function toggleNotifPanel(){document.getElementById('notifPanel').classList.toggle('open')}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
 
-function populateCountryFilter(){const sel=document.getElementById('filterCountry');const countries=[...new Set(laborLawData.map(d=>d.country))].sort((a,b)=>{const na=currentLang==='zh'?(countryNameMap[a]||a):a;const nb=currentLang==='zh'?(countryNameMap[b]||b):b;return na.localeCompare(nb)});sel.innerHTML='<option value="">'+i18n[currentLang].all+'</option>';countries.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=getCountryName(c);sel.appendChild(o)})}
+function populateCountryFilter(){const sel=document.getElementById('filterCountry');const countries=[...new Set(laborLawData.map(d=>d.country))].sort((a,b)=>{const na=getCountryName(a);const nb=getCountryName(b);return na.localeCompare(nb)});sel.innerHTML='<option value="">'+i18n[currentLang].all+'</option>';countries.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=getCountryName(c);sel.appendChild(o)})}
 
 function populateYearFilter(){const sel=document.getElementById('filterYear');const years=new Set();laborLawData.forEach(d=>{if(d.effectiveDate&&d.effectiveDateStatus!=='unavailable'){const y=new Date(d.effectiveDate).getFullYear();if(!isNaN(y))years.add(y)}});const hasNA=laborLawData.some(d=>!d.effectiveDate||d.effectiveDateStatus==='unavailable');sel.innerHTML='<option value="">'+i18n[currentLang].all+'</option>';Array.from(years).sort((a,b)=>b-a).forEach(y=>{const o=document.createElement('option');o.value=y;o.textContent=y;sel.appendChild(o)});if(hasNA){const o=document.createElement('option');o.value='N/A';o.textContent=i18n[currentLang].naLabel;sel.appendChild(o)}}
 
@@ -3868,8 +3956,9 @@ const categoryHierarchy = {
 };
 
 // ============ Upcoming Regulations & HR Action Logic ============
-// Upcoming window: regulations effective within the next N days (from today)
-const UPCOMING_REGULATION_DAYS = 90;
+// Upcoming window: ALL regulations effective from today onward (no future cap).
+// Immediate HR Action window: effective within the next 30 days AND hrActionRequired === true.
+const HR_ACTION_WINDOW_DAYS = 30;
 
 // Effective Date must be a valid parseable date; unavailable/empty excluded.
 function isEffectiveDateUsable(item){
@@ -3879,23 +3968,38 @@ function isEffectiveDateUsable(item){
   return d instanceof Date && !isNaN(d.getTime());
 }
 
-// All regulations effective within [today, today + UPCOMING_REGULATION_DAYS]
+// Parse a YYYY-MM-DD string as a LOCAL natural date (midnight local time),
+// avoiding UTC -> local timezone day-shift errors.
+function parseLocalDate(dateStr){
+  const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(String(dateStr||''));
+  if(m)return new Date(+m[1], +m[2]-1, +m[3]);
+  const d=new Date(dateStr);
+  if(isNaN(d.getTime()))return null;
+  return d;
+}
+function startOfToday(){
+  const now=new Date();now.setHours(0,0,0,0);return now;
+}
+
+// ALL regulations effective on or after today (no upper bound).
 function getUpcomingRegulations(){
-  const now=new Date();now.setHours(0,0,0,0);
-  const end=new Date(now.getTime()+UPCOMING_REGULATION_DAYS*24*60*60*1000);end.setHours(0,0,0,0);
+  const now=startOfToday();
   return laborLawData.filter(item=>{
     if(!isEffectiveDateUsable(item))return false;
-    const ed=new Date(item.effectiveDate);ed.setHours(0,0,0,0);
-    return ed>=now && ed<=end;
+    const ed=parseLocalDate(item.effectiveDate);
+    if(!ed)return false;
+    ed.setHours(0,0,0,0);
+    return ed>=now;
   }).sort((a,b)=>new Date(a.effectiveDate)-new Date(b.effectiveDate));
 }
 
 // Subset of upcoming regulations grouped into "already effective today"
 function isEffectiveToday(item){
   if(!isEffectiveDateUsable(item))return false;
-  const now=new Date();now.setHours(0,0,0,0);
-  const ed=new Date(item.effectiveDate);ed.setHours(0,0,0,0);
-  return ed<=now;
+  const ed=parseLocalDate(item.effectiveDate);
+  if(!ed)return false;
+  ed.setHours(0,0,0,0);
+  return ed<=startOfToday();
 }
 
 // HR Action Required: simple, stable rule-based detection with safe fallback.
@@ -3918,14 +4022,22 @@ function computeHrAction(item){
   return HR_ACTION_KEYWORDS.some(kw=>text.indexOf(kw.toLowerCase())>=0);
 }
 function getDaysUntilEffective(dateStr){
-  const now=new Date();now.setHours(0,0,0,0);
-  const ed=new Date(dateStr);ed.setHours(0,0,0,0);
-  if(isNaN(ed.getTime()))return null;
-  return Math.ceil((ed-now)/(1000*60*60*24));
+  const ed=parseLocalDate(dateStr);
+  if(!ed)return null;
+  ed.setHours(0,0,0,0);
+  return Math.ceil((ed-startOfToday())/(1000*60*60*24));
 }
-// Upcoming regulations that require HR action
+// Regulations effective within [today, today + 30 days] AND requiring HR action.
 function getImmediateActionRegulations(){
-  return getUpcomingRegulations().filter(item=>computeHrAction(item));
+  const now=startOfToday();
+  const end=new Date(now.getTime()+HR_ACTION_WINDOW_DAYS*24*60*60*1000);end.setHours(0,0,0,0);
+  return getUpcomingRegulations().filter(item=>{
+    if(!computeHrAction(item))return false;
+    const ed=parseLocalDate(item.effectiveDate);
+    if(!ed)return false;
+    ed.setHours(0,0,0,0);
+    return ed>=now && ed<=end;
+  });
 }
 
 function populateLevel1Filter(){
@@ -3933,7 +4045,7 @@ function populateLevel1Filter(){
   sel.innerHTML='<option value="">'+i18n[currentLang].all+'</option>';
   Object.keys(categoryHierarchy).forEach(l=>{
     const o=document.createElement('option');
-    o.value=l;o.textContent=l;sel.appendChild(o);
+    o.value=l;o.textContent=getCategoryName(l);sel.appendChild(o);
   });
 }
 
@@ -3944,7 +4056,7 @@ function onLevel1Change(){
   if(l1 && categoryHierarchy[l1] && categoryHierarchy[l1].length > 0){
     categoryHierarchy[l1].forEach(l=>{
       const o=document.createElement('option');
-      o.value=l;o.textContent=l;sel2.appendChild(o);
+      o.value=l;o.textContent=getCategoryName(l);sel2.appendChild(o);
     });
     sel2.disabled=false;
   } else if(l1) {
@@ -3975,7 +4087,7 @@ function applyFilters(){
   d.sort((a,b)=>getCountryName(a.country).localeCompare(getCountryName(b.country)));
   filteredData=d;
   renderTimeline();renderLawCards();updateKPIs();renderUpcoming();renderAISummary();renderTicker();
-  document.getElementById('libCount').textContent='Showing '+d.length+' regulations';
+  document.getElementById('libCount').textContent=i18n[currentLang].libCount.replace('{n}',d.length);
 }
 
 function resetFilters(){document.getElementById('filterRegion').value='';document.getElementById('filterCountry').value='';document.getElementById('filterLevel1').value='';document.getElementById('filterLevel2').value='';document.getElementById('filterLevel2').disabled=true;document.getElementById('filterLevel2').innerHTML='<option value="">'+i18n[currentLang].selectLevel1First+'</option>';document.getElementById('filterYear').value='';document.getElementById('searchInput').value='';currentTabRegion='';populateLevel1Filter();populateYearFilter();applyFilters();populateRegionTabs()}
@@ -3993,14 +4105,14 @@ function renderTimeline(){
       const dateStr=months[d.getMonth()]+' '+String(d.getDate()).padStart(2,'0');
       html+='<div class="tl-entry" onclick="openDetail(\''+item.id+'\')">';
       html+='<div class="tl-left"><div class="tl-dot"></div><div class="tl-date">'+dateStr+'</div></div>';
-      html+='<div class="tl-right"><div class="tl-meta"><span class="tl-flag">'+item.flag+'</span><span class="tl-country">'+getCountryName(item.country)+'</span><span class="tl-cat">'+item.category+'</span></div>';
+      html+='<div class="tl-right"><div class="tl-meta"><span class="tl-flag">'+item.flag+'</span><span class="tl-country">'+getCountryName(item.country)+'</span><span class="tl-cat">'+getCategoryName(item.category)+'</span></div>';
       html+='<div class="tl-law">'+item.law+'</div>';
       html+='<div class="tl-summary">'+(currentLang==='zh'?item.summaryZh:item.summary)+'</div>';
       html+='<div class="tl-link">'+i18n[currentLang].viewDetails+'</div></div></div>';
     });
     html+='</div>';
   });
-  if(!html)html='<div style="padding:20px;text-align:center;color:var(--text3)">No regulations match your filters.</div>';
+  if(!html)html='<div style="padding:20px;text-align:center;color:var(--text3)">'+i18n[currentLang].noResults+'</div>';
   el.innerHTML=html;
 }
 
@@ -4008,17 +4120,17 @@ function renderLawCards(){
   const el=document.getElementById('lawCards');let html='';
   filteredData.forEach(item=>{
     const sc=item.status==='effective'?'effective':item.status==='upcoming'?'upcoming':item.status==='action-required'?'action-required':'active';
-    const sl=item.status==='effective'?'Effective':item.status==='upcoming'?'Upcoming':item.status==='action-required'?'Action Required':'Active';
+    const sl=getStatusLabel(item.status);
     html+='<div class="law-card" onclick="openDetail(\''+item.id+'\')">';
     html+='<div class="lc-top"><span class="lc-flag">'+item.flag+'</span><span class="lc-country">'+getCountryName(item.country)+'</span></div>';
     html+='<div class="lc-title">'+item.law+'</div>';
-    html+='<div class="lc-cat"><span class="lc-cat-primary">'+item.primaryCategory+'</span> → <span class="lc-cat-secondary">'+item.category+'</span></div>';
-    html+='<div class="lc-date">· 生效时间：'+formatEffectiveDate(item)+'</div>';
+    html+='<div class="lc-cat"><span class="lc-cat-primary">'+getCategoryName(item.primaryCategory)+'</span> → <span class="lc-cat-secondary">'+getCategoryName(item.category)+'</span></div>';
+    html+='<div class="lc-date">'+i18n[currentLang].effectiveDatePrefix+formatEffectiveDate(item)+'</div>';
     html+='<div class="lc-summary">'+(currentLang==='zh'?item.summaryZh:item.summary)+'</div>';
     html+='<div class="lc-footer"><span class="lc-status '+sc+'">'+sl+'</span><span class="lc-link">'+i18n[currentLang].viewDetails+'</span></div>';
     html+='</div>';
   });
-  if(!html)html='<div class="lib-empty">No regulations match your filters.</div>';
+  if(!html)html='<div class="lib-empty">'+i18n[currentLang].noResults+'</div>';
   el.innerHTML=html;
 }
 
@@ -4040,17 +4152,17 @@ function renderUpcoming(){
   const t=i18n[currentLang];
   let html='';
   if(!upcoming.length){
-    html='<div style="padding:14px;text-align:center;color:var(--text3);font-size:12px">'+(t.noUpcoming||'暂无即将生效的法规')+'</div>';
+    html='<div style="padding:14px;text-align:center;color:var(--text3);font-size:12px">'+t.noUpcoming+'</div>';
   }else{
     upcoming.forEach(item=>{
       const days=getDaysUntilEffective(item.effectiveDate);
       const isHR=computeHrAction(item);
       html+='<div class="upcoming-item'+(isHR?' upcoming-hr-action':'')+'" onclick="openDetail(\''+item.id+'\')">';
       html+='<div class="upcoming-date">'+item.effectiveDate+' · '+item.flag+' '+getCountryName(item.country);
-      if(isHR)html+=' <span class="hr-badge">'+(t.hrActionRequired||'需要HR行动')+'</span>';
+      if(isHR)html+=' <span class="hr-badge">'+t.hrActionRequired+'</span>';
       html+='</div>';
       html+='<div class="upcoming-title">'+item.law.substring(0,50)+(item.law.length>50?'...':'')+'</div>';
-      if(days!==null&&days!==undefined)html+='<div class="upcoming-meta">'+(t.daysUntilEffective||'距离生效')+': <strong>'+days+'</strong> '+(t.detailDays||'天')+'</div>';
+      if(days!==null&&days!==undefined)html+='<div class="upcoming-meta">'+t.daysUntilEffective+': <strong>'+days+'</strong> '+t.detailDays+'</div>';
       html+='</div>';
     });
   }
@@ -4066,14 +4178,14 @@ function buildUpcomingItemHtml(item, showSummary){
   let html='<div class="upcoming-item'+(isHR?' upcoming-hr-action':'')+'" onclick="closeEmbeddedPanel();openDetail(\''+item.id+'\')" style="padding:12px;border-bottom:1px solid var(--border-light);cursor:pointer">';
   html+='<div style="display:flex;justify-content:space-between;align-items:center">';
   html+='<div><span style="font-size:16px;margin-right:6px">'+item.flag+'</span><strong>'+getCountryName(item.country)+'</strong>';
-  html+='<span class="lc-cat" style="margin-left:8px">'+(item.primaryCategory||item.category||'')+'</span>';
-  if(isHR)html+=' <span class="hr-badge">'+(t.hrActionRequired||'需要HR行动')+'</span>';
+  html+='<span class="lc-cat" style="margin-left:8px">'+getCategoryName(item.primaryCategory||item.category||'')+'</span>';
+  if(isHR)html+=' <span class="hr-badge">'+t.hrActionRequired+'</span>';
   html+='</div>';
-  if(days!==null&&days!==undefined)html+='<div style="font-size:11px;color:var(--text3);white-space:nowrap">'+(t.daysUntilEffective||'距离生效')+': '+days+' '+(t.detailDays||'天')+'</div>';
+  if(days!==null&&days!==undefined)html+='<div style="font-size:11px;color:var(--text3);white-space:nowrap">'+t.daysUntilEffective+': '+days+' '+t.detailDays+'</div>';
   html+='</div>';
   html+='<div style="font-size:13px;margin-top:4px">'+item.law+'</div>';
-  html+='<div style="font-size:11px;color:var(--accent);margin-top:2px">'+(t.detailEffectiveDate||'生效时间')+': '+item.effectiveDate+'</div>';
-  if(showSummary&&summary)html+='<div class="hr-action-section" style="margin-top:8px;padding:8px"><strong>'+(t.requiredHRActions||'HR 需要采取的行动')+':</strong><br><div class="hr-action-item">'+summary+'</div></div>';
+  html+='<div style="font-size:11px;color:var(--accent);margin-top:2px">'+t.detailEffectiveDate+': '+item.effectiveDate+'</div>';
+  if(showSummary&&summary)html+='<div class="hr-action-section" style="margin-top:8px;padding:8px"><strong>'+t.requiredHRActions+':</strong><br><div class="hr-action-item">'+summary+'</div></div>';
   html+='</div>';
   return html;
 }
@@ -4081,10 +4193,10 @@ function buildUpcomingItemHtml(item, showSummary){
 function showUpcomingPanel(){
   const t=i18n[currentLang];
   const upcoming=getUpcomingRegulations();
-  document.getElementById('embeddedPanelTitle').textContent=(t.upcomingRegulations||'即将生效法规')+' ('+upcoming.length+')';
+  document.getElementById('embeddedPanelTitle').textContent=t.upcomingRegulations+' ('+upcoming.length+')';
   let html='';
   if(!upcoming.length){
-    html='<div style="padding:20px;text-align:center;color:var(--text3)">'+(t.noUpcoming||'暂无即将生效的法规')+'</div>';
+    html='<div style="padding:20px;text-align:center;color:var(--text3)">'+t.noUpcoming+'</div>';
   }else{
     html+=upcoming.map(item=>buildUpcomingItemHtml(item,false)).join('');
   }
@@ -4096,10 +4208,10 @@ function showUpcomingPanel(){
 function showHRActionPanel(){
   const t=i18n[currentLang];
   const immediate=getImmediateActionRegulations();
-  document.getElementById('embeddedPanelTitle').textContent=(t.immediateHRAction||'需要HR马上采取行动')+' ('+immediate.length+')';
+  document.getElementById('embeddedPanelTitle').textContent=t.immediateHRAction+' ('+immediate.length+')';
   let html='';
   if(!immediate.length){
-    html='<div style="padding:20px;text-align:center;color:var(--text3)">'+(t.noHRAction||'暂无需HR行动的法规')+'</div>';
+    html='<div style="padding:20px;text-align:center;color:var(--text3)">'+t.noHRAction+'</div>';
   }else{
     html+=immediate.map(item=>buildUpcomingItemHtml(item,true)).join('');
   }
@@ -4115,30 +4227,32 @@ function closeEmbeddedPanel(){
 
 function renderAISummary(){
   const el=document.getElementById('aiSummary');
+  const t=i18n[currentLang];
   const thirty=new Date();thirty.setDate(thirty.getDate()-30);
   const recent=laborLawData.filter(d=>d.effectiveDate&&new Date(d.effectiveDate)>=thirty);
   const byCat={};recent.forEach(d=>{byCat[d.category]=(byCat[d.category]||0)+1});
   const actionR=recent.filter(d=>d.status==='upcoming'||d.status==='action-required').length;
-  let html='过去 30 天共有 <strong>'+recent.length+'</strong> 项法规生效:<br>';
-  Object.entries(byCat).forEach(([cat,count])=>{html+='• '+count+' 项影响 '+cat+'<br>'});
-  if(actionR)html+='• '+actionR+' 项需要 HR Policy Update<br>';
-  html+='• '+(recent.length-actionR)+' 项仅为信息更新';
+  let html=t.aiSummary30d.replace('{n}',recent.length)+'<br>';
+  Object.entries(byCat).forEach(([cat,count])=>{html+='• '+t.aiSummaryCat.replace('{count}',count).replace('{cat}',getCategoryName(cat))+'<br>'});
+  if(actionR)html+='• '+t.aiSummaryHr.replace('{n}',actionR)+'<br>';
+  html+='• '+t.aiSummaryInfo.replace('{n}',recent.length-actionR);
   el.innerHTML=html;
 }
 
 function renderTicker(){
   const el=document.getElementById('tickerTrack');
+  const t=i18n[currentLang];
   const sorted=[...laborLawData].sort((a,b)=>(b.effectiveDate||'').localeCompare(a.effectiveDate||'')).slice(0,12);
   let html='';const months=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-  const build=()=>{sorted.forEach(item=>{const d=item.effectiveDate?new Date(item.effectiveDate):null;if(!d)return;const ds=months[d.getMonth()]+' '+String(d.getDate()).padStart(2,'0');const isNew=item.effectiveDate&&(Date.now()-new Date(item.effectiveDate).getTime())<7*86400000;html+='<div class="tc-item" onclick="openDetail(\''+item.id+'\')"><span class="flag">'+item.flag+'</span><span class="name">'+getCountryName(item.country)+'</span><span class="sep">·</span><span class="cat">'+item.category+'</span><span class="title">'+item.law.substring(0,30)+(item.law.length>30?'...':'')+'</span><span class="date">'+ds+'</span>'+(isNew?'<span class="new-tag">NEW</span>':'')+'</div>'})};
+  const build=()=>{sorted.forEach(item=>{const d=item.effectiveDate?new Date(item.effectiveDate):null;if(!d)return;const ds=months[d.getMonth()]+' '+String(d.getDate()).padStart(2,'0');const isNew=item.effectiveDate&&(Date.now()-new Date(item.effectiveDate).getTime())<7*86400000;html+='<div class="tc-item" onclick="openDetail(\''+item.id+'\')"><span class="flag">'+item.flag+'</span><span class="name">'+getCountryName(item.country)+'</span><span class="sep">·</span><span class="cat">'+getCategoryName(item.category)+'</span><span class="title">'+item.law.substring(0,30)+(item.law.length>30?'...':'')+'</span><span class="date">'+ds+'</span>'+(isNew?'<span class="new-tag">NEW</span>':'')+'</div>'})};
   build();build();
-  html+='<div class="ticker-viewall" onclick="document.getElementById(\'libraryLabel\').scrollIntoView({behavior:\'smooth\'})">View All Updates →</div>';
+  html+='<div class="ticker-viewall" onclick="document.getElementById(\'libraryLabel\').scrollIntoView({behavior:\'smooth\'})">'+t.viewAllUpdates+'</div>';
   el.innerHTML=html;el.classList.add('auto');
 }
 
 function renderNotifPanel(){
   const el=document.getElementById('notifBody');
-  let html='<div class="notif-group-label">RECENT UPDATES</div>';
+  let html='<div class="notif-group-label">'+i18n[currentLang].recentUpdates+'</div>';
   aiMonitorData.forEach(n=>{
     html+='<div class="notif-item"><span class="ni-flag">'+n.flag+'</span><div class="ni-body">';
     html+='<div class="ni-title">'+n.title+'</div><div class="ni-sub">'+n.country+' · '+n.category+'</div>';
@@ -4151,8 +4265,9 @@ function renderNotifPanel(){
 }
 
 function formatEffectiveDate(item){
-  if(!item.effectiveDate)return '暂无';
-  if(item.effectiveDateStatus==='unavailable')return '暂无';
+  const na=i18n[currentLang].naLabel;
+  if(!item.effectiveDate)return na;
+  if(item.effectiveDateStatus==='unavailable')return na;
   const d=item.effectiveDate;
   if(/^\d{4}-\d{2}-\d{2}$/.test(d))return d;
   if(/^\d{4}-\d{2}$/.test(d)){
@@ -4170,11 +4285,11 @@ function openDetail(id){
   const t=i18n[currentLang];
   let html='<h2 style="font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px">'+item.flag+' '+getCountryName(item.country)+' — '+(tl?(item.lawZh||item.law):item.law)+'</h2>';
   html+='<div class="dp-grid"><div class="dp-section"><h4>📋 '+t.detailBasicInfo+'</h4>';
-  html+='<div class="dp-row"><div class="dp-label">'+t.detailCategory+'</div><div class="dp-val"><span class="dp-tag mod">'+item.category+'</span></div></div>';
-  html+='<div class="dp-row"><div class="dp-label">'+t.detailLevel1+'</div><div class="dp-val">'+item.primaryCategory+'</div></div>';
-  html+='<div class="dp-row"><div class="dp-label">'+t.detailLevel2+'</div><div class="dp-val">'+item.secondaryCategory+'</div></div>';
+  html+='<div class="dp-row"><div class="dp-label">'+t.detailCategory+'</div><div class="dp-val"><span class="dp-tag mod">'+getCategoryName(item.category)+'</span></div></div>';
+  html+='<div class="dp-row"><div class="dp-label">'+t.detailLevel1+'</div><div class="dp-val">'+getCategoryName(item.primaryCategory)+'</div></div>';
+  html+='<div class="dp-row"><div class="dp-label">'+t.detailLevel2+'</div><div class="dp-val">'+getCategoryName(item.secondaryCategory)+'</div></div>';
   html+='<div class="dp-row"><div class="dp-label">'+t.detailCategorySource+'</div><div class="dp-val">'+item.categorySource+'</div></div>';
-  html+='<div class="dp-row"><div class="dp-label">'+t.detailStatus+'</div><div class="dp-val" style="text-transform:capitalize">'+item.status+'</div></div>';
+  html+='<div class="dp-row"><div class="dp-label">'+t.detailStatus+'</div><div class="dp-val" style="text-transform:capitalize">'+getStatusLabel(item.status)+'</div></div>';
   html+='<div class="dp-row"><div class="dp-label">'+t.detailEffectiveDate+'</div><div class="dp-val">'+formatEffectiveDate(item)+'</div></div>';
   if(item.effectiveDateSource){
     html+='<div class="dp-row"><div class="dp-label">'+t.detailEffectiveDateSource+'</div><div class="dp-val"><a href="'+item.effectiveDateSource+'" target="_blank" style="color:var(--accent);text-decoration:underline">'+item.effectiveDateSource.substring(0,60)+'...</a></div></div>';
@@ -4185,19 +4300,20 @@ function openDetail(id){
   html+='<div class="dp-row"><div class="dp-label">'+t.detailCountry+'</div><div class="dp-val">'+getCountryName(item.country)+'</div></div>';
   html+='</div><div class="dp-section"><h4>📝 '+t.detailSummary+'</h4>';
   if(tl){
-    html+='<div class="dp-row"><div class="dp-label">中文</div><div class="dp-val">'+(item.summaryZh||item.summary)+'</div></div>';
-    html+='<div class="dp-row"><div class="dp-label">English</div><div class="dp-val" style="color:var(--text2);font-size:11px">'+item.summary+'</div></div>';
+    html+='<div class="dp-row"><div class="dp-label">'+t.summaryZhLabel+'</div><div class="dp-val">'+(item.summaryZh||item.summary)+'</div></div>';
+    html+='<div class="dp-row"><div class="dp-label">'+t.summaryEnLabel+'</div><div class="dp-val" style="color:var(--text2);font-size:11px">'+item.summary+'</div></div>';
   }else{
-    html+='<div class="dp-row"><div class="dp-label">English</div><div class="dp-val">'+item.summary+'</div></div>';
-    html+='<div class="dp-row"><div class="dp-label">Chinese</div><div class="dp-val" style="color:var(--text2);font-size:11px">'+(item.summaryZh||item.summary)+'</div></div>';
+    html+='<div class="dp-row"><div class="dp-label">'+t.summaryEnLabel+'</div><div class="dp-val">'+item.summary+'</div></div>';
+    html+='<div class="dp-row"><div class="dp-label">'+t.summaryZhLabel+'</div><div class="dp-val" style="color:var(--text2);font-size:11px">'+(item.summaryZh||item.summary)+'</div></div>';
   }
   html+='</div></div>';
-  // Business Fields section
-  if(item.businessFields && item.businessFields[currentLang]){
-    const bf=item.businessFields[currentLang];
+  // Business Fields section (es falls back to en when absent)
+  const bfLang = (item.businessFields && item.businessFields[currentLang]) ? currentLang : (item.businessFields && item.businessFields.en) ? 'en' : null;
+  if(bfLang && item.businessFields[bfLang]){
+    const bf=item.businessFields[bfLang];
     const bfEntries=Object.entries(bf);
     if(bfEntries.length>0){
-      html+='<div class="dp-section" style="margin-top:16px"><h4>📊 '+(tl?'业务详情':'Business Details')+'</h4>';
+      html+='<div class="dp-section" style="margin-top:16px"><h4>📊 '+t.businessDetails+'</h4>';
       bfEntries.forEach(([key,val])=>{
         if(val)html+='<div class="dp-row"><div class="dp-label">'+key+'</div><div class="dp-val">'+val+'</div></div>';
       });
@@ -4216,7 +4332,7 @@ function openDetail(id){
 }
 function closeDetail(){document.getElementById('detailOverlay').classList.remove('open');document.getElementById('detailPanel').classList.remove('open');currentViewingLaw=null}
 function closeDrawer(){document.getElementById('drawerOverlay').classList.remove('open');document.getElementById('drawer').classList.remove('open')}
-function openCountryPage(country){const url=countryDetailPages[country];if(!url){showToast('No detail page available');return}document.getElementById('countryModalTitle').innerHTML='📖 '+country+' ('+(countryNameMap[country]||country)+')';document.getElementById('countryModalIframe').src=url;document.getElementById('countryModal').classList.add('open')}
+function openCountryPage(country){const url=countryDetailPages[country];if(!url){showToast(i18n[currentLang].noDetailPage);return}document.getElementById('countryModalTitle').innerHTML='📖 '+getCountryName(country);document.getElementById('countryModalIframe').src=url;document.getElementById('countryModal').classList.add('open')}
 function closeCountryPage(){document.getElementById('countryModal').classList.remove('open');document.getElementById('countryModalIframe').src=''}
 
 function initMap(){
@@ -4245,7 +4361,7 @@ function zoomToCountry(name,count){
   document.getElementById('mapChip').classList.add('show');
   const cd=laborLawData.filter(d=>d.country===name);
   document.getElementById('mcName').innerHTML=(cd[0]?cd[0].flag+' ':'')+getCountryName(name)+(countryNameMap[name]?' ('+countryNameMap[name]+')':'');
-  document.getElementById('mcCount').textContent=count+' regulation'+(count>1?'s':'');
+  document.getElementById('mcCount').textContent=count+i18n[currentLang].regulationText;
   document.getElementById('filterCountry').value=name;
   applyFilters();
 }
@@ -4259,7 +4375,8 @@ function returnToWorldView(){
 
 function renderLegend(counts){
   const el=document.getElementById('globeLegend');
-  el.innerHTML='<div class="gleg"><span class="gdot" style="background:#2563eb"></span>3+ regulations</div><div class="gleg"><span class="gdot" style="background:#3b82f6"></span>2 regulations</div><div class="gleg"><span class="gdot" style="background:#60a5fa"></span>1 regulation</div>';
+  const t=i18n[currentLang];
+  el.innerHTML='<div class="gleg"><span class="gdot" style="background:#2563eb"></span>'+t.legend3+'</div><div class="gleg"><span class="gdot" style="background:#3b82f6"></span>'+t.legend2+'</div><div class="gleg"><span class="gdot" style="background:#60a5fa"></span>'+t.legend1+'</div>';
 }
 
 function applyURLParams(){
@@ -4308,10 +4425,10 @@ function closeKeyModal() {
 
 function saveApiKey() {
   const key = document.getElementById('aiKeyInput').value.trim();
-  if (!key) { showToast('请输入 API Key'); return; }
+  if (!key) { showToast(i18n[currentLang].aiKeyEmpty); return; }
   setApiKey(key);
   closeKeyModal();
-  showToast('API Key 已保存');
+  showToast(i18n[currentLang].aiKeySaved);
   // If panel was trying to open, open it now
   if (!aiPanelOpen) toggleAIPanel();
 }
@@ -4328,7 +4445,7 @@ async function sendAIChat() {
   messagesEl.innerHTML += `<div class="ai-msg ai-msg-user">${escapeHtml(msg)}</div>`;
   input.value = '';
   // Add loading
-  messagesEl.innerHTML += `<div class="ai-msg ai-msg-loading" id="aiLoading">思考中...</div>`;
+  messagesEl.innerHTML += `<div class="ai-msg ai-msg-loading" id="aiLoading">${i18n[currentLang].aiThinking}</div>`;
   messagesEl.scrollTop = messagesEl.scrollHeight;
 
   try {
@@ -4346,12 +4463,12 @@ async function sendAIChat() {
 // Translate
 async function doTranslate() {
   const text = document.getElementById('aiTranslateInput').value.trim();
-  if (!text) { showToast('请输入要翻译的文本'); return; }
+  if (!text) { showToast(i18n[currentLang].aiKeyRequired); return; }
   if (!hasApiKey()) { openKeyModal(); return; }
 
   const lang = document.getElementById('aiTranslateLang').value;
   const resultEl = document.getElementById('aiTranslateResult');
-  resultEl.innerHTML = '<span style="color:var(--text3)">翻译中...</span>';
+  resultEl.innerHTML = '<span style="color:var(--text3)">'+i18n[currentLang].aiTranslating+'</span>';
 
   try {
     const result = await translateText(text, lang);
@@ -4365,12 +4482,12 @@ async function doTranslate() {
 async function doAnalyzeCurrent() {
   if (!hasApiKey()) { openKeyModal(); return; }
   if (!currentViewingLaw) {
-    showToast('请先点击一条法规查看详情');
+    showToast(i18n[currentLang].aiNoLaw);
     return;
   }
 
   const resultEl = document.getElementById('aiAnalyzeResult');
-  resultEl.innerHTML = '<span style="color:var(--text3)">AI 正在深度分析...</span>';
+  resultEl.innerHTML = '<span style="color:var(--text3)">'+i18n[currentLang].aiThinking+'</span>';
 
   try {
     const result = await analyzeLaw(currentViewingLaw);
@@ -4384,7 +4501,7 @@ async function doRegionalInsight() {
   if (!hasApiKey()) { openKeyModal(); return; }
   const region = currentRegion || 'Asia';
   const resultEl = document.getElementById('aiAnalyzeResult');
-  resultEl.innerHTML = `<span style="color:var(--text3)">正在分析 ${region} 地区趋势...</span>`;
+  resultEl.innerHTML = `<span style="color:var(--text3)">${i18n[currentLang].aiThinking}</span>`;
 
   try {
     const result = await generateRegionalInsight(region);
