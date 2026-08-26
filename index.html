@@ -202,14 +202,27 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
 .right-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .kpi{text-align:center;padding:10px 4px;background:var(--surface);border-radius:var(--radius-sm)}
+.kpi-clickable{cursor:pointer;transition:all .15s}
+.kpi-clickable:hover{background:var(--accent-light);transform:translateY(-1px)}
 .kpi-v{font-size:24px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .kpi-l{font-size:11px;color:var(--text3);margin-top:1px}
 .upcoming-item{padding:8px 0;border-bottom:1px solid var(--border-light);font-size:12px;transition:background .15s;cursor:pointer}
 .upcoming-item:last-child{border-bottom:none}
 .upcoming-item:hover{background:var(--surface);border-radius:var(--radius-xs)}
+.upcoming-item.upcoming-hr-action{border-left:3px solid var(--orange);padding-left:8px}
 .upcoming-date{font-size:11px;color:var(--accent);font-weight:600;margin-bottom:2px}
 .upcoming-country{font-size:12px;font-weight:600}
 .upcoming-title{font-size:12px;color:var(--text2)}
+.upcoming-meta{font-size:10px;color:var(--text3);margin-top:2px}
+.hr-badge{display:inline-block;font-size:9px;padding:1px 6px;border-radius:var(--radius-pill);background:var(--orange-bg);color:var(--orange);font-weight:700;margin-left:4px}
+.hr-action-section{margin-top:16px;padding:12px;background:var(--orange-bg);border-radius:var(--radius-sm);border-left:3px solid var(--orange)}
+.hr-action-section h4{font-size:13px;font-weight:700;color:var(--orange);margin-bottom:8px}
+.hr-action-item{font-size:12px;color:var(--text);margin-bottom:4px;padding-left:12px;position:relative}
+.hr-action-item::before{content:'•';position:absolute;left:0;color:var(--orange)}
+.embedded-panel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:800px;max-width:95vw;max-height:85vh;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);z-index:220;overflow-y:auto;padding:20px;box-shadow:var(--shadow-md);display:none}
+.embedded-panel.open{display:block}
+.embedded-panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:215;display:none}
+.embedded-panel-overlay.open{display:block}
 .ai-summary{padding:10px;background:var(--surface);border-radius:var(--radius-sm);font-size:12px;color:var(--text2);line-height:1.6;border-left:3px solid var(--accent)}
 
 .detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;display:none;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
@@ -449,8 +462,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
       <div class="kpi-grid">
         <div class="kpi"><div class="kpi-v" id="kTotal">0</div><div class="kpi-l">Active Regulations</div></div>
         <div class="kpi"><div class="kpi-v" id="kCountries">0</div><div class="kpi-l">Countries Covered</div></div>
-        <div class="kpi"><div class="kpi-v" id="kUpdated30">0</div><div class="kpi-l">Updated (30 days)</div></div>
-        <div class="kpi"><div class="kpi-v" id="kAction">0</div><div class="kpi-l">Action Required</div></div>
+        <div class="kpi kpi-clickable" onclick="showUpcomingPanel()"><div class="kpi-v" id="kUpdated30">0</div><div class="kpi-l" data-i18n="upcomingRegulations">即将生效法规</div></div>
+        <div class="kpi kpi-clickable" onclick="showHRActionPanel()"><div class="kpi-v" id="kAction">0</div><div class="kpi-l" data-i18n="immediateHRAction">需要HR马上采取行动</div></div>
       </div>
     </div>
     <div class="right-section">
@@ -485,6 +498,14 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
 </div>
 
 <div id="toast"></div>
+
+<!-- Embedded Panel for Upcoming/HR Action -->
+<div class="embedded-panel-overlay" id="embeddedPanelOverlay" onclick="closeEmbeddedPanel()"></div>
+<div class="embedded-panel" id="embeddedPanel">
+  <button class="dp-close" onclick="closeEmbeddedPanel()">✕</button>
+  <h2 id="embeddedPanelTitle" style="font-size:16px;font-weight:700;margin-bottom:16px"></h2>
+  <div id="embeddedPanelContent"></div>
+</div>
 
 <!-- AI Assistant Panel -->
 <div class="ai-panel" id="aiPanel">
@@ -811,7 +832,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Fair Work Act Modern Awards - regulates minimum wages, overtime rates, penalty rates for working time"
+      "classificationReason": "Fair Work Act Modern Awards - regulates minimum wages, overtime rates, penalty rates for working time",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "au02",
@@ -851,7 +877,12 @@ const INLINE_DATA = {
       "secondaryCategory": "法定标准Legal standard",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Closing Loopholes Act - gig economy worker protections and unfair deactivation provisions"
+      "classificationReason": "Closing Loopholes Act - gig economy worker protections and unfair deactivation provisions",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "de01",
@@ -891,7 +922,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Arbeitszeitgesetz - working time recording requirements for employers"
+      "classificationReason": "Arbeitszeitgesetz - working time recording requirements for employers",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "de02",
@@ -930,7 +966,12 @@ const INLINE_DATA = {
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "LkSG - supply chain due diligence, compliance/regulatory framework"
+      "classificationReason": "LkSG - supply chain due diligence, compliance/regulatory framework",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "fr01",
@@ -970,7 +1011,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Code du travail - right to disconnect, working time management"
+      "classificationReason": "Code du travail - right to disconnect, working time management",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "fr02",
@@ -1009,7 +1055,12 @@ const INLINE_DATA = {
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Minimum Wage Indexation - automatic SMIC revaluation based on inflation"
+      "classificationReason": "Minimum Wage Indexation - automatic SMIC revaluation based on inflation",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "gb01",
@@ -1049,7 +1100,12 @@ const INLINE_DATA = {
       "secondaryCategory": "法定标准Legal standard",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Employment Rights Bill 2024 - day one rights, unfair dismissal protections"
+      "classificationReason": "Employment Rights Bill 2024 - day one rights, unfair dismissal protections",
+      "hrActionRequired": true,
+      "hrActionSummary": {
+        "zh": "更新离职补偿计算规则；调整HR系统；培训HR团队",
+        "en": "Update severance calculation rules; Adjust HR systems; Train HR team"
+      }
     },
     {
       "id": "gb02",
@@ -1088,7 +1144,12 @@ const INLINE_DATA = {
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "National Living Wage Increase - statutory minimum wage rates"
+      "classificationReason": "National Living Wage Increase - statutory minimum wage rates",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "us01",
@@ -1128,7 +1189,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "FLSA Overtime Rule - salary threshold for overtime exemptions"
+      "classificationReason": "FLSA Overtime Rule - salary threshold for overtime exemptions",
+      "hrActionRequired": true,
+      "hrActionSummary": {
+        "zh": "更新工时和加班政策；调整考勤系统；通知员工",
+        "en": "Update working time and overtime policies; Adjust attendance systems; Notify employees"
+      }
     },
     {
       "id": "us02",
@@ -1167,7 +1233,12 @@ const INLINE_DATA = {
       "secondaryCategory": "法定标准Legal standard",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "FTC Non-Compete Rule - non-compete clause restrictions"
+      "classificationReason": "FTC Non-Compete Rule - non-compete clause restrictions",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "ca01",
@@ -1206,7 +1277,12 @@ const INLINE_DATA = {
       "secondaryCategory": "节假日加班Holiday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Canada Labour Code - holiday pay equality provisions"
+      "classificationReason": "Canada Labour Code - holiday pay equality provisions",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "br01",
@@ -1246,7 +1322,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "CLT Reform - remote work regulations"
+      "classificationReason": "CLT Reform - remote work regulations",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "jp01",
@@ -1286,7 +1367,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Work Style Reform 2.0 - overtime caps for specialized sectors"
+      "classificationReason": "Work Style Reform 2.0 - overtime caps for specialized sectors",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "jp02",
@@ -1325,7 +1411,12 @@ const INLINE_DATA = {
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Minimum Wage Increase - nationwide minimum wage rates"
+      "classificationReason": "Minimum Wage Increase - nationwide minimum wage rates",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "kr01",
@@ -1365,7 +1456,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Work-Life Balance Enhancement Act - flexible working arrangements"
+      "classificationReason": "Work-Life Balance Enhancement Act - flexible working arrangements",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "kr02",
@@ -1404,7 +1500,12 @@ const INLINE_DATA = {
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Minimum Wage - national minimum wage rates"
+      "classificationReason": "Minimum Wage - national minimum wage rates",
+      "hrActionRequired": true,
+      "hrActionSummary": {
+        "zh": "调整员工最低工资标准；检查受影响员工范围；更新Payroll参数",
+        "en": "Adjust employee minimum wage settings; Check affected employee scope; Update Payroll parameters"
+      }
     },
     {
       "id": "sg01",
@@ -1444,7 +1545,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Employment Act Progressive Wage Model - wage progression requirements"
+      "classificationReason": "Employment Act Progressive Wage Model - wage progression requirements",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "sg02",
@@ -1483,7 +1589,12 @@ const INLINE_DATA = {
       "secondaryCategory": "法定标准Legal standard",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Workplace Fairness Act - anti-discrimination protections"
+      "classificationReason": "Workplace Fairness Act - anti-discrimination protections",
+      "hrActionRequired": true,
+      "hrActionSummary": {
+        "zh": "更新离职补偿计算规则；调整HR系统；培训HR团队",
+        "en": "Update severance calculation rules; Adjust HR systems; Train HR team"
+      }
     },
     {
       "id": "in01",
@@ -1522,7 +1633,12 @@ const INLINE_DATA = {
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Code on Wages 2019 - unified wage code with national floor wage"
+      "classificationReason": "Code on Wages 2019 - unified wage code with national floor wage",
+      "hrActionRequired": true,
+      "hrActionSummary": {
+        "zh": "调整员工最低工资标准；检查受影响员工范围；更新Payroll参数",
+        "en": "Adjust employee minimum wage settings; Check affected employee scope; Update Payroll parameters"
+      }
     },
     {
       "id": "cn01",
@@ -1562,7 +1678,12 @@ const INLINE_DATA = {
       "secondaryCategory": "养老金Pension",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Social Insurance Contribution Reform - social insurance contributions"
+      "classificationReason": "Social Insurance Contribution Reform - social insurance contributions",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "cn02",
@@ -1602,7 +1723,12 @@ const INLINE_DATA = {
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "PIPL Employee Data Guidelines - data privacy compliance"
+      "classificationReason": "PIPL Employee Data Guidelines - data privacy compliance",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "ae01",
@@ -1642,7 +1768,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Labour Law Reform - flexible employment arrangements"
+      "classificationReason": "Labour Law Reform - flexible employment arrangements",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "sa01",
@@ -1682,7 +1813,12 @@ const INLINE_DATA = {
       "secondaryCategory": "法定标准Legal standard",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Labour Law Saudization - workforce nationalization requirements"
+      "classificationReason": "Labour Law Saudization - workforce nationalization requirements",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "za01",
@@ -1721,7 +1857,12 @@ const INLINE_DATA = {
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "National Minimum Wage Act - statutory minimum wage rates"
+      "classificationReason": "National Minimum Wage Act - statutory minimum wage rates",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "ng01",
@@ -1760,7 +1901,12 @@ const INLINE_DATA = {
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "National Minimum Wage Act 2024 - statutory minimum wage rates"
+      "classificationReason": "National Minimum Wage Act 2024 - statutory minimum wage rates",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "mx01",
@@ -1799,7 +1945,12 @@ const INLINE_DATA = {
       "secondaryCategory": "法定标准Legal standard",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Ley Federal del Trabajo - outsourcing reform, employment protections"
+      "classificationReason": "Ley Federal del Trabajo - outsourcing reform, employment protections",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "it01",
@@ -1839,7 +1990,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Smart Work Agreement - remote work and flexible working arrangements"
+      "classificationReason": "Smart Work Agreement - remote work and flexible working arrangements",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "es01",
@@ -1879,7 +2035,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Equal Pay Transparency - wage transparency and gender pay gap requirements"
+      "classificationReason": "Equal Pay Transparency - wage transparency and gender pay gap requirements",
+      "hrActionRequired": true,
+      "hrActionSummary": {
+        "zh": "更新工时和加班政策；调整考勤系统；通知员工",
+        "en": "Update working time and overtime policies; Adjust attendance systems; Notify employees"
+      }
     },
     {
       "id": "nl01",
@@ -1919,7 +2080,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Flexible Work Act - right to request flexible working arrangements"
+      "classificationReason": "Flexible Work Act - right to request flexible working arrangements",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "se01",
@@ -1958,7 +2124,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Working Hours Act Reform - working time regulations"
+      "classificationReason": "Working Hours Act Reform - working time regulations",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "th01",
@@ -1998,7 +2169,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Labour Protection Act - domestic worker protections"
+      "classificationReason": "Labour Protection Act - domestic worker protections",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "vn01",
@@ -2037,7 +2213,12 @@ const INLINE_DATA = {
       "secondaryCategory": "养老金Pension",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Labour Code Social Insurance Expansion - social insurance coverage"
+      "classificationReason": "Labour Code Social Insurance Expansion - social insurance coverage",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "ph01",
@@ -2076,7 +2257,12 @@ const INLINE_DATA = {
       "secondaryCategory": "法定标准Legal standard",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "DO 174 Anti-Endo - endo contractualization reform"
+      "classificationReason": "DO 174 Anti-Endo - endo contractualization reform",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "id01",
@@ -2116,7 +2302,12 @@ const INLINE_DATA = {
       "secondaryCategory": "法定标准Legal standard",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Omnibus Law Job Creation - employment and termination reforms"
+      "classificationReason": "Omnibus Law Job Creation - employment and termination reforms",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "nz01",
@@ -2156,7 +2347,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Fair Pay Agreements Act - industry-wide pay and working conditions (repealed 2023)"
+      "classificationReason": "Fair Pay Agreements Act - industry-wide pay and working conditions (repealed 2023)",
+      "hrActionRequired": true,
+      "hrActionSummary": {
+        "zh": "更新工时和加班政策；调整考勤系统；通知员工",
+        "en": "Update working time and overtime policies; Adjust attendance systems; Notify employees"
+      }
     },
     {
       "id": "cl01",
@@ -2196,7 +2392,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Remote Work Law - telework regulations"
+      "classificationReason": "Remote Work Law - telework regulations",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "co01",
@@ -2236,7 +2437,12 @@ const INLINE_DATA = {
       "secondaryCategory": "法定标准Legal standard",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Digital Platform Worker Protections - gig worker rights"
+      "classificationReason": "Digital Platform Worker Protections - gig worker rights",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "pl01",
@@ -2276,7 +2482,12 @@ const INLINE_DATA = {
       "secondaryCategory": "育儿假Childcare Leave",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Work-Life Balance Directive - EU directive transposition, parental leave and flexible working"
+      "classificationReason": "Work-Life Balance Directive - EU directive transposition, parental leave and flexible working",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "ie01",
@@ -2315,7 +2526,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Right to Disconnect Code - working time management, disconnect from work"
+      "classificationReason": "Right to Disconnect Code - working time management, disconnect from work",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "at01",
@@ -2354,7 +2570,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Arbeitszeitgesetz 12-Hour Day - maximum working day extension"
+      "classificationReason": "Arbeitszeitgesetz 12-Hour Day - maximum working day extension",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "be01",
@@ -2393,7 +2614,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "4-Day Week Pilot - compressed work week arrangements"
+      "classificationReason": "4-Day Week Pilot - compressed work week arrangements",
+      "hrActionRequired": true,
+      "hrActionSummary": {
+        "zh": "更新工时和加班政策；调整考勤系统；通知员工",
+        "en": "Update working time and overtime policies; Adjust attendance systems; Notify employees"
+      }
     },
     {
       "id": "tr01",
@@ -2433,7 +2659,12 @@ const INLINE_DATA = {
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Minimum Wage & Social Security - statutory minimum wage"
+      "classificationReason": "Minimum Wage & Social Security - statutory minimum wage",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "dk01",
@@ -2472,7 +2703,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Psychosocial Working Environment Act - workplace wellbeing and working conditions"
+      "classificationReason": "Psychosocial Working Environment Act - workplace wellbeing and working conditions",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "fi01",
@@ -2511,7 +2747,12 @@ const INLINE_DATA = {
       "secondaryCategory": "年假Annual Leave",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Annual Leave Enhancement - leave entitlement improvements"
+      "classificationReason": "Annual Leave Enhancement - leave entitlement improvements",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "pt01",
@@ -2550,7 +2791,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Right to Disconnect - telework and disconnect regulations"
+      "classificationReason": "Right to Disconnect - telework and disconnect regulations",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "ch01",
@@ -2590,7 +2836,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Overtime Reform - working time and overtime regulations"
+      "classificationReason": "Overtime Reform - working time and overtime regulations",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "il01",
@@ -2630,7 +2881,12 @@ const INLINE_DATA = {
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Gig Economy Working Hours - platform worker hour regulations"
+      "classificationReason": "Gig Economy Working Hours - platform worker hour regulations",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "za02",
@@ -2670,7 +2926,12 @@ const INLINE_DATA = {
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "POPIA Data Protection - data privacy compliance"
+      "classificationReason": "POPIA Data Protection - data privacy compliance",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "ng02",
@@ -2709,7 +2970,12 @@ const INLINE_DATA = {
       "secondaryCategory": "养老金Pension",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Pension Reform - contributory pension enhancement"
+      "classificationReason": "Pension Reform - contributory pension enhancement",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "eg01",
@@ -2749,7 +3015,12 @@ const INLINE_DATA = {
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Labour Law - minimum wage and social insurance"
+      "classificationReason": "Labour Law - minimum wage and social insurance",
+      "hrActionRequired": true,
+      "hrActionSummary": {
+        "zh": "调整员工最低工资标准；检查受影响员工范围；更新Payroll参数",
+        "en": "Adjust employee minimum wage settings; Check affected employee scope; Update Payroll parameters"
+      }
     },
     {
       "id": "ke01",
@@ -2789,7 +3060,12 @@ const INLINE_DATA = {
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Digital Nomad Visa Framework - immigration and work permits"
+      "classificationReason": "Digital Nomad Visa Framework - immigration and work permits",
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
+      }
     },
     {
       "id": "my01",
@@ -2851,6 +3127,11 @@ const INLINE_DATA = {
           "Filing Frequency": "Monthly",
           "Remarks": "Foreign workers: Mandatory (from Oct 2025, changed to 2%+2%)"
         }
+      },
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
       }
     },
     {
@@ -2913,6 +3194,11 @@ const INLINE_DATA = {
           "Filing Frequency": "Monthly",
           "Remarks": "Local/PR: Category 1 (Work Injury + Disability); From July 2024, most foreign employees under 60 also included in Category 1"
         }
+      },
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
       }
     },
     {
@@ -2976,6 +3262,11 @@ const INLINE_DATA = {
           "Filing Frequency": "Monthly",
           "Remarks": "Foreign employees currently not applicable"
         }
+      },
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
       }
     },
     {
@@ -3036,6 +3327,11 @@ const INLINE_DATA = {
           "Filing Frequency": "Monthly",
           "Remarks": "Mandatory training fund for employer side, used for employee skill development; All industries (mandatory for 10+ local employees), calculated for local employees only"
         }
+      },
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
       }
     },
     {
@@ -3091,6 +3387,11 @@ const INLINE_DATA = {
           "Pay Treatment": "Employer pays 100%; Basic salary/26 days × unused leave days",
           "Remarks": "Unused leave expires after 12 months in the following year, unless contract states otherwise"
         }
+      },
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
       }
     },
     {
@@ -3144,6 +3445,11 @@ const INLINE_DATA = {
           "Entitlement": "Tenure 1-2 years: 14 days; Tenure 2-5 years: 18 days; Tenure >5 years: 22 days; Long-term/hospitalization: up to 60 days",
           "Pay Treatment": "Employer pays 100%"
         }
+      },
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
       }
     },
     {
@@ -3196,6 +3502,11 @@ const INLINE_DATA = {
           "Entitlement": "98 consecutive days, can start up to 30 days before expected delivery date",
           "Pay Treatment": "Employer pays 100%"
         }
+      },
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
       }
     },
     {
@@ -3248,6 +3559,11 @@ const INLINE_DATA = {
           "Entitlement": "7 consecutive days (including rest days and public holidays)",
           "Pay Treatment": "Employer pays 100%"
         }
+      },
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
       }
     },
     {
@@ -3301,6 +3617,11 @@ const INLINE_DATA = {
           "Maximum Limits": "Max 4 hours OT per day (total max 12 hours); 104 hours/month",
           "Scope": "Mandatory for employees earning ≤RM4,000/month; For >RM4,000, only if contract specifies"
         }
+      },
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
       }
     },
     {
@@ -3351,6 +3672,11 @@ const INLINE_DATA = {
           "Calculation Rules": "Within 4 hours: 0.5x daily wage = 0.5×Monthly/26; 4-8 hours: 1x daily wage; Beyond 8 hours: 2x hourly rate = 2×Monthly/208",
           "Remarks": "Rest day OT pay is additional to monthly salary"
         }
+      },
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
       }
     },
     {
@@ -3398,6 +3724,11 @@ const INLINE_DATA = {
         "en": {
           "Calculation Rules": "Within 8 hours: 2x daily wage; Beyond 8 hours: 3x hourly rate = 3×Monthly/208"
         }
+      },
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
       }
     },
     {
@@ -3452,6 +3783,11 @@ const INLINE_DATA = {
           "Final Pay Components": "Final month salary, unused leave payout, notice period compensation, severance pay",
           "Settlement Timeline": "All payments must be settled within 7 days of contract termination"
         }
+      },
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
       }
     },
     {
@@ -3502,6 +3838,11 @@ const INLINE_DATA = {
           "Trigger Conditions": "BP negotiates severance with employee",
           "Final Pay Components": "Final month salary, unused leave payout, negotiated severance"
         }
+      },
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
       }
     },
     {
@@ -3549,6 +3890,11 @@ const INLINE_DATA = {
         "en": {
           "Final Pay Components": "Final month salary, unused leave payout"
         }
+      },
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
       }
     },
     {
@@ -3601,6 +3947,11 @@ const INLINE_DATA = {
           "Tax Rate Structure": "0-5,000 MYR: 0%; 5,001-20,000: 1%; 20,001-35,000: 3%; 35,001-50,000: 6%; 50,001-100,000: 11%/19%; 100,001-400,000: 25%; 400,001-2,000,000: 26%/28%; >2,000,000: 30%",
           "Remarks": "Residing in Malaysia for 182+ days in a calendar year = Tax Resident; otherwise Non-Resident"
         }
+      },
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
       }
     },
     {
@@ -3650,6 +4001,11 @@ const INLINE_DATA = {
           "Covered Population": "Non-Residents (residing less than 182 days)",
           "Tax Rate": "Flat 30%"
         }
+      },
+      "hrActionRequired": false,
+      "hrActionSummary": {
+        "zh": "",
+        "en": ""
       }
     }
   ],
@@ -3805,8 +4161,8 @@ async function loadData() {
 }
 
 const i18n={
-  zh:{title:"全球劳动法规智能监控",heroTitle:"全球劳动法规智能监控",notifications:"通知中心",close:"关闭",all:"全部",sortDate:"按更新日期",sortCountry:"按国家",libTitle:"就业法规库",libSub:"所选国家/地区的全部就业法规",searchPlaceholder:"🔍 搜索法规、国家或HR主题...",globeInfo:"点击国家放大 · 滚轮缩放 · 返回世界视图",backToWorld:"返回世界视图",resetFilters:"重置筛选",countryRegion:"国家/地区",regulationType:"法规类型",updated:"排序方式",classificationLevel1:"法规类目",classificationLevel2:"细分类目",effectiveYear:"生效年份",viewDetails:"查看详情 →",viewAll:"查看全部更新 →",regulationTimeline:"── 法规时间线 ──",regulationLibrary:"── 法规库 ──",regulatoryInsights:"法规洞察",upcomingDates:"即将生效日期",aiImpactSummary:"AI影响摘要",naLabel:"暂无",selectLevel1First:"请先选择法规类目",noSubcategories:"暂无细分类目",detailBasicInfo:"基本信息",detailCategory:"法规类别",detailLevel1:"法规类目",detailLevel2:"细分类目",detailCategorySource:"分类来源",detailStatus:"法规状态",detailEffectiveDate:"生效时间",detailEffectiveDateSource:"生效时间来源",detailEffectiveDateEvidence:"生效时间依据",detailCountry:"国家/地区",detailSummary:"法规摘要",detailEnglish:"English",detailChinese:"中文",detailKeyChanges:"核心变更",detailHRImpact:"HR影响评估",detailOfficialSource:"官方来源",detailViewFull:"查看完整法规"},
-  en:{title:"Global Labor Law Intelligence",heroTitle:"Global Labor Law Intelligence",notifications:"Notifications",close:"Close",all:"All",sortDate:"By Update Date",sortCountry:"By Country",libTitle:"Regulation Library",libSub:"All employment regulations for selected countries",searchPlaceholder:"🔍 Search regulations, countries or HR topics...",globeInfo:"Click country to zoom · Scroll to zoom · Return to world view",backToWorld:"Return to World View",resetFilters:"Reset filters",countryRegion:"Country / Region",regulationType:"Regulation Type",updated:"Sort",classificationLevel1:"Regulation Category",classificationLevel2:"Subcategory",effectiveYear:"Effective Year",viewDetails:"View Details →",viewAll:"View All Updates →",regulationTimeline:"── REGULATORY TIMELINE ──",regulationLibrary:"── REGULATION LIBRARY ──",regulatoryInsights:"REGULATORY INSIGHTS",upcomingDates:"UPCOMING EFFECTIVE DATES",aiImpactSummary:"AI IMPACT SUMMARY",naLabel:"N/A",selectLevel1First:"Please select a Regulation Category first",noSubcategories:"No subcategories available",detailBasicInfo:"Basic Info",detailCategory:"Category",detailLevel1:"Regulation Category",detailLevel2:"Subcategory",detailCategorySource:"Category Source",detailStatus:"Status",detailEffectiveDate:"Effective Date",detailEffectiveDateSource:"Effective Date Source",detailEffectiveDateEvidence:"Effective Date Evidence",detailCountry:"Country / Region",detailSummary:"Summary",detailEnglish:"English",detailChinese:"Chinese",detailKeyChanges:"Key Changes",detailHRImpact:"HR Impact Assessment",detailOfficialSource:"Official Source",detailViewFull:"View Full Regulation"},
+  zh:{title:"全球劳动法规智能监控",heroTitle:"全球劳动法规智能监控",notifications:"通知中心",close:"关闭",all:"全部",sortDate:"按更新日期",sortCountry:"按国家",libTitle:"就业法规库",libSub:"所选国家/地区的全部就业法规",searchPlaceholder:"🔍 搜索法规、国家或HR主题...",globeInfo:"点击国家放大 · 滚轮缩放 · 返回世界视图",backToWorld:"返回世界视图",resetFilters:"重置筛选",countryRegion:"国家/地区",regulationType:"法规类型",updated:"排序方式",classificationLevel1:"法规类目",classificationLevel2:"细分类目",effectiveYear:"生效年份",viewDetails:"查看详情 →",viewAll:"查看全部更新 →",regulationTimeline:"── 法规时间线 ──",regulationLibrary:"── 法规库 ──",regulatoryInsights:"法规洞察",upcomingDates:"即将生效日期",aiImpactSummary:"AI影响摘要",naLabel:"暂无",selectLevel1First:"请先选择法规类目",noSubcategories:"暂无细分类目",detailBasicInfo:"基本信息",detailCategory:"法规类别",detailLevel1:"法规类目",detailLevel2:"细分类目",detailCategorySource:"分类来源",detailStatus:"法规状态",detailEffectiveDate:"生效时间",detailEffectiveDateSource:"生效时间来源",detailEffectiveDateEvidence:"生效时间依据",detailCountry:"国家/地区",detailSummary:"法规摘要",detailEnglish:"English",detailChinese:"中文",detailKeyChanges:"核心变更",detailHRImpact:"HR影响评估",detailOfficialSource:"官方来源",detailViewFull:"查看完整法规",upcomingRegulations:"即将生效法规",immediateHRAction:"需要HR马上采取行动",daysUntilEffective:"距离生效",hrActionRequired:"需要HR行动",requiredHRActions:"HR需要采取的行动",viewAllUpcoming:"查看全部",viewAllHRAction:"查看全部",noUpcoming:"暂无即将生效法规",noHRAction:"暂无需HR行动法规",detailDays:"天"},
+  en:{title:"Global Labor Law Intelligence",heroTitle:"Global Labor Law Intelligence",notifications:"Notifications",close:"Close",all:"All",sortDate:"By Update Date",sortCountry:"By Country",libTitle:"Regulation Library",libSub:"All employment regulations for selected countries",searchPlaceholder:"🔍 Search regulations, countries or HR topics...",globeInfo:"Click country to zoom · Scroll to zoom · Return to world view",backToWorld:"Return to World View",resetFilters:"Reset filters",countryRegion:"Country / Region",regulationType:"Regulation Type",updated:"Sort",classificationLevel1:"Regulation Category",classificationLevel2:"Subcategory",effectiveYear:"Effective Year",viewDetails:"View Details →",viewAll:"View All Updates →",regulationTimeline:"── REGULATORY TIMELINE ──",regulationLibrary:"── REGULATION LIBRARY ──",regulatoryInsights:"REGULATORY INSIGHTS",upcomingDates:"UPCOMING EFFECTIVE DATES",aiImpactSummary:"AI IMPACT SUMMARY",naLabel:"N/A",selectLevel1First:"Please select a Regulation Category first",noSubcategories:"No subcategories available",detailBasicInfo:"Basic Info",detailCategory:"Category",detailLevel1:"Regulation Category",detailLevel2:"Subcategory",detailCategorySource:"Category Source",detailStatus:"Status",detailEffectiveDate:"Effective Date",detailEffectiveDateSource:"Effective Date Source",detailEffectiveDateEvidence:"Effective Date Evidence",detailCountry:"Country / Region",detailSummary:"Summary",detailEnglish:"English",detailChinese:"Chinese",detailKeyChanges:"Key Changes",detailHRImpact:"HR Impact Assessment",detailOfficialSource:"Official Source",detailViewFull:"View Full Regulation",upcomingRegulations:"Upcoming Regulations",immediateHRAction:"Immediate HR Action Required",daysUntilEffective:"Days Until Effective",hrActionRequired:"HR Action Required",requiredHRActions:"Required HR Actions",viewAllUpcoming:"View All",viewAllHRAction:"View All",noUpcoming:"No upcoming regulations",noHRAction:"No HR action required",detailDays:"days"},
   es:{title:"Inteligencia Laboral Global",heroTitle:"Inteligencia Laboral Global",notifications:"Notificaciones",close:"Cerrar",all:"Todos",sortDate:"Por Fecha",sortCountry:"Por País",libTitle:"Biblioteca de Regulaciones",libSub:"Todas las regulaciones laborales",searchPlaceholder:"🔍 Buscar regulaciones, países o temas de RRHH...",globeInfo:"Haga clic para ampliar · Rueda del ratón para zoom",backToWorld:"Vista Mundial",resetFilters:"Restablecer filtros",countryRegion:"País / Región",regulationType:"Tipo de Regulación",updated:"Ordenar",classificationLevel1:"Clasificación L1",classificationLevel2:"Clasificación L2",effectiveYear:"Año de Vigencia",viewDetails:"Ver Detalles →",viewAll:"Ver Todas las Actualizaciones →",regulationTimeline:"── LÍNEA DE TIEMPO ──",regulationLibrary:"── BIBLIOTECA ──",regulatoryInsights:"PERSPECTIVAS",upcomingDates:"FECHAS PRÓXIMAS",aiImpactSummary:"RESUMEN DE IMPACTO IA",naLabel:"N/A",detailBasicInfo:"Información Básica",detailCategory:"Categoría",detailLevel1:"Categoría Nivel 1",detailLevel2:"Categoría Nivel 2",detailCategorySource:"Fuente de Categoría",detailStatus:"Estado",detailEffectiveDate:"Fecha de Vigencia",detailEffectiveDateSource:"Fuente de Fecha",detailEffectiveDateEvidence:"Evidencia de Fecha",detailCountry:"País / Región",detailSummary:"Resumen",detailEnglish:"English",detailChinese:"Chino",detailKeyChanges:"Cambios Clave",detailHRImpact:"Evaluación de Impacto HR",detailOfficialSource:"Fuente Oficial",detailViewFull:"Ver Regulación Completa"}
 };
 
@@ -3938,24 +4294,119 @@ function renderLawCards(){
   el.innerHTML=html;
 }
 
+// Upcoming window configuration
+const UPCOMING_REGULATION_DAYS = 90;
+
+function getUpcomingRegulations(){
+  const now=new Date();
+  const end=new Date(now.getTime()+UPCOMING_REGULATION_DAYS*24*60*60*1000);
+  return laborLawData.filter(d=>{
+    if(!d.effectiveDate||d.effectiveDateStatus==='unavailable')return false;
+    const ed=new Date(d.effectiveDate);
+    return ed>=now&&ed<=end;
+  }).sort((a,b)=>new Date(a.effectiveDate)-new Date(b.effectiveDate));
+}
+
+function getDaysUntilEffective(dateStr){
+  const now=new Date();now.setHours(0,0,0,0);
+  const ed=new Date(dateStr);ed.setHours(0,0,0,0);
+  return Math.ceil((ed-now)/(1000*60*60*24));
+}
+
 function updateKPIs(){
   document.getElementById('kTotal').textContent=laborLawData.length;
   document.getElementById('kCountries').textContent=[...new Set(laborLawData.map(d=>d.country))].length;
-  const thirty=new Date();thirty.setDate(thirty.getDate()-30);
-  document.getElementById('kUpdated30').textContent=laborLawData.filter(d=>d.effectiveDate&&new Date(d.effectiveDate)>=thirty).length;
-  document.getElementById('kAction').textContent=laborLawData.filter(d=>d.status==='action-required'||d.status==='upcoming').length;
+  const upcoming=getUpcomingRegulations();
+  const hrAction=upcoming.filter(d=>d.hrActionRequired);
+  document.getElementById('kUpdated30').textContent=upcoming.length;
+  document.getElementById('kAction').textContent=hrAction.length;
 }
 
 function renderUpcoming(){
   const el=document.getElementById('upcomingList');
-  const upcoming=laborLawData.filter(d=>d.effectiveDate).sort((a,b)=>new Date(a.effectiveDate)-new Date(b.effectiveDate)).slice(0,6);
+  const upcoming=getUpcomingRegulations();
+  const t=i18n[currentLang];
   let html='';
-  upcoming.forEach(item=>{
-    html+='<div class="upcoming-item" onclick="openDetail(\''+item.id+'\')">';
-    html+='<div class="upcoming-date">'+item.effectiveDate+' · '+item.flag+' '+getCountryName(item.country)+'</div>';
-    html+='<div class="upcoming-title">'+item.law.substring(0,50)+(item.law.length>50?'...':'')+'</div>';
-    html+='</div>';
-  });
+  if(upcoming.length===0){
+    html='<div style="padding:12px;text-align:center;color:var(--text3);font-size:12px">'+t.noUpcoming+'</div>';
+  }else{
+    upcoming.forEach(item=>{
+      const days=getDaysUntilEffective(item.effectiveDate);
+      const isHR=item.hrActionRequired;
+      html+='<div class="upcoming-item'+(isHR?' upcoming-hr-action':'')+'" onclick="openDetail(\''+item.id+'\')">';
+      html+='<div class="upcoming-date">'+item.effectiveDate+' · '+item.flag+' '+getCountryName(item.country);
+      if(isHR)html+=' <span class="hr-badge">'+t.hrActionRequired+'</span>';
+      html+='</div>';
+      html+='<div class="upcoming-title">'+item.law.substring(0,50)+(item.law.length>50?'...':'')+'</div>';
+      html+='<div class="upcoming-meta">'+t.daysUntilEffective+'：<strong>'+days+'</strong> '+t.detailDays+'</div>';
+      html+='</div>';
+    });
+  }
+  el.innerHTML=html;
+}
+
+function showUpcomingPanel(){
+  const t=i18n[currentLang];
+  const upcoming=getUpcomingRegulations();
+  document.getElementById('embeddedPanelTitle').textContent=t.upcomingRegulations+' ('+upcoming.length+')';
+  let html='';
+  if(upcoming.length===0){
+    html='<div style="padding:20px;text-align:center;color:var(--text3)">'+t.noUpcoming+'</div>';
+  }else{
+    upcoming.forEach(item=>{
+      const days=getDaysUntilEffective(item.effectiveDate);
+      const isHR=item.hrActionRequired;
+      html+='<div class="upcoming-item'+(isHR?' upcoming-hr-action':'')+'" onclick="closeEmbeddedPanel();openDetail(\''+item.id+'\')" style="padding:12px;border-bottom:1px solid var(--border-light);cursor:pointer">';
+      html+='<div style="display:flex;justify-content:space-between;align-items:center">';
+      html+='<div><span style="font-size:16px;margin-right:6px">'+item.flag+'</span><strong>'+getCountryName(item.country)+'</strong>';
+      if(isHR)html+=' <span class="hr-badge">'+t.hrActionRequired+'</span>';
+      html+='</div>';
+      html+='<div style="font-size:11px;color:var(--text3)">'+t.daysUntilEffective+': '+days+' '+t.detailDays+'</div>';
+      html+='</div>';
+      html+='<div style="font-size:13px;margin-top:4px">'+item.law+'</div>';
+      html+='<div style="font-size:11px;color:var(--text2);margin-top:2px">'+item.primaryCategory+(item.secondaryCategory?' → '+item.secondaryCategory:'')+'</div>';
+      html+='<div style="font-size:11px;color:var(--accent);margin-top:2px">'+t.detailEffectiveDate+': '+item.effectiveDate+'</div>';
+      html+='</div>';
+    });
+  }
+  document.getElementById('embeddedPanelContent').innerHTML=html;
+  document.getElementById('embeddedPanelOverlay').classList.add('open');
+  document.getElementById('embeddedPanel').classList.add('open');
+}
+
+function showHRActionPanel(){
+  const t=i18n[currentLang];
+  const upcoming=getUpcomingRegulations();
+  const hrAction=upcoming.filter(d=>d.hrActionRequired);
+  document.getElementById('embeddedPanelTitle').textContent=t.immediateHRAction+' ('+hrAction.length+')';
+  let html='';
+  if(hrAction.length===0){
+    html='<div style="padding:20px;text-align:center;color:var(--text3)">'+t.noHRAction+'</div>';
+  }else{
+    hrAction.forEach(item=>{
+      const days=getDaysUntilEffective(item.effectiveDate);
+      const summary=item.hrActionSummary&&item.hrActionSummary[currentLang]?item.hrActionSummary[currentLang]:'';
+      html+='<div class="upcoming-item upcoming-hr-action" onclick="closeEmbeddedPanel();openDetail(\''+item.id+'\')" style="padding:12px;border-bottom:1px solid var(--border-light);cursor:pointer">';
+      html+='<div style="display:flex;justify-content:space-between;align-items:center">';
+      html+='<div><span style="font-size:16px;margin-right:6px">'+item.flag+'</span><strong>'+getCountryName(item.country)+'</strong> <span class="hr-badge">'+t.hrActionRequired+'</span></div>';
+      html+='<div style="font-size:11px;color:var(--text3)">'+t.daysUntilEffective+': '+days+' '+t.detailDays+'</div>';
+      html+='</div>';
+      html+='<div style="font-size:13px;margin-top:4px">'+item.law+'</div>';
+      html+='<div style="font-size:11px;color:var(--text2);margin-top:2px">'+item.primaryCategory+(item.secondaryCategory?' → '+item.secondaryCategory:'')+'</div>';
+      html+='<div style="font-size:11px;color:var(--accent);margin-top:2px">'+t.detailEffectiveDate+': '+item.effectiveDate+'</div>';
+      if(summary)html+='<div class="hr-action-section" style="margin-top:8px;padding:8px"><strong>'+t.requiredHRActions+':</strong><br><div class="hr-action-item">'+summary+'</div></div>';
+      html+='</div>';
+    });
+  }
+  document.getElementById('embeddedPanelContent').innerHTML=html;
+  document.getElementById('embeddedPanelOverlay').classList.add('open');
+  document.getElementById('embeddedPanel').classList.add('open');
+}
+
+function closeEmbeddedPanel(){
+  document.getElementById('embeddedPanelOverlay').classList.remove('open');
+  document.getElementById('embeddedPanel').classList.remove('open');
+}
   el.innerHTML=html;
 }
 
