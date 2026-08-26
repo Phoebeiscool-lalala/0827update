@@ -38,12 +38,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Fair Work Act Modern Awards - regulates minimum wages, overtime rates, penalty rates for working time",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Fair Work Act Modern Awards - regulates minimum wages, overtime rates, penalty rates for working time"
     },
     {
       "id": "au02",
@@ -83,12 +78,7 @@
       "secondaryCategory": "法定标准Legal standard",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Closing Loopholes Act - gig economy worker protections and unfair deactivation provisions",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Closing Loopholes Act - gig economy worker protections and unfair deactivation provisions"
     },
     {
       "id": "de01",
@@ -128,12 +118,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Arbeitszeitgesetz - working time recording requirements for employers",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Arbeitszeitgesetz - working time recording requirements for employers"
     },
     {
       "id": "de02",
@@ -172,12 +157,7 @@
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "LkSG - supply chain due diligence, compliance/regulatory framework",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "LkSG - supply chain due diligence, compliance/regulatory framework"
     },
     {
       "id": "fr01",
@@ -217,12 +197,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Code du travail - right to disconnect, working time management",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Code du travail - right to disconnect, working time management"
     },
     {
       "id": "fr02",
@@ -261,12 +236,7 @@
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Minimum Wage Indexation - automatic SMIC revaluation based on inflation",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Minimum Wage Indexation - automatic SMIC revaluation based on inflation"
     },
     {
       "id": "gb01",
@@ -306,12 +276,7 @@
       "secondaryCategory": "法定标准Legal standard",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Employment Rights Bill 2024 - day one rights, unfair dismissal protections",
-      "hrActionRequired": true,
-      "hrActionSummary": {
-        "zh": "更新离职补偿计算规则；调整HR系统；培训HR团队",
-        "en": "Update severance calculation rules; Adjust HR systems; Train HR team"
-      }
+      "classificationReason": "Employment Rights Bill 2024 - day one rights, unfair dismissal protections"
     },
     {
       "id": "gb02",
@@ -350,12 +315,7 @@
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "National Living Wage Increase - statutory minimum wage rates",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "National Living Wage Increase - statutory minimum wage rates"
     },
     {
       "id": "us01",
@@ -395,12 +355,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "FLSA Overtime Rule - salary threshold for overtime exemptions",
-      "hrActionRequired": true,
-      "hrActionSummary": {
-        "zh": "更新工时和加班政策；调整考勤系统；通知员工",
-        "en": "Update working time and overtime policies; Adjust attendance systems; Notify employees"
-      }
+      "classificationReason": "FLSA Overtime Rule - salary threshold for overtime exemptions"
     },
     {
       "id": "us02",
@@ -439,12 +394,7 @@
       "secondaryCategory": "法定标准Legal standard",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "FTC Non-Compete Rule - non-compete clause restrictions",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "FTC Non-Compete Rule - non-compete clause restrictions"
     },
     {
       "id": "ca01",
@@ -483,12 +433,7 @@
       "secondaryCategory": "节假日加班Holiday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Canada Labour Code - holiday pay equality provisions",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Canada Labour Code - holiday pay equality provisions"
     },
     {
       "id": "br01",
@@ -528,12 +473,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "CLT Reform - remote work regulations",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "CLT Reform - remote work regulations"
     },
     {
       "id": "jp01",
@@ -573,12 +513,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Work Style Reform 2.0 - overtime caps for specialized sectors",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Work Style Reform 2.0 - overtime caps for specialized sectors"
     },
     {
       "id": "jp02",
@@ -617,12 +552,7 @@
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Minimum Wage Increase - nationwide minimum wage rates",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Minimum Wage Increase - nationwide minimum wage rates"
     },
     {
       "id": "kr01",
@@ -662,12 +592,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Work-Life Balance Enhancement Act - flexible working arrangements",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Work-Life Balance Enhancement Act - flexible working arrangements"
     },
     {
       "id": "kr02",
@@ -706,12 +631,7 @@
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Minimum Wage - national minimum wage rates",
-      "hrActionRequired": true,
-      "hrActionSummary": {
-        "zh": "调整员工最低工资标准；检查受影响员工范围；更新Payroll参数",
-        "en": "Adjust employee minimum wage settings; Check affected employee scope; Update Payroll parameters"
-      }
+      "classificationReason": "Minimum Wage - national minimum wage rates"
     },
     {
       "id": "sg01",
@@ -751,12 +671,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Employment Act Progressive Wage Model - wage progression requirements",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Employment Act Progressive Wage Model - wage progression requirements"
     },
     {
       "id": "sg02",
@@ -795,12 +710,7 @@
       "secondaryCategory": "法定标准Legal standard",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Workplace Fairness Act - anti-discrimination protections",
-      "hrActionRequired": true,
-      "hrActionSummary": {
-        "zh": "更新离职补偿计算规则；调整HR系统；培训HR团队",
-        "en": "Update severance calculation rules; Adjust HR systems; Train HR team"
-      }
+      "classificationReason": "Workplace Fairness Act - anti-discrimination protections"
     },
     {
       "id": "in01",
@@ -839,12 +749,7 @@
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Code on Wages 2019 - unified wage code with national floor wage",
-      "hrActionRequired": true,
-      "hrActionSummary": {
-        "zh": "调整员工最低工资标准；检查受影响员工范围；更新Payroll参数",
-        "en": "Adjust employee minimum wage settings; Check affected employee scope; Update Payroll parameters"
-      }
+      "classificationReason": "Code on Wages 2019 - unified wage code with national floor wage"
     },
     {
       "id": "cn01",
@@ -884,12 +789,7 @@
       "secondaryCategory": "养老金Pension",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Social Insurance Contribution Reform - social insurance contributions",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Social Insurance Contribution Reform - social insurance contributions"
     },
     {
       "id": "cn02",
@@ -929,12 +829,7 @@
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "PIPL Employee Data Guidelines - data privacy compliance",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "PIPL Employee Data Guidelines - data privacy compliance"
     },
     {
       "id": "ae01",
@@ -974,12 +869,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Labour Law Reform - flexible employment arrangements",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Labour Law Reform - flexible employment arrangements"
     },
     {
       "id": "sa01",
@@ -1019,12 +909,7 @@
       "secondaryCategory": "法定标准Legal standard",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Labour Law Saudization - workforce nationalization requirements",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Labour Law Saudization - workforce nationalization requirements"
     },
     {
       "id": "za01",
@@ -1063,12 +948,7 @@
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "National Minimum Wage Act - statutory minimum wage rates",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "National Minimum Wage Act - statutory minimum wage rates"
     },
     {
       "id": "ng01",
@@ -1107,12 +987,7 @@
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "National Minimum Wage Act 2024 - statutory minimum wage rates",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "National Minimum Wage Act 2024 - statutory minimum wage rates"
     },
     {
       "id": "mx01",
@@ -1151,12 +1026,7 @@
       "secondaryCategory": "法定标准Legal standard",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Ley Federal del Trabajo - outsourcing reform, employment protections",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Ley Federal del Trabajo - outsourcing reform, employment protections"
     },
     {
       "id": "it01",
@@ -1196,12 +1066,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Smart Work Agreement - remote work and flexible working arrangements",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Smart Work Agreement - remote work and flexible working arrangements"
     },
     {
       "id": "es01",
@@ -1241,12 +1106,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Equal Pay Transparency - wage transparency and gender pay gap requirements",
-      "hrActionRequired": true,
-      "hrActionSummary": {
-        "zh": "更新工时和加班政策；调整考勤系统；通知员工",
-        "en": "Update working time and overtime policies; Adjust attendance systems; Notify employees"
-      }
+      "classificationReason": "Equal Pay Transparency - wage transparency and gender pay gap requirements"
     },
     {
       "id": "nl01",
@@ -1286,12 +1146,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Flexible Work Act - right to request flexible working arrangements",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Flexible Work Act - right to request flexible working arrangements"
     },
     {
       "id": "se01",
@@ -1330,12 +1185,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Working Hours Act Reform - working time regulations",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Working Hours Act Reform - working time regulations"
     },
     {
       "id": "th01",
@@ -1375,12 +1225,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Labour Protection Act - domestic worker protections",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Labour Protection Act - domestic worker protections"
     },
     {
       "id": "vn01",
@@ -1419,12 +1264,7 @@
       "secondaryCategory": "养老金Pension",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Labour Code Social Insurance Expansion - social insurance coverage",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Labour Code Social Insurance Expansion - social insurance coverage"
     },
     {
       "id": "ph01",
@@ -1463,12 +1303,7 @@
       "secondaryCategory": "法定标准Legal standard",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "DO 174 Anti-Endo - endo contractualization reform",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "DO 174 Anti-Endo - endo contractualization reform"
     },
     {
       "id": "id01",
@@ -1508,12 +1343,7 @@
       "secondaryCategory": "法定标准Legal standard",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Omnibus Law Job Creation - employment and termination reforms",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Omnibus Law Job Creation - employment and termination reforms"
     },
     {
       "id": "nz01",
@@ -1553,12 +1383,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Fair Pay Agreements Act - industry-wide pay and working conditions (repealed 2023)",
-      "hrActionRequired": true,
-      "hrActionSummary": {
-        "zh": "更新工时和加班政策；调整考勤系统；通知员工",
-        "en": "Update working time and overtime policies; Adjust attendance systems; Notify employees"
-      }
+      "classificationReason": "Fair Pay Agreements Act - industry-wide pay and working conditions (repealed 2023)"
     },
     {
       "id": "cl01",
@@ -1598,12 +1423,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Remote Work Law - telework regulations",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Remote Work Law - telework regulations"
     },
     {
       "id": "co01",
@@ -1643,12 +1463,7 @@
       "secondaryCategory": "法定标准Legal standard",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Digital Platform Worker Protections - gig worker rights",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Digital Platform Worker Protections - gig worker rights"
     },
     {
       "id": "pl01",
@@ -1688,12 +1503,7 @@
       "secondaryCategory": "育儿假Childcare Leave",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Work-Life Balance Directive - EU directive transposition, parental leave and flexible working",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Work-Life Balance Directive - EU directive transposition, parental leave and flexible working"
     },
     {
       "id": "ie01",
@@ -1732,12 +1542,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Right to Disconnect Code - working time management, disconnect from work",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Right to Disconnect Code - working time management, disconnect from work"
     },
     {
       "id": "at01",
@@ -1776,12 +1581,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Arbeitszeitgesetz 12-Hour Day - maximum working day extension",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Arbeitszeitgesetz 12-Hour Day - maximum working day extension"
     },
     {
       "id": "be01",
@@ -1820,12 +1620,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "4-Day Week Pilot - compressed work week arrangements",
-      "hrActionRequired": true,
-      "hrActionSummary": {
-        "zh": "更新工时和加班政策；调整考勤系统；通知员工",
-        "en": "Update working time and overtime policies; Adjust attendance systems; Notify employees"
-      }
+      "classificationReason": "4-Day Week Pilot - compressed work week arrangements"
     },
     {
       "id": "tr01",
@@ -1865,12 +1660,7 @@
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Minimum Wage & Social Security - statutory minimum wage",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Minimum Wage & Social Security - statutory minimum wage"
     },
     {
       "id": "dk01",
@@ -1909,12 +1699,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Psychosocial Working Environment Act - workplace wellbeing and working conditions",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Psychosocial Working Environment Act - workplace wellbeing and working conditions"
     },
     {
       "id": "fi01",
@@ -1953,12 +1738,7 @@
       "secondaryCategory": "年假Annual Leave",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Annual Leave Enhancement - leave entitlement improvements",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Annual Leave Enhancement - leave entitlement improvements"
     },
     {
       "id": "pt01",
@@ -1997,12 +1777,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Right to Disconnect - telework and disconnect regulations",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Right to Disconnect - telework and disconnect regulations"
     },
     {
       "id": "ch01",
@@ -2042,12 +1817,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Overtime Reform - working time and overtime regulations",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Overtime Reform - working time and overtime regulations"
     },
     {
       "id": "il01",
@@ -2087,12 +1857,7 @@
       "secondaryCategory": "工作日加班Weekday Overtime",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Gig Economy Working Hours - platform worker hour regulations",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Gig Economy Working Hours - platform worker hour regulations"
     },
     {
       "id": "za02",
@@ -2132,12 +1897,7 @@
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "POPIA Data Protection - data privacy compliance",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "POPIA Data Protection - data privacy compliance"
     },
     {
       "id": "ng02",
@@ -2176,12 +1936,7 @@
       "secondaryCategory": "养老金Pension",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Pension Reform - contributory pension enhancement",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Pension Reform - contributory pension enhancement"
     },
     {
       "id": "eg01",
@@ -2221,12 +1976,7 @@
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Labour Law - minimum wage and social insurance",
-      "hrActionRequired": true,
-      "hrActionSummary": {
-        "zh": "调整员工最低工资标准；检查受影响员工范围；更新Payroll参数",
-        "en": "Adjust employee minimum wage settings; Check affected employee scope; Update Payroll parameters"
-      }
+      "classificationReason": "Labour Law - minimum wage and social insurance"
     },
     {
       "id": "ke01",
@@ -2266,12 +2016,7 @@
       "secondaryCategory": "",
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
-      "classificationReason": "Digital Nomad Visa Framework - immigration and work permits",
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
-      }
+      "classificationReason": "Digital Nomad Visa Framework - immigration and work permits"
     },
     {
       "id": "my01",
@@ -2333,11 +2078,6 @@
           "Filing Frequency": "Monthly",
           "Remarks": "Foreign workers: Mandatory (from Oct 2025, changed to 2%+2%)"
         }
-      },
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
       }
     },
     {
@@ -2400,11 +2140,6 @@
           "Filing Frequency": "Monthly",
           "Remarks": "Local/PR: Category 1 (Work Injury + Disability); From July 2024, most foreign employees under 60 also included in Category 1"
         }
-      },
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
       }
     },
     {
@@ -2468,11 +2203,6 @@
           "Filing Frequency": "Monthly",
           "Remarks": "Foreign employees currently not applicable"
         }
-      },
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
       }
     },
     {
@@ -2533,11 +2263,6 @@
           "Filing Frequency": "Monthly",
           "Remarks": "Mandatory training fund for employer side, used for employee skill development; All industries (mandatory for 10+ local employees), calculated for local employees only"
         }
-      },
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
       }
     },
     {
@@ -2593,11 +2318,6 @@
           "Pay Treatment": "Employer pays 100%; Basic salary/26 days × unused leave days",
           "Remarks": "Unused leave expires after 12 months in the following year, unless contract states otherwise"
         }
-      },
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
       }
     },
     {
@@ -2651,11 +2371,6 @@
           "Entitlement": "Tenure 1-2 years: 14 days; Tenure 2-5 years: 18 days; Tenure >5 years: 22 days; Long-term/hospitalization: up to 60 days",
           "Pay Treatment": "Employer pays 100%"
         }
-      },
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
       }
     },
     {
@@ -2708,11 +2423,6 @@
           "Entitlement": "98 consecutive days, can start up to 30 days before expected delivery date",
           "Pay Treatment": "Employer pays 100%"
         }
-      },
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
       }
     },
     {
@@ -2765,11 +2475,6 @@
           "Entitlement": "7 consecutive days (including rest days and public holidays)",
           "Pay Treatment": "Employer pays 100%"
         }
-      },
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
       }
     },
     {
@@ -2823,11 +2528,6 @@
           "Maximum Limits": "Max 4 hours OT per day (total max 12 hours); 104 hours/month",
           "Scope": "Mandatory for employees earning ≤RM4,000/month; For >RM4,000, only if contract specifies"
         }
-      },
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
       }
     },
     {
@@ -2878,11 +2578,6 @@
           "Calculation Rules": "Within 4 hours: 0.5x daily wage = 0.5×Monthly/26; 4-8 hours: 1x daily wage; Beyond 8 hours: 2x hourly rate = 2×Monthly/208",
           "Remarks": "Rest day OT pay is additional to monthly salary"
         }
-      },
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
       }
     },
     {
@@ -2930,11 +2625,6 @@
         "en": {
           "Calculation Rules": "Within 8 hours: 2x daily wage; Beyond 8 hours: 3x hourly rate = 3×Monthly/208"
         }
-      },
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
       }
     },
     {
@@ -2989,11 +2679,6 @@
           "Final Pay Components": "Final month salary, unused leave payout, notice period compensation, severance pay",
           "Settlement Timeline": "All payments must be settled within 7 days of contract termination"
         }
-      },
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
       }
     },
     {
@@ -3044,11 +2729,6 @@
           "Trigger Conditions": "BP negotiates severance with employee",
           "Final Pay Components": "Final month salary, unused leave payout, negotiated severance"
         }
-      },
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
       }
     },
     {
@@ -3096,11 +2776,6 @@
         "en": {
           "Final Pay Components": "Final month salary, unused leave payout"
         }
-      },
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
       }
     },
     {
@@ -3153,11 +2828,6 @@
           "Tax Rate Structure": "0-5,000 MYR: 0%; 5,001-20,000: 1%; 20,001-35,000: 3%; 35,001-50,000: 6%; 50,001-100,000: 11%/19%; 100,001-400,000: 25%; 400,001-2,000,000: 26%/28%; >2,000,000: 30%",
           "Remarks": "Residing in Malaysia for 182+ days in a calendar year = Tax Resident; otherwise Non-Resident"
         }
-      },
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
       }
     },
     {
@@ -3207,11 +2877,6 @@
           "Covered Population": "Non-Residents (residing less than 182 days)",
           "Tax Rate": "Flat 30%"
         }
-      },
-      "hrActionRequired": false,
-      "hrActionSummary": {
-        "zh": "",
-        "en": ""
       }
     }
   ],
