@@ -211,6 +211,21 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
 .upcoming-country{font-size:12px;font-weight:600}
 .upcoming-title{font-size:12px;color:var(--text2)}
 .ai-summary{padding:10px;background:var(--surface);border-radius:var(--radius-sm);font-size:12px;color:var(--text2);line-height:1.6;border-left:3px solid var(--accent)}
+/* ===== Upcoming / HR Action enhancements ===== */
+.kpi-clickable{transition:all .15s;cursor:pointer}
+.kpi-clickable:hover{background:var(--accent-light);transform:translateY(-1px)}
+.upcoming-hr-action{border-left:3px solid var(--orange);padding-left:8px}
+.upcoming-meta{font-size:10px;color:var(--text3);margin-top:2px}
+.hr-badge{display:inline-flex;align-items:center;gap:3px;padding:1px 6px;border-radius:var(--radius-pill);background:var(--orange-bg);color:var(--orange);font-size:9px;font-weight:700;margin-left:4px;white-space:nowrap}
+.hr-action-section{margin-top:12px;padding:10px;background:var(--orange-bg);border-radius:var(--radius-sm);border-left:3px solid var(--orange)}
+.hr-action-section h4{font-size:13px;font-weight:700;color:var(--orange);margin-bottom:6px}
+.hr-action-item{font-size:12px;color:var(--text);margin-bottom:4px;padding-left:12px;position:relative}
+.hr-action-item::before{content:'•';position:absolute;left:0;color:var(--orange)}
+.embedded-panel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:760px;max-width:95vw;max-height:85vh;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);z-index:220;overflow-y:auto;padding:20px;box-shadow:var(--shadow-md);display:none}
+.embedded-panel.open{display:block}
+.embedded-panel .dp-close{position:absolute;top:12px;right:14px}
+.embedded-panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:215;display:none;backdrop-filter:blur(2px)}
+.embedded-panel-overlay.open{display:block}
 
 .detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:200;opacity:0;pointer-events:none;transition:opacity .2s;display:none;align-items:center;justify-content:center;backdrop-filter:blur(2px)}
 .detail-overlay.open{opacity:1;pointer-events:all;display:flex}
@@ -449,8 +464,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
       <div class="kpi-grid">
         <div class="kpi"><div class="kpi-v" id="kTotal">0</div><div class="kpi-l">Active Regulations</div></div>
         <div class="kpi"><div class="kpi-v" id="kCountries">0</div><div class="kpi-l">Countries Covered</div></div>
-        <div class="kpi"><div class="kpi-v" id="kUpdated30">0</div><div class="kpi-l">Updated (30 days)</div></div>
-        <div class="kpi"><div class="kpi-v" id="kAction">0</div><div class="kpi-l">Action Required</div></div>
+        <div class="kpi kpi-clickable" onclick="showUpcomingPanel()" style="cursor:pointer"><div class="kpi-v" id="kUpdated30">0</div><div class="kpi-l" data-i18n="upcomingRegulations">即将生效法规</div></div>
+        <div class="kpi kpi-clickable" onclick="showHRActionPanel()" style="cursor:pointer"><div class="kpi-v" id="kAction">0</div><div class="kpi-l" data-i18n="immediateHRAction">需要HR马上采取行动</div></div>
       </div>
     </div>
     <div class="right-section">
@@ -474,6 +489,14 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
 <div class="detail-panel" id="detailPanel">
   <button class="dp-close" onclick="closeDetail()">✕</button>
   <div id="detailContent"></div>
+</div>
+
+<!-- Embedded Panel for Upcoming / HR Action -->
+<div class="embedded-panel-overlay" id="embeddedPanelOverlay" onclick="closeEmbeddedPanel()"></div>
+<div class="embedded-panel" id="embeddedPanel">
+  <button class="dp-close" onclick="closeEmbeddedPanel()">✕</button>
+  <h2 id="embeddedPanelTitle" style="font-size:16px;font-weight:700;margin-bottom:16px"></h2>
+  <div id="embeddedPanelContent"></div>
 </div>
 
 <div class="country-modal" id="countryModal">
@@ -3805,9 +3828,9 @@ async function loadData() {
 }
 
 const i18n={
-  zh:{title:"全球劳动法规智能监控",heroTitle:"全球劳动法规智能监控",notifications:"通知中心",close:"关闭",all:"全部",sortDate:"按更新日期",sortCountry:"按国家",libTitle:"就业法规库",libSub:"所选国家/地区的全部就业法规",searchPlaceholder:"🔍 搜索法规、国家或HR主题...",globeInfo:"点击国家放大 · 滚轮缩放 · 返回世界视图",backToWorld:"返回世界视图",resetFilters:"重置筛选",countryRegion:"国家/地区",regulationType:"法规类型",updated:"排序方式",classificationLevel1:"法规类目",classificationLevel2:"细分类目",effectiveYear:"生效年份",viewDetails:"查看详情 →",viewAll:"查看全部更新 →",regulationTimeline:"── 法规时间线 ──",regulationLibrary:"── 法规库 ──",regulatoryInsights:"法规洞察",upcomingDates:"即将生效日期",aiImpactSummary:"AI影响摘要",naLabel:"暂无",selectLevel1First:"请先选择法规类目",noSubcategories:"暂无细分类目",detailBasicInfo:"基本信息",detailCategory:"法规类别",detailLevel1:"法规类目",detailLevel2:"细分类目",detailCategorySource:"分类来源",detailStatus:"法规状态",detailEffectiveDate:"生效时间",detailEffectiveDateSource:"生效时间来源",detailEffectiveDateEvidence:"生效时间依据",detailCountry:"国家/地区",detailSummary:"法规摘要",detailEnglish:"English",detailChinese:"中文",detailKeyChanges:"核心变更",detailHRImpact:"HR影响评估",detailOfficialSource:"官方来源",detailViewFull:"查看完整法规"},
-  en:{title:"Global Labor Law Intelligence",heroTitle:"Global Labor Law Intelligence",notifications:"Notifications",close:"Close",all:"All",sortDate:"By Update Date",sortCountry:"By Country",libTitle:"Regulation Library",libSub:"All employment regulations for selected countries",searchPlaceholder:"🔍 Search regulations, countries or HR topics...",globeInfo:"Click country to zoom · Scroll to zoom · Return to world view",backToWorld:"Return to World View",resetFilters:"Reset filters",countryRegion:"Country / Region",regulationType:"Regulation Type",updated:"Sort",classificationLevel1:"Regulation Category",classificationLevel2:"Subcategory",effectiveYear:"Effective Year",viewDetails:"View Details →",viewAll:"View All Updates →",regulationTimeline:"── REGULATORY TIMELINE ──",regulationLibrary:"── REGULATION LIBRARY ──",regulatoryInsights:"REGULATORY INSIGHTS",upcomingDates:"UPCOMING EFFECTIVE DATES",aiImpactSummary:"AI IMPACT SUMMARY",naLabel:"N/A",selectLevel1First:"Please select a Regulation Category first",noSubcategories:"No subcategories available",detailBasicInfo:"Basic Info",detailCategory:"Category",detailLevel1:"Regulation Category",detailLevel2:"Subcategory",detailCategorySource:"Category Source",detailStatus:"Status",detailEffectiveDate:"Effective Date",detailEffectiveDateSource:"Effective Date Source",detailEffectiveDateEvidence:"Effective Date Evidence",detailCountry:"Country / Region",detailSummary:"Summary",detailEnglish:"English",detailChinese:"Chinese",detailKeyChanges:"Key Changes",detailHRImpact:"HR Impact Assessment",detailOfficialSource:"Official Source",detailViewFull:"View Full Regulation"},
-  es:{title:"Inteligencia Laboral Global",heroTitle:"Inteligencia Laboral Global",notifications:"Notificaciones",close:"Cerrar",all:"Todos",sortDate:"Por Fecha",sortCountry:"Por País",libTitle:"Biblioteca de Regulaciones",libSub:"Todas las regulaciones laborales",searchPlaceholder:"🔍 Buscar regulaciones, países o temas de RRHH...",globeInfo:"Haga clic para ampliar · Rueda del ratón para zoom",backToWorld:"Vista Mundial",resetFilters:"Restablecer filtros",countryRegion:"País / Región",regulationType:"Tipo de Regulación",updated:"Ordenar",classificationLevel1:"Clasificación L1",classificationLevel2:"Clasificación L2",effectiveYear:"Año de Vigencia",viewDetails:"Ver Detalles →",viewAll:"Ver Todas las Actualizaciones →",regulationTimeline:"── LÍNEA DE TIEMPO ──",regulationLibrary:"── BIBLIOTECA ──",regulatoryInsights:"PERSPECTIVAS",upcomingDates:"FECHAS PRÓXIMAS",aiImpactSummary:"RESUMEN DE IMPACTO IA",naLabel:"N/A",detailBasicInfo:"Información Básica",detailCategory:"Categoría",detailLevel1:"Categoría Nivel 1",detailLevel2:"Categoría Nivel 2",detailCategorySource:"Fuente de Categoría",detailStatus:"Estado",detailEffectiveDate:"Fecha de Vigencia",detailEffectiveDateSource:"Fuente de Fecha",detailEffectiveDateEvidence:"Evidencia de Fecha",detailCountry:"País / Región",detailSummary:"Resumen",detailEnglish:"English",detailChinese:"Chino",detailKeyChanges:"Cambios Clave",detailHRImpact:"Evaluación de Impacto HR",detailOfficialSource:"Fuente Oficial",detailViewFull:"Ver Regulación Completa"}
+  zh:{title:"全球劳动法规智能监控",heroTitle:"全球劳动法规智能监控",notifications:"通知中心",close:"关闭",all:"全部",sortDate:"按更新日期",sortCountry:"按国家",libTitle:"就业法规库",libSub:"所选国家/地区的全部就业法规",searchPlaceholder:"🔍 搜索法规、国家或HR主题...",globeInfo:"点击国家放大 · 滚轮缩放 · 返回世界视图",backToWorld:"返回世界视图",resetFilters:"重置筛选",countryRegion:"国家/地区",regulationType:"法规类型",updated:"排序方式",classificationLevel1:"法规类目",classificationLevel2:"细分类目",effectiveYear:"生效年份",viewDetails:"查看详情 →",viewAll:"查看全部更新 →",regulationTimeline:"── 法规时间线 ──",regulationLibrary:"── 法规库 ──",regulatoryInsights:"法规洞察",upcomingDates:"即将生效日期",aiImpactSummary:"AI影响摘要",naLabel:"暂无",selectLevel1First:"请先选择法规类目",noSubcategories:"暂无细分类目",detailBasicInfo:"基本信息",detailCategory:"法规类别",detailLevel1:"法规类目",detailLevel2:"细分类目",detailCategorySource:"分类来源",detailStatus:"法规状态",detailEffectiveDate:"生效时间",detailEffectiveDateSource:"生效时间来源",detailEffectiveDateEvidence:"生效时间依据",detailCountry:"国家/地区",detailSummary:"法规摘要",detailEnglish:"English",detailChinese:"中文",detailKeyChanges:"核心变更",detailHRImpact:"HR影响评估",detailOfficialSource:"官方来源",detailViewFull:"查看完整法规",upcomingRegulations:"即将生效法规",immediateHRAction:"需要HR马上采取行动",daysUntilEffective:"距离生效",detailDays:"天",hrActionRequired:"需要HR行动",requiredHRActions:"HR 需要采取的行动",noUpcoming:"暂无即将生效的法规",noHRAction:"暂无需HR行动的法规",effectiveDateLabel:"生效时间"},
+  en:{title:"Global Labor Law Intelligence",heroTitle:"Global Labor Law Intelligence",notifications:"Notifications",close:"Close",all:"All",sortDate:"By Update Date",sortCountry:"By Country",libTitle:"Regulation Library",libSub:"All employment regulations for selected countries",searchPlaceholder:"🔍 Search regulations, countries or HR topics...",globeInfo:"Click country to zoom · Scroll to zoom · Return to world view",backToWorld:"Return to World View",resetFilters:"Reset filters",countryRegion:"Country / Region",regulationType:"Regulation Type",updated:"Sort",classificationLevel1:"Regulation Category",classificationLevel2:"Subcategory",effectiveYear:"Effective Year",viewDetails:"View Details →",viewAll:"View All Updates →",regulationTimeline:"── REGULATORY TIMELINE ──",regulationLibrary:"── REGULATION LIBRARY ──",regulatoryInsights:"REGULATORY INSIGHTS",upcomingDates:"UPCOMING EFFECTIVE DATES",aiImpactSummary:"AI IMPACT SUMMARY",naLabel:"N/A",selectLevel1First:"Please select a Regulation Category first",noSubcategories:"No subcategories available",detailBasicInfo:"Basic Info",detailCategory:"Category",detailLevel1:"Regulation Category",detailLevel2:"Subcategory",detailCategorySource:"Category Source",detailStatus:"Status",detailEffectiveDate:"Effective Date",detailEffectiveDateSource:"Effective Date Source",detailEffectiveDateEvidence:"Effective Date Evidence",detailCountry:"Country / Region",detailSummary:"Summary",detailEnglish:"English",detailChinese:"Chinese",detailKeyChanges:"Key Changes",detailHRImpact:"HR Impact Assessment",detailOfficialSource:"Official Source",detailViewFull:"View Full Regulation",upcomingRegulations:"Upcoming Regulations",immediateHRAction:"Immediate HR Action Required",daysUntilEffective:"Days Until Effective",detailDays:"",hrActionRequired:"HR Action Required",requiredHRActions:"Required HR Actions",noUpcoming:"No upcoming regulations",noHRAction:"No HR action required",effectiveDateLabel:"Effective Date"},
+  es:{title:"Inteligencia Laboral Global",heroTitle:"Inteligencia Laboral Global",notifications:"Notificaciones",close:"Cerrar",all:"Todos",sortDate:"Por Fecha",sortCountry:"Por País",libTitle:"Biblioteca de Regulaciones",libSub:"Todas las regulaciones laborales",searchPlaceholder:"🔍 Buscar regulaciones, países o temas de RRHH...",globeInfo:"Haga clic para ampliar · Rueda del ratón para zoom",backToWorld:"Vista Mundial",resetFilters:"Restablecer filtros",countryRegion:"País / Región",regulationType:"Tipo de Regulación",updated:"Ordenar",classificationLevel1:"Clasificación L1",classificationLevel2:"Clasificación L2",effectiveYear:"Año de Vigencia",viewDetails:"Ver Detalles →",viewAll:"Ver Todas las Actualizaciones →",regulationTimeline:"── LÍNEA DE TIEMPO ──",regulationLibrary:"── BIBLIOTECA ──",regulatoryInsights:"PERSPECTIVAS",upcomingDates:"FECHAS PRÓXIMAS",aiImpactSummary:"RESUMEN DE IMPACTO IA",naLabel:"N/A",detailBasicInfo:"Información Básica",detailCategory:"Categoría",detailLevel1:"Categoría Nivel 1",detailLevel2:"Categoría Nivel 2",detailCategorySource:"Fuente de Categoría",detailStatus:"Estado",detailEffectiveDate:"Fecha de Vigencia",detailEffectiveDateSource:"Fuente de Fecha",detailEffectiveDateEvidence:"Evidencia de Fecha",detailCountry:"País / Región",detailSummary:"Resumen",detailEnglish:"English",detailChinese:"Chino",detailKeyChanges:"Cambios Clave",detailHRImpact:"Evaluación de Impacto HR",detailOfficialSource:"Fuente Oficial",detailViewFull:"Ver Regulación Completa",upcomingRegulations:"Próximas Regulaciones",immediateHRAction:"Acción HR Inmediata",daysUntilEffective:"Días Hasta Efectividad",detailDays:"días",hrActionRequired:"Acción HR Requerida",requiredHRActions:"Acciones HR Requeridas",noUpcoming:"No hay regulaciones próximas",noHRAction:"No se requiere acción HR",effectiveDateLabel:"Fecha de Vigencia"}
 };
 
 let currentLang='zh',currentRegion='',currentSort='date',mapInstance=null,geoLayer=null,geoData=null,currentZoom=2,selectedCountry=null,filteredData=[...laborLawData];
@@ -3843,6 +3866,67 @@ const categoryHierarchy = {
   "最低工资Minimum Wages": [],
   "个税Income Tax": ["累进税率Progressive Tax Rates", "固定税率Fixed Rate"]
 };
+
+// ============ Upcoming Regulations & HR Action Logic ============
+// Upcoming window: regulations effective within the next N days (from today)
+const UPCOMING_REGULATION_DAYS = 90;
+
+// Effective Date must be a valid parseable date; unavailable/empty excluded.
+function isEffectiveDateUsable(item){
+  if(!item.effectiveDate)return false;
+  if(item.effectiveDateStatus==='unavailable')return false;
+  const d=new Date(item.effectiveDate);
+  return d instanceof Date && !isNaN(d.getTime());
+}
+
+// All regulations effective within [today, today + UPCOMING_REGULATION_DAYS]
+function getUpcomingRegulations(){
+  const now=new Date();now.setHours(0,0,0,0);
+  const end=new Date(now.getTime()+UPCOMING_REGULATION_DAYS*24*60*60*1000);end.setHours(0,0,0,0);
+  return laborLawData.filter(item=>{
+    if(!isEffectiveDateUsable(item))return false;
+    const ed=new Date(item.effectiveDate);ed.setHours(0,0,0,0);
+    return ed>=now && ed<=end;
+  }).sort((a,b)=>new Date(a.effectiveDate)-new Date(b.effectiveDate));
+}
+
+// Subset of upcoming regulations grouped into "already effective today"
+function isEffectiveToday(item){
+  if(!isEffectiveDateUsable(item))return false;
+  const now=new Date();now.setHours(0,0,0,0);
+  const ed=new Date(item.effectiveDate);ed.setHours(0,0,0,0);
+  return ed<=now;
+}
+
+// HR Action Required: simple, stable rule-based detection with safe fallback.
+// - If item.hrActionRequired is a boolean, use it directly.
+// - Otherwise recognise keywords in the law text / category / summary.
+// - Default to false if unknown; never throws.
+const HR_ACTION_KEYWORDS = [
+  'minimum wage','min wage','social security','social insurance',
+  'employer contribution','payroll','leave policy','paternity','maternity',
+  'parental','severance','redundancy','termination','overtime','pension',
+  'epf','socso','eis','hrdf','tax','withholding','income tax',
+  'minimum','increase','adjustment','registry','reporting','remittance'
+];
+function computeHrAction(item){
+  // Prefer an existing explicit flag from the data.
+  if(item.hrActionRequired===true)return true;
+  if(item.hrActionRequired===false)return false;
+  // Fallback keyword match on concatenated text.
+  const text=[item.law,item.lawZh,item.category,item.primaryCategory,item.secondaryCategory,item.summary,item.summaryZh].filter(Boolean).join(' ').toLowerCase();
+  return HR_ACTION_KEYWORDS.some(kw=>text.indexOf(kw.toLowerCase())>=0);
+}
+function getDaysUntilEffective(dateStr){
+  const now=new Date();now.setHours(0,0,0,0);
+  const ed=new Date(dateStr);ed.setHours(0,0,0,0);
+  if(isNaN(ed.getTime()))return null;
+  return Math.ceil((ed-now)/(1000*60*60*24));
+}
+// Upcoming regulations that require HR action
+function getImmediateActionRegulations(){
+  return getUpcomingRegulations().filter(item=>computeHrAction(item));
+}
 
 function populateLevel1Filter(){
   const sel=document.getElementById('filterLevel1');
@@ -3941,22 +4025,92 @@ function renderLawCards(){
 function updateKPIs(){
   document.getElementById('kTotal').textContent=laborLawData.length;
   document.getElementById('kCountries').textContent=[...new Set(laborLawData.map(d=>d.country))].length;
-  const thirty=new Date();thirty.setDate(thirty.getDate()-30);
-  document.getElementById('kUpdated30').textContent=laborLawData.filter(d=>d.effectiveDate&&new Date(d.effectiveDate)>=thirty).length;
-  document.getElementById('kAction').textContent=laborLawData.filter(d=>d.status==='action-required'||d.status==='upcoming').length;
+  const upcoming=getUpcomingRegulations();
+  const immediate=getImmediateActionRegulations();
+  document.getElementById('kUpdated30').textContent=upcoming.length;
+  document.getElementById('kAction').textContent=immediate.length;
+  // Keep the two derived lists in sync for card clicks & list
+  window._upcomingRegulations=upcoming;
+  window._immediateActionRegulations=immediate;
 }
 
 function renderUpcoming(){
   const el=document.getElementById('upcomingList');
-  const upcoming=laborLawData.filter(d=>d.effectiveDate).sort((a,b)=>new Date(a.effectiveDate)-new Date(b.effectiveDate)).slice(0,6);
+  const upcoming=getUpcomingRegulations();
+  const t=i18n[currentLang];
   let html='';
-  upcoming.forEach(item=>{
-    html+='<div class="upcoming-item" onclick="openDetail(\''+item.id+'\')">';
-    html+='<div class="upcoming-date">'+item.effectiveDate+' · '+item.flag+' '+getCountryName(item.country)+'</div>';
-    html+='<div class="upcoming-title">'+item.law.substring(0,50)+(item.law.length>50?'...':'')+'</div>';
-    html+='</div>';
-  });
+  if(!upcoming.length){
+    html='<div style="padding:14px;text-align:center;color:var(--text3);font-size:12px">'+(t.noUpcoming||'暂无即将生效的法规')+'</div>';
+  }else{
+    upcoming.forEach(item=>{
+      const days=getDaysUntilEffective(item.effectiveDate);
+      const isHR=computeHrAction(item);
+      html+='<div class="upcoming-item'+(isHR?' upcoming-hr-action':'')+'" onclick="openDetail(\''+item.id+'\')">';
+      html+='<div class="upcoming-date">'+item.effectiveDate+' · '+item.flag+' '+getCountryName(item.country);
+      if(isHR)html+=' <span class="hr-badge">'+(t.hrActionRequired||'需要HR行动')+'</span>';
+      html+='</div>';
+      html+='<div class="upcoming-title">'+item.law.substring(0,50)+(item.law.length>50?'...':'')+'</div>';
+      if(days!==null&&days!==undefined)html+='<div class="upcoming-meta">'+(t.daysUntilEffective||'距离生效')+': <strong>'+days+'</strong> '+(t.detailDays||'天')+'</div>';
+      html+='</div>';
+    });
+  }
   el.innerHTML=html;
+}
+
+// ============ Embedded Panel: Upcoming / HR Action ============
+function buildUpcomingItemHtml(item, showSummary){
+  const t=i18n[currentLang];
+  const days=getDaysUntilEffective(item.effectiveDate);
+  const isHR=computeHrAction(item);
+  const summary=(item.hrActionSummary&&item.hrActionSummary[currentLang])?item.hrActionSummary[currentLang]:'';
+  let html='<div class="upcoming-item'+(isHR?' upcoming-hr-action':'')+'" onclick="closeEmbeddedPanel();openDetail(\''+item.id+'\')" style="padding:12px;border-bottom:1px solid var(--border-light);cursor:pointer">';
+  html+='<div style="display:flex;justify-content:space-between;align-items:center">';
+  html+='<div><span style="font-size:16px;margin-right:6px">'+item.flag+'</span><strong>'+getCountryName(item.country)+'</strong>';
+  html+='<span class="lc-cat" style="margin-left:8px">'+(item.primaryCategory||item.category||'')+'</span>';
+  if(isHR)html+=' <span class="hr-badge">'+(t.hrActionRequired||'需要HR行动')+'</span>';
+  html+='</div>';
+  if(days!==null&&days!==undefined)html+='<div style="font-size:11px;color:var(--text3);white-space:nowrap">'+(t.daysUntilEffective||'距离生效')+': '+days+' '+(t.detailDays||'天')+'</div>';
+  html+='</div>';
+  html+='<div style="font-size:13px;margin-top:4px">'+item.law+'</div>';
+  html+='<div style="font-size:11px;color:var(--accent);margin-top:2px">'+(t.detailEffectiveDate||'生效时间')+': '+item.effectiveDate+'</div>';
+  if(showSummary&&summary)html+='<div class="hr-action-section" style="margin-top:8px;padding:8px"><strong>'+(t.requiredHRActions||'HR 需要采取的行动')+':</strong><br><div class="hr-action-item">'+summary+'</div></div>';
+  html+='</div>';
+  return html;
+}
+
+function showUpcomingPanel(){
+  const t=i18n[currentLang];
+  const upcoming=getUpcomingRegulations();
+  document.getElementById('embeddedPanelTitle').textContent=(t.upcomingRegulations||'即将生效法规')+' ('+upcoming.length+')';
+  let html='';
+  if(!upcoming.length){
+    html='<div style="padding:20px;text-align:center;color:var(--text3)">'+(t.noUpcoming||'暂无即将生效的法规')+'</div>';
+  }else{
+    html+=upcoming.map(item=>buildUpcomingItemHtml(item,false)).join('');
+  }
+  document.getElementById('embeddedPanelContent').innerHTML=html;
+  document.getElementById('embeddedPanelOverlay').classList.add('open');
+  document.getElementById('embeddedPanel').classList.add('open');
+}
+
+function showHRActionPanel(){
+  const t=i18n[currentLang];
+  const immediate=getImmediateActionRegulations();
+  document.getElementById('embeddedPanelTitle').textContent=(t.immediateHRAction||'需要HR马上采取行动')+' ('+immediate.length+')';
+  let html='';
+  if(!immediate.length){
+    html='<div style="padding:20px;text-align:center;color:var(--text3)">'+(t.noHRAction||'暂无需HR行动的法规')+'</div>';
+  }else{
+    html+=immediate.map(item=>buildUpcomingItemHtml(item,true)).join('');
+  }
+  document.getElementById('embeddedPanelContent').innerHTML=html;
+  document.getElementById('embeddedPanelOverlay').classList.add('open');
+  document.getElementById('embeddedPanel').classList.add('open');
+}
+
+function closeEmbeddedPanel(){
+  document.getElementById('embeddedPanelOverlay').classList.remove('open');
+  document.getElementById('embeddedPanel').classList.remove('open');
 }
 
 function renderAISummary(){

@@ -29,3 +29,6 @@ __pycache__/
 # Temporary
 *.tmp
 *.temp
+
+# Backup
+*.bak_pre_hr
