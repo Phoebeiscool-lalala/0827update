@@ -99,6 +99,54 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
 .map-shell{position:relative;width:100%;flex:1;min-height:180px;border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--border)}
 #leafletMap{width:100%;height:100%;background:#e8edf5}
 [data-theme="dark"] #leafletMap{background:#1a1d24}
+/* Map enhanced styles - marker, label, country selection */
+.map-country-marker .marker-pin {
+  width: 20px;
+  height: 20px;
+  border-radius: 50% 50% 50% 0;
+  background: #1d4ed8;
+  position: relative;
+  transform: rotate(-45deg);
+  box-shadow: 0 2px 8px rgba(29, 78, 216, 0.5);
+  animation: markerBounce 0.5s ease-out;
+}
+.map-country-marker .marker-pin::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  margin: 5px 0 0 5px;
+  background: #fff;
+  position: absolute;
+  border-radius: 50%;
+}
+@keyframes markerBounce {
+  0% { transform: rotate(-45deg) translateY(-30px); opacity: 0; }
+  60% { transform: rotate(-45deg) translateY(3px); }
+  100% { transform: rotate(-45deg) translateY(0); opacity: 1; }
+}
+.map-country-label-icon {
+  background: none !important;
+  border: none !important;
+}
+.map-country-label {
+  background: rgba(30, 64, 175, 0.92);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.25);
+  animation: labelFadeIn 0.4s ease-out;
+  backdrop-filter: blur(4px);
+}
+.mcl-name { display: block; font-size: 14px; font-weight: 700; }
+.mcl-count { display: block; font-size: 11px; font-weight: 500; opacity: 0.85; margin-top: 2px; }
+@keyframes labelFadeIn {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
 .leaflet-container{font-family:var(--font)}
 .leaflet-control-zoom{border:none!important;box-shadow:var(--shadow)!important}
 .leaflet-control-zoom a{background:var(--bg2)!important;color:var(--text)!important;border:1px solid var(--border)!important;width:26px!important;height:26px!important;line-height:26px!important;font-size:13px!important;border-radius:var(--radius-xs)!important}
@@ -1809,7 +1857,7 @@ const i18n={
   es:{title:"Inteligencia Laboral Global",heroTitle:"Inteligencia Laboral Global",notifications:"Notificaciones",close:"Cerrar",all:"Todos",sortDate:"Por Fecha",sortCountry:"Por País",libTitle:"Biblioteca de Regulaciones",libSub:"Todas las regulaciones laborales",searchPlaceholder:"🔍 Buscar regulaciones, países o temas de RRHH...",globeInfo:"Haga clic para ampliar · Rueda del ratón para zoom",backToWorld:"Vista Mundial",resetFilters:"Restablecer filtros",countryRegion:"País / Región",regulationType:"Tipo de Regulación",updated:"Ordenar",classificationLevel1:"Clasificación L1",classificationLevel2:"Clasificación L2",effectiveYear:"Año de Vigencia",viewDetails:"Ver Detalles →",viewAll:"Ver Todas las Actualizaciones →",regulationTimeline:"── LÍNEA DE TIEMPO ──",regulationLibrary:"── BIBLIOTECA ──",regulatoryInsights:"PERSPECTIVAS",upcomingDates:"FECHAS PRÓXIMAS",aiImpactSummary:"RESUMEN DE IMPACTO IA",naLabel:"N/A",detailBasicInfo:"Información Básica",detailCategory:"Categoría",detailLevel1:"Categoría Nivel 1",detailLevel2:"Categoría Nivel 2",detailCategorySource:"Fuente de Categoría",detailStatus:"Estado",detailEffectiveDate:"Fecha de Vigencia",detailEffectiveDateSource:"Fuente de Fecha",detailEffectiveDateEvidence:"Evidencia de Fecha",detailCountry:"País / Región",detailSummary:"Resumen",detailEnglish:"English",detailChinese:"Chino",detailKeyChanges:"Cambios Clave",detailHRImpact:"Evaluación de Impacto HR",detailOfficialSource:"Fuente Oficial",detailViewFull:"Ver Regulación Completa",upcomingRegulations:"Próximas Regulaciones",immediateHRAction:"Acción HR Inmediata",daysUntilEffective:"Días Hasta Efectividad",detailDays:"días",hrActionRequired:"Acción HR Requerida",requiredHRActions:"Acciones HR Requeridas",noUpcoming:"No hay regulaciones próximas",noHRAction:"No se requiere acción HR",effectiveDateLabel:"Fecha de Vigencia",selectLevel1First:"Seleccione primero una categoría normativa",noSubcategories:"No hay subcategorías disponibles",noResults:"Ninguna regulación coincide con los filtros.",libCount:"Mostrando {n} regulaciones",statusEffective:"Vigente",statusUpcoming:"Próxima",statusActionRequired:"Acción requerida",statusActive:"Activa",viewAllUpdates:"Ver todas las actualizaciones →",recentUpdates:"ACTUALIZACIONES RECIENTES",legend3:"3+ regulaciones",legend2:"2 regulaciones",legend1:"1 regulación",regulationText:" regulaciones",businessDetails:"Detalles del Negocio",summaryZhLabel:"Chino",summaryEnLabel:"English",aiSummary30d:"<strong>{n}</strong> regulaciones entraron en vigor en los últimos 30 días:",aiSummaryCat:"{count} que afectan {cat}",aiSummaryHr:"{n} requieren actualización de políticas de RR. HH.",aiSummaryInfo:"{n} son solo actualizaciones informativas",noDetailPage:"No hay página de detalle disponible",effectiveDatePrefix:"Entrada en vigor: ",countryRegionShort:"País / Región",heroTag:"INTELIGENCIA REGULATORIA IA",heroSub:"Monitorear · Comparar · Analizar regulaciones laborales globales",heroBadge:"Monitoreo IA Activo",kpiActive:"Regulaciones Vigentes",kpiCountries:"Países Cubiertos",filtersLabel:"FILTROS",aiPanelTitle:"🤖 Asistente IA DeepSeek",aiTabChat:"💬 Chat",aiTabTranslate:"🌐 Traducir",aiTabAnalyze:"📊 Analizar",aiChatWelcome:"👋 ¡Hola! Soy tu asistente de derecho laboral. Puedo ayudarte:<br>• Responder preguntas de derecho laboral por país<br>• Comparar regulaciones entre países<br>• Dar consejos de cumplimiento de RR. HH.<br><br>¿En qué puedo ayudarte?",aiChatPlaceholder:"Pregúntame sobre derecho laboral...",aiSend:"Enviar",aiTranslatePlaceholder:"Ingrese el texto de la regulación a traducir...",aiTranslateBtn:"Traducir",aiAnalyzeCurrent:"📋 Analizar Regulación Actual",aiRegionalInsight:"🌍 Análisis de Tendencias Regionales",aiKeyTitle:"⚙️ Configuración de API DeepSeek",aiKeyDesc:"Ingrese su clave de API de DeepSeek para habilitar las funciones de IA.<br>La clave se guarda solo en su navegador local, nunca se sube a ningún servidor.",aiKeyPlaceholder:"sk-xxxxxxxxxxxxxxxx",aiKeySave:"Guardar",aiKeyCancel:"Cancelar",aiKeyGet:"Obtener clave: ",aiKeyInvalid:"La clave de API no es válida, revísela e intente de nuevo",aiKeyRequired:"Configure primero su clave de API de DeepSeek",aiKeySaved:"Clave de API guardada",aiKeyEmpty:"Ingrese una clave de API",aiAnalyzeHint:"Seleccione una regulación y haga clic en \"Analizar Regulación Actual\", o seleccione una región y haga clic en \"Análisis de Tendencias Regionales\"",aiNoLaw:"Haga clic en una regulación para ver sus detalles primero",aiTranslating:"Traduciendo...",aiThinking:"Pensando...",closeCountryPage:"✕ Cerrar",regionAsia:"Asia",regionEurope:"Europa",regionAmericas:"Américas",regionAfrica:"África",regionOceania:"Oceanía",aiRateLimited:"Demasiadas solicitudes, inténtelo de nuevo más tarde"}
 };
 
-let currentLang='zh',currentRegion='',currentSort='date',mapInstance=null,geoLayer=null,geoData=null,currentZoom=2,selectedCountry=null,filteredData=[...laborLawData];
+let currentLang='zh',currentRegion='',currentSort='date',mapInstance=null,geoLayer=null,geoData=null,currentZoom=2,selectedCountry=null,filteredData=[...laborLawData],mapMarker=null,mapLabel=null;
 
 // Spanish country-name mapping (zh via countryNameMap; en = country field itself)
 const countryNamesEs = {
@@ -1825,12 +1873,6 @@ const countryNamesEs = {
   "Israel":"Israel","Egypt":"Egipto","Kenya":"Kenia","Malaysia":"Malasia"
 };
 const SUPPORTED_COUNTRIES = ['SG', 'MY', 'TH'];
-// SE Asia country zoom coordinates
-const countryZoomCoords = {
-  Singapore: [1.35, 103.82, 10],
-  Malaysia: [4.21, 101.98, 6],
-  Thailand: [15.87, 100.99, 6]
-};
 
 // Category / Subcategory label mapping: ID -> {zh, en, es}
 const categoryLabels = {
@@ -1883,7 +1925,7 @@ function getStatusLabel(status){
   return t.statusActive||'Active';
 }
 
-function switchLang(lang){currentLang=lang;applyFilters();updateLangButton();updateI18nText();populateRegionTabs();populateCountryFilter();populateYearFilter();refreshCategoryFilters();if(currentViewingLaw)openDetail(currentViewingLaw.id)}
+function switchLang(lang){currentLang=lang;applyFilters();updateLangButton();updateI18nText();populateRegionTabs();populateCountryFilter();populateYearFilter();refreshCategoryFilters();if(currentViewingLaw)openDetail(currentViewingLaw.id);if(selectedCountry&&mapInstance){const regCount=filteredData.filter(d=>d.country===selectedCountry).length;addMapLabel(selectedCountry,regCount);document.getElementById('mcCount').textContent=regCount+regCountText[currentLang]}renderLegend()}
 // Re-populate L1/L2 category filters preserving the selected values (for language switch)
 function refreshCategoryFilters(){
   const sel1=document.getElementById('filterLevel1');
@@ -1924,8 +1966,6 @@ const regions=[{key:'southeast-asia',label:{zh:'东南亚',en:'Southeast Asia',e
 let currentTabRegion='';
 
 function populateRegionTabs(){const el=document.getElementById('heroChips');el.innerHTML='';regions.forEach(r=>{const btn=document.createElement('button');btn.className='tab-btn'+(r.key===currentTabRegion?' active':'');btn.textContent=r.label[currentLang];btn.onclick=()=>{currentTabRegion=r.key;document.getElementById('filterRegion').value=r.key;applyFilters();populateRegionTabs()};el.appendChild(btn)})}
-
-function onCountrySelectChange(){applyFilters();const country=document.getElementById('filterCountry').value;if(country&&mapInstance){const coords=countryZoomCoords[country];if(coords){mapInstance.setView([coords[0],coords[1]],coords[2]);document.getElementById('mapReturnBtn').classList.add('show');document.getElementById('mapChip').classList.add('show');const cd=laborLawData.filter(d=>d.country===country);document.getElementById('mcName').innerHTML=(cd[0]?cd[0].flag+' ':'')+getCountryName(country)+(countryNameMap[country]?' ('+countryNameMap[country]+')':'');document.getElementById('mcCount').textContent=cd.length+' regulation'+(cd.length>1?'s':'')}}else if(!country&&mapInstance){returnToWorldView()}}
 
 const categoryHierarchy = {
   "基础信息Basic Information": [],
@@ -2309,50 +2349,56 @@ function closeDrawer(){document.getElementById('drawerOverlay').classList.remove
 function openCountryPage(country){const url=countryDetailPages[country];if(!url){showToast(i18n[currentLang].noDetailPage);return}document.getElementById('countryModalTitle').innerHTML='📖 '+getCountryName(country);document.getElementById('countryModalIframe').src=url;document.getElementById('countryModal').classList.add('open')}
 function closeCountryPage(){document.getElementById('countryModal').classList.remove('open');document.getElementById('countryModalIframe').src=''}
 
+const countryZoomCoords={Singapore:[1.35,103.82,12],Malaysia:[4.21,101.98,7],Thailand:[15.87,100.99,7]};
+const countryLabelMap={Singapore:{zh:'新加坡',en:'Singapore',es:'Singapur'},Malaysia:{zh:'马来西亚',en:'Malaysia',es:'Malasia'},Thailand:{zh:'泰国',en:'Thailand',es:'Tailandia'}};
+const regCountText={zh:' 条法规',en:' Regulations',es:' normativas'};
+const STYLES={selected:{fillColor:'#1d4ed8',fillOpacity:0.85,weight:3,color:'#1e40af',opacity:1},supported:{fillColor:'#3b82f6',fillOpacity:0.55,weight:1.5,color:'#93c5fd',opacity:0.7},dimmed:{fillColor:'#93c5fd',fillOpacity:0.15,weight:1,color:'#bfdbfe',opacity:0.4},background:{fillColor:'#e2e8f0',fillOpacity:0.05,weight:0.5,color:'#ccc',opacity:0.3}};
+function getCountryStyle(name,counts){const c=counts[name]||0;if(name===selectedCountry)return STYLES.selected;if(SUPPORTED_COUNTRIES.some(sc=>name===getCountryName(sc))){if(c>0)return{fillColor:c>3?'#2563eb':c>1?'#3b82f6':'#60a5fa',fillOpacity:selectedCountry?0.15:0.55,weight:1.5,color:selectedCountry?'#bfdbfe':'#93c5fd',opacity:selectedCountry?0.4:0.7};return{...STYLES.supported,fillOpacity:selectedCountry?0.1:0.3}}return STYLES.background}
+function refreshGeoStyles(){if(!geoLayer)return;const cc={};const data=selectedCountry?filteredData:laborLawData;data.forEach(d=>{cc[d.country]=(cc[d.country]||0)+1});geoLayer.eachLayer(layer=>{const n=layer.feature&&layer.feature.properties.ADMIN;if(n)layer.setStyle(getCountryStyle(n,cc))})}
 function initMap(){
   if (typeof L === 'undefined' || !L) { console.warn('Leaflet not available'); return; }
   if (mapInstance) { return; }
   try{
-    mapInstance=L.map('leafletMap',{zoomControl:true,scrollWheelZoom:true}).setView([10,105],5);
+    mapInstance=L.map('leafletMap',{zoomControl:true,scrollWheelZoom:true,fadeAnimation:true,zoomAnimation:true}).setView([10,105],5);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:18}).addTo(mapInstance);
     fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
       .then(r=>r.json()).then(data=>{
         geoData=data;
         const cc={};laborLawData.forEach(d=>{cc[d.country]=(cc[d.country]||0)+1});
-        geoLayer=L.geoJSON(data,{style:f=>{const n=f.properties.ADMIN;const c=cc[n]||0;const isSupported=SUPPORTED_COUNTRIES.some(sc=>n===getCountryName(sc));if(isSupported){return{fillColor:c>3?'#2563eb':c>1?'#3b82f6':c>0?'#60a5fa':'#e2e8f0',fillOpacity:c>0?0.7:0.3,weight:2,color:'#fff',opacity:0.8}}return{fillColor:'#e2e8f0',fillOpacity:0.05,weight:0.5,color:'#ccc',opacity:0.3}},onEachFeature:(f,l)=>{
+        geoLayer=L.geoJSON(data,{style:f=>getCountryStyle(f.properties.ADMIN,cc),onEachFeature:(f,l)=>{
           const n=f.properties.ADMIN;const c=cc[n]||0;const isSupported=SUPPORTED_COUNTRIES.some(sc=>n===getCountryName(sc));
-          if(isSupported&&c>0){l.bindTooltip(n+' ('+c+')',{className:'map-tip',direction:'top',offset:[0,-5]});l.on('click',()=>zoomToCountry(n,c));l.on('mouseover',function(){this.setStyle({fillOpacity:0.9,weight:2})});l.on('mouseout',function(){geoLayer.resetStyle(this)})}
+          if(isSupported&&c>0){l.bindTooltip(n+' ('+c+')',{className:'map-tip',direction:'top',offset:[0,-5]});l.on('click',()=>zoomToCountry(n,c));l.on('mouseover',function(){if(!selectedCountry||n===selectedCountry)this.setStyle({fillOpacity:0.9,weight:3})});l.on('mouseout',function(){refreshGeoStyles()})}
         }}).addTo(mapInstance);
         renderLegend(cc);
       }).catch(()=>{});
   }catch(e){console.error('Map init error',e)}
 }
-
+function focusMapOnCountry(name){if(!mapInstance||!geoLayer)return;let bounds=null;geoLayer.eachLayer(layer=>{if(layer.feature&&layer.feature.properties.ADMIN===name)bounds=layer.getBounds()});if(bounds&&bounds.isValid()){mapInstance.flyToBounds(bounds,{paddingTopLeft:[30,30],paddingBottomRight:[30,30],maxZoom:countryZoomCoords[name]?countryZoomCoords[name][2]:10,duration:0.5})}else{const coords=countryZoomCoords[name];if(coords)mapInstance.flyTo([coords[0],coords[1]],coords[2],{duration:0.5})}}
+function addMapMarker(name){removeMapMarker();if(!mapInstance)return;const coords=countryZoomCoords[name];if(!coords)return;const icon=L.divIcon({className:'map-country-marker',html:'<div class="marker-pin"></div>',iconSize:[24,36],iconAnchor:[12,36]});mapMarker=L.marker([coords[0],coords[1]],{icon:icon,interactive:false}).addTo(mapInstance)}
+function removeMapMarker(){if(mapMarker){mapInstance.removeLayer(mapMarker);mapMarker=null}}
+function addMapLabel(name,count){removeMapLabel();if(!mapInstance)return;const coords=countryZoomCoords[name];if(!coords)return;const label=countryLabelMap[name];const labelText=label?(label[currentLang]||name):name;const icon=L.divIcon({className:'map-country-label-icon',html:'<div class="map-country-label"><span class="mcl-name">'+labelText+'</span><span class="mcl-count">'+count+regCountText[currentLang]+'</span></div>',iconSize:[160,50],iconAnchor:[80,50]});mapLabel=L.marker([coords[0],coords[1]],{icon:icon,interactive:false}).addTo(mapInstance)}
+function removeMapLabel(){if(mapLabel){mapInstance.removeLayer(mapLabel);mapLabel=null}}
 function zoomToCountry(name,count){
-  selectedCountry=name;currentZoom=6;
-  const coords=countryZoomCoords[name];
-  if(coords){mapInstance.setView([coords[0],coords[1]],coords[2])}else{mapInstance.eachLayer(layer=>{if(layer.feature&&layer.feature.properties.ADMIN===name){mapInstance.fitBounds(layer.getBounds(),{maxZoom:6})}})}
+  selectedCountry=name;
+  const regCount=count||filteredData.filter(d=>d.country===name).length;
+  focusMapOnCountry(name);addMapMarker(name);addMapLabel(name,regCount);refreshGeoStyles();
   document.getElementById('mapReturnBtn').classList.add('show');
   document.getElementById('mapChip').classList.add('show');
   const cd=laborLawData.filter(d=>d.country===name);
   document.getElementById('mcName').innerHTML=(cd[0]?cd[0].flag+' ':'')+getCountryName(name)+(countryNameMap[name]?' ('+countryNameMap[name]+')':'');
-  document.getElementById('mcCount').textContent=count+i18n[currentLang].regulationText;
+  document.getElementById('mcCount').textContent=regCount+regCountText[currentLang];
   document.getElementById('filterCountry').value=name;
   applyFilters();
 }
-
 function returnToWorldView(){
-  selectedCountry=null;currentZoom=5;mapInstance.setView([10,105],5);
+  selectedCountry=null;removeMapMarker();removeMapLabel();
+  mapInstance.flyTo([10,105],5,{duration:0.5});refreshGeoStyles();
   document.getElementById('mapReturnBtn').classList.remove('show');
   document.getElementById('mapChip').classList.remove('show');
   document.getElementById('filterCountry').value='';applyFilters();
 }
-
-function renderLegend(counts){
-  const el=document.getElementById('globeLegend');
-  const t=i18n[currentLang];
-  el.innerHTML='<div class="gleg"><span class="gdot" style="background:#2563eb"></span>'+t.legend3+'</div><div class="gleg"><span class="gdot" style="background:#3b82f6"></span>'+t.legend2+'</div><div class="gleg"><span class="gdot" style="background:#60a5fa"></span>'+t.legend1+'</div>';
-}
+function onCountrySelectChange(){applyFilters();const country=document.getElementById('filterCountry').value;if(country&&mapInstance){const regCount=filteredData.filter(d=>d.country===country).length;zoomToCountry(country,regCount)}else if(!country&&mapInstance){returnToWorldView()}}
+function renderLegend(counts){const el=document.getElementById('globeLegend');const t=i18n[currentLang];el.innerHTML='<div class="gleg"><span class="gdot" style="background:#2563eb"></span>'+t.legend3+'</div><div class="gleg"><span class="gdot" style="background:#3b82f6"></span>'+t.legend2+'</div><div class="gleg"><span class="gdot" style="background:#60a5fa"></span>'+t.legend1+'</div>'}
 
 function applyURLParams(){
   const p=new URLSearchParams(window.location.search);

@@ -391,7 +391,7 @@ const i18n = {
   }
 };
 
-let currentLang = 'zh', currentRegion = '', currentSort = 'date', mapInstance = null, geoLayer = null, geoData = null, currentZoom = 5, selectedCountry = null, filteredData = [...laborLawData];
+let currentLang = 'zh', currentRegion = '', currentSort = 'date', mapInstance = null, geoLayer = null, geoData = null, currentZoom = 5, selectedCountry = null, filteredData = [...laborLawData], mapMarker = null, mapLabel = null;
 
 // ============ Category Labels (trilingual) ============
 const categoryLabels = {
@@ -423,6 +423,12 @@ function switchLang(lang) {
   populateYearFilter();
   populateLevel1Filter();
   if (currentViewingLaw) openDetail(currentViewingLaw.id);
+  if (selectedCountry && mapInstance) {
+    const regCount = filteredData.filter(d => d.country === selectedCountry).length;
+    addMapLabel(selectedCountry, regCount);
+    document.getElementById('mcCount').textContent = regCount + regCountText[currentLang];
+  }
+  renderLegend();
 }
 
 function updateLangButton() {
@@ -542,24 +548,6 @@ function populateRegionTabs() {
     btn.onclick = () => { currentTabRegion = r.key; document.getElementById('filterRegion').value = r.key; applyFilters(); populateRegionTabs(); };
     el.appendChild(btn);
   });
-}
-
-function onCountrySelectChange() {
-  applyFilters();
-  const country = document.getElementById('filterCountry').value;
-  if (country && mapInstance) {
-    const coords = countryZoomCoords[country];
-    if (coords) {
-      mapInstance.setView([coords[0], coords[1]], coords[2]);
-      document.getElementById('mapReturnBtn').classList.add('show');
-      document.getElementById('mapChip').classList.add('show');
-      const cd = laborLawData.filter(d => d.country === country);
-      document.getElementById('mcName').innerHTML = (cd[0] ? cd[0].flag + ' ' : '') + getCountryName(country) + (countryNameMap[country] ? ' (' + countryNameMap[country] + ')' : '');
-      document.getElementById('mcCount').textContent = cd.length + ' regulation' + (cd.length > 1 ? 's' : '');
-    }
-  } else if (!country && mapInstance) {
-    returnToWorldView();
-  }
 }
 
 // ============ Filtering ============
@@ -800,26 +788,63 @@ function openCountryPage(country) {
 function closeCountryPage() { document.getElementById('countryModal').classList.remove('open'); document.getElementById('countryModalIframe').src = ''; }
 
 // ============ Map ============
+const countryZoomCoords = {
+  Singapore: [1.35, 103.82, 12],
+  Malaysia: [4.21, 101.98, 7],
+  Thailand: [15.87, 100.99, 7]
+};
+
+// Trilingual country label map for map overlay
+const countryLabelMap = {
+  Singapore: { zh: '新加坡', en: 'Singapore', es: 'Singapur' },
+  Malaysia: { zh: '马来西亚', en: 'Malaysia', es: 'Malasia' },
+  Thailand: { zh: '泰国', en: 'Thailand', es: 'Tailandia' }
+};
+
+// Regulation count suffix per language
+const regCountText = { zh: ' 条法规', en: ' Regulations', es: ' normativas' };
+
+// Style definitions for geo layers
+const STYLES = {
+  selected: { fillColor: '#1d4ed8', fillOpacity: 0.85, weight: 3, color: '#1e40af', opacity: 1 },
+  supported: { fillColor: '#3b82f6', fillOpacity: 0.55, weight: 1.5, color: '#93c5fd', opacity: 0.7 },
+  dimmed: { fillColor: '#93c5fd', fillOpacity: 0.15, weight: 1, color: '#bfdbfe', opacity: 0.4 },
+  background: { fillColor: '#e2e8f0', fillOpacity: 0.05, weight: 0.5, color: '#ccc', opacity: 0.3 }
+};
+
+function getCountryStyle(name, counts) {
+  const c = counts[name] || 0;
+  if (name === selectedCountry) return STYLES.selected;
+  if (SUPPORTED_COUNTRIES.some(sc => name === getCountryName(sc))) {
+    if (c > 0) return { fillColor: c > 3 ? '#2563eb' : c > 1 ? '#3b82f6' : '#60a5fa', fillOpacity: selectedCountry ? 0.15 : 0.55, weight: 1.5, color: selectedCountry ? '#bfdbfe' : '#93c5fd', opacity: selectedCountry ? 0.4 : 0.7 };
+    return { ...STYLES.supported, fillOpacity: selectedCountry ? 0.1 : 0.3 };
+  }
+  return STYLES.background;
+}
+
+function refreshGeoStyles() {
+  if (!geoLayer) return;
+  const cc = {};
+  const data = selectedCountry ? filteredData : laborLawData;
+  data.forEach(d => { cc[d.country] = (cc[d.country] || 0) + 1; });
+  geoLayer.eachLayer(layer => {
+    const n = layer.feature && layer.feature.properties.ADMIN;
+    if (n) layer.setStyle(getCountryStyle(n, cc));
+  });
+}
+
 function initMap() {
   if (typeof L === 'undefined' || !L) { console.warn('Leaflet not available'); return; }
   if (mapInstance) { return; }
   try {
-    mapInstance = L.map('leafletMap', { zoomControl: true, scrollWheelZoom: true }).setView([10, 105], 5);
+    mapInstance = L.map('leafletMap', { zoomControl: true, scrollWheelZoom: true, fadeAnimation: true, zoomAnimation: true }).setView([10, 105], 5);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors', maxZoom: 18 }).addTo(mapInstance);
     fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
       .then(r => r.json()).then(data => {
         geoData = data;
         const cc = {}; laborLawData.forEach(d => { cc[d.country] = (cc[d.country] || 0) + 1; });
         geoLayer = L.geoJSON(data, {
-          style: f => {
-            const n = f.properties.ADMIN;
-            const c = cc[n] || 0;
-            const isSupported = SUPPORTED_COUNTRIES.some(sc => n === getCountryName(sc));
-            if (isSupported) {
-              return { fillColor: c > 3 ? '#2563eb' : c > 1 ? '#3b82f6' : c > 0 ? '#60a5fa' : '#e2e8f0', fillOpacity: c > 0 ? 0.7 : 0.3, weight: 2, color: '#fff', opacity: 0.8 };
-            }
-            return { fillColor: '#e2e8f0', fillOpacity: 0.05, weight: 0.5, color: '#ccc', opacity: 0.3 };
-          },
+          style: f => getCountryStyle(f.properties.ADMIN, cc),
           onEachFeature: (f, l) => {
             const n = f.properties.ADMIN;
             const c = cc[n] || 0;
@@ -827,8 +852,8 @@ function initMap() {
             if (isSupported && c > 0) {
               l.bindTooltip(n + ' (' + c + ')', { className: 'map-tip', direction: 'top', offset: [0, -5] });
               l.on('click', () => zoomToCountry(n, c));
-              l.on('mouseover', function () { this.setStyle({ fillOpacity: 0.9, weight: 2 }); });
-              l.on('mouseout', function () { geoLayer.resetStyle(this); });
+              l.on('mouseover', function () { if (!selectedCountry || n === selectedCountry) this.setStyle({ fillOpacity: 0.9, weight: 3 }); });
+              l.on('mouseout', function () { refreshGeoStyles(); });
             }
           }
         }).addTo(mapInstance);
@@ -837,35 +862,99 @@ function initMap() {
   } catch (e) { console.error('Map init error', e); }
 }
 
-// SE Asia country zoom coordinates
-const countryZoomCoords = {
-  Singapore: [1.35, 103.82, 10],
-  Malaysia: [4.21, 101.98, 6],
-  Thailand: [15.87, 100.99, 6]
-};
+function focusMapOnCountry(name) {
+  if (!mapInstance || !geoLayer) return;
+  let bounds = null;
+  geoLayer.eachLayer(layer => {
+    if (layer.feature && layer.feature.properties.ADMIN === name) {
+      bounds = layer.getBounds();
+    }
+  });
+  if (bounds && bounds.isValid()) {
+    mapInstance.flyToBounds(bounds, { paddingTopLeft: [30, 30], paddingBottomRight: [30, 30], maxZoom: countryZoomCoords[name] ? countryZoomCoords[name][2] : 10, duration: 0.5 });
+  } else {
+    const coords = countryZoomCoords[name];
+    if (coords) mapInstance.flyTo([coords[0], coords[1]], coords[2], { duration: 0.5 });
+  }
+}
+
+function addMapMarker(name) {
+  removeMapMarker();
+  if (!mapInstance) return;
+  const coords = countryZoomCoords[name];
+  if (!coords) return;
+  const icon = L.divIcon({
+    className: 'map-country-marker',
+    html: '<div class="marker-pin"></div>',
+    iconSize: [24, 36],
+    iconAnchor: [12, 36]
+  });
+  mapMarker = L.marker([coords[0], coords[1]], { icon: icon, interactive: false }).addTo(mapInstance);
+}
+
+function removeMapMarker() {
+  if (mapMarker) { mapInstance.removeLayer(mapMarker); mapMarker = null; }
+}
+
+function addMapLabel(name, count) {
+  removeMapLabel();
+  if (!mapInstance) return;
+  const coords = countryZoomCoords[name];
+  if (!coords) return;
+  const label = countryLabelMap[name];
+  const labelText = label ? (label[currentLang] || name) : name;
+  const offset = name === 'Singapore' ? [20, -50] : name === 'Thailand' ? [0, -40] : [0, -45];
+  mapLabel = L.divIcon({
+    className: 'map-country-label-icon',
+    html: '<div class="map-country-label"><span class="mcl-name">' + labelText + '</span><span class="mcl-count">' + count + regCountText[currentLang] + '</span></div>',
+    iconSize: [160, 50],
+    iconAnchor: [80, 50]
+  });
+  mapLabel = L.marker([coords[0], coords[1]], { icon: mapLabel, interactive: false, offset: offset }).addTo(mapInstance);
+}
+
+function removeMapLabel() {
+  if (mapLabel) { mapInstance.removeLayer(mapLabel); mapLabel = null; }
+}
 
 function zoomToCountry(name, count) {
   selectedCountry = name;
-  const coords = countryZoomCoords[name];
-  if (coords) {
-    mapInstance.setView([coords[0], coords[1]], coords[2]);
-  } else {
-    mapInstance.eachLayer(layer => { if (layer.feature && layer.feature.properties.ADMIN === name) { mapInstance.fitBounds(layer.getBounds(), { maxZoom: 6 }); } });
-  }
+  // Use filteredData count if available, fallback to all data
+  const regCount = count || filteredData.filter(d => d.country === name).length;
+  focusMapOnCountry(name);
+  addMapMarker(name);
+  addMapLabel(name, regCount);
+  refreshGeoStyles();
   document.getElementById('mapReturnBtn').classList.add('show');
   document.getElementById('mapChip').classList.add('show');
   const cd = laborLawData.filter(d => d.country === name);
   document.getElementById('mcName').innerHTML = (cd[0] ? cd[0].flag + ' ' : '') + getCountryName(name) + (countryNameMap[name] ? ' (' + countryNameMap[name] + ')' : '');
-  document.getElementById('mcCount').textContent = count + ' regulation' + (count > 1 ? 's' : '');
+  document.getElementById('mcCount').textContent = regCount + regCountText[currentLang];
   document.getElementById('filterCountry').value = name;
   applyFilters();
 }
 
 function returnToWorldView() {
-  selectedCountry = null; currentZoom = 5; mapInstance.setView([10, 105], 5);
+  selectedCountry = null;
+  removeMapMarker();
+  removeMapLabel();
+  mapInstance.flyTo([10, 105], 5, { duration: 0.5 });
+  refreshGeoStyles();
   document.getElementById('mapReturnBtn').classList.remove('show');
   document.getElementById('mapChip').classList.remove('show');
-  document.getElementById('filterCountry').value = ''; applyFilters();
+  document.getElementById('filterCountry').value = '';
+  applyFilters();
+}
+
+function onCountrySelectChange() {
+  applyFilters();
+  const country = document.getElementById('filterCountry').value;
+  if (country && mapInstance) {
+    const regCount = filteredData.filter(d => d.country === country).length;
+    zoomToCountry(country, regCount);
+  } else if (!country && mapInstance) {
+    returnToWorldView();
+  }
 }
 
 function renderLegend(counts) {
