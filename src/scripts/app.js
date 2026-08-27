@@ -417,7 +417,6 @@ function switchLang(lang) {
   currentLang = lang;
   applyFilters();
   updateLangButton();
-  renderNotifPanel();
   updateI18nText();
   populateRegionTabs();
   populateCountryFilter();
@@ -451,7 +450,6 @@ function toggleTheme() {
   h.setAttribute('data-theme', d ? 'light' : 'dark');
   document.getElementById('themeBtn').textContent = d ? '\u2600\uFE0F' : '\uD83C\uDF19';
 }
-function toggleNotifPanel() { document.getElementById('notifPanel').classList.toggle('open'); }
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
@@ -546,7 +544,23 @@ function populateRegionTabs() {
   });
 }
 
-function onCountrySelectChange() { applyFilters(); }
+function onCountrySelectChange() {
+  applyFilters();
+  const country = document.getElementById('filterCountry').value;
+  if (country && mapInstance) {
+    const coords = countryZoomCoords[country];
+    if (coords) {
+      mapInstance.setView([coords[0], coords[1]], coords[2]);
+      document.getElementById('mapReturnBtn').classList.add('show');
+      document.getElementById('mapChip').classList.add('show');
+      const cd = laborLawData.filter(d => d.country === country);
+      document.getElementById('mcName').innerHTML = (cd[0] ? cd[0].flag + ' ' : '') + getCountryName(country) + (countryNameMap[country] ? ' (' + countryNameMap[country] + ')' : '');
+      document.getElementById('mcCount').textContent = cd.length + ' regulation' + (cd.length > 1 ? 's' : '');
+    }
+  } else if (!country && mapInstance) {
+    returnToWorldView();
+  }
+}
 
 // ============ Filtering ============
 function applyFilters() {
@@ -722,21 +736,6 @@ function renderTicker() {
   el.innerHTML = html; el.classList.add('auto');
 }
 
-// ============ Notification Panel ============
-function renderNotifPanel() {
-  const el = document.getElementById('notifBody');
-  let html = '<div class="notif-group-label">' + i18n[currentLang].recentUpdates + '</div>';
-  aiMonitorData.forEach(n => {
-    html += '<div class="notif-item"><span class="ni-flag">' + n.flag + '</span><div class="ni-body">';
-    html += '<div class="ni-title">' + n.title + '</div><div class="ni-sub">' + n.country + ' \u00B7 ' + n.category + '</div>';
-    html += '<div class="ni-date">' + n.date + '</div></div>';
-    if (n.severity === 'high') html += '<span class="ni-badge">!</span>';
-    html += '</div>';
-  });
-  el.innerHTML = html;
-  document.getElementById('notifBadge').textContent = aiMonitorData.filter(n => n.severity === 'high').length || aiMonitorData.length;
-}
-
 // ============ Detail Panel ============
 function openDetail(id) {
   const item = laborLawData.find(d => d.id === id); if (!item) return;
@@ -806,7 +805,7 @@ function initMap() {
   if (mapInstance) { return; }
   try {
     mapInstance = L.map('leafletMap', { zoomControl: true, scrollWheelZoom: true }).setView([10, 105], 5);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '', maxZoom: 18 }).addTo(mapInstance);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors', maxZoom: 18 }).addTo(mapInstance);
     fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson')
       .then(r => r.json()).then(data => {
         geoData = data;
@@ -1018,7 +1017,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   populateRegionTabs();
   updateLangButton();
   applyFilters();
-  renderNotifPanel();
   updateI18nText();
   window._domReady = true;
   if (window._leafletReady) {
