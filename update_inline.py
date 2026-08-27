@@ -3,8 +3,8 @@
 import json, re, sys, io
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
-index_path = r'C:\Users\Phoebe\Desktop\OPENCODE\0826update\index.html'
-json_path = r'C:\Users\Phoebe\Desktop\OPENCODE\0826update\data\laws.json'
+index_path = r'C:\Users\Phoebe\Desktop\OPENCODE\0827update\index.html'
+json_path = r'C:\Users\Phoebe\Desktop\OPENCODE\0827update\data\laws.json'
 
 with open(json_path, 'r', encoding='utf-8') as f:
     laws_data = json.load(f)
