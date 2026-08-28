@@ -39,7 +39,29 @@
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
       "classificationReason": "Employment Act Progressive Wage Model - wage progression requirements",
-      "summaryEs": "The Employment Act governs employment relationships in Singapore, covering salary, working hours, leave, and termination provisions."
+      "summaryEs": "The Employment Act governs employment relationships in Singapore, covering salary, working hours, leave, and termination provisions.",
+      "changesZh": [
+        "渐进式工资模式(PWM)扩展至所有行业",
+        "强制性工资阶梯",
+        "技能框架整合"
+      ],
+      "changesEs": [
+        "El PWM se extiende a todos los sectores",
+        "Escalas salariales obligatorias",
+        "Integración del marco de competencias"
+      ],
+      "hrImpactZh": [
+        "薪酬结构重新设计",
+        "培训预算分配",
+        "合规报告"
+      ],
+      "hrImpactEs": [
+        "Rediseño de la estructura salarial",
+        "Asignación del presupuesto de formación",
+        "Informes de cumplimiento"
+      ],
+      "lawZh": "雇佣法 – 渐进式工资模式",
+      "lawEs": "Ley de Empleo – Modelo de Salario Progresivo"
     },
     {
       "id": "sg02",
@@ -50,8 +72,8 @@
       "law": "Workplace Fairness – Anti-Discrimination",
       "category": "法定标准Legal standard",
       "subCategory": "Anti-Discrimination",
-      "level1Category": "基础信息Basic Information",
-      "level2Category": "",
+      "level1Category": "离职与遣散Termination & Severance",
+      "level2Category": "法定标准Legal standard",
       "summary": "Comprehensive workplace fairness law prohibiting discrimination on 9 protected characteristics.",
       "summaryZh": "全面工作场所公平法，禁止基于9项受保护特征的歧视。",
       "status": "upcoming",
@@ -70,7 +92,7 @@
       "modules": [
         "员工关系"
       ],
-      "titleCategory": "Basic Information",
+      "titleCategory": "Termination & Severance",
       "effectiveDateStatus": "confirmed",
       "effectiveDateSource": "https://www.mom.gov.sg/newsroom/press-releases/2025/workplace-fairness--dispute-resolution----bill-press-release",
       "effectiveDateEvidence": "MOM press release: \"We aim for the Act to take effect in end-2027\"",
@@ -79,7 +101,29 @@
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
       "classificationReason": "Workplace Fairness Act - anti-discrimination protections",
-      "summaryEs": "The Central Provident Fund (CPF) requires mandatory contributions from both employers and employees for retirement, housing, and healthcare."
+      "summaryEs": "Ley integral de equidad en el lugar de trabajo que prohíbe la discriminación por 9 características protegidas.",
+      "changesZh": [
+        "明确9项受保护特征",
+        "设立雇佣法庭执法机制",
+        "强制推行职场政策"
+      ],
+      "changesEs": [
+        "Definición de 9 características protegidas",
+        "Aplicación mediante tribunal laboral",
+        "Políticas laborales obligatorias"
+      ],
+      "hrImpactZh": [
+        "需要制定相关政策",
+        "管理层培训计划",
+        "建立投诉机制"
+      ],
+      "hrImpactEs": [
+        "Desarrollo de políticas requerido",
+        "Programas de formación para directivos",
+        "Configuración del mecanismo de quejas"
+      ],
+      "lawZh": "职场公平法 – 反歧视",
+      "lawEs": "Ley de Equidad Laboral – Antidiscriminación"
     },
     {
       "id": "th01",
@@ -111,7 +155,7 @@
         "薪酬管理",
         "员工关系"
       ],
-      "titleCategory": "Basic Information",
+      "titleCategory": "Working Time & Overtime",
       "effectiveDateStatus": "unavailable",
       "effectiveDateSource": "https://www.mol.go.th",
       "effectiveDateEvidence": "Cannot confirm 2026-05-01 effective date from official source",
@@ -120,7 +164,29 @@
       "categorySource": "AI Classification",
       "categoryStatus": "confirmed",
       "classificationReason": "Labour Protection Act - domestic worker protections",
-      "summaryEs": "Thailand's Labour Protection Act provides comprehensive employment protections including working hours, overtime, leave, and termination benefits."
+      "summaryEs": "Thailand's Labour Protection Act provides comprehensive employment protections including working hours, overtime, leave, and termination benefits.",
+      "changesZh": [
+        "家政工人纳入保障范围",
+        "适用最低工资",
+        "遣散费相关规定"
+      ],
+      "changesEs": [
+        "Trabajadores domésticos cubiertos",
+        "Se aplica el salario mínimo",
+        "Disposiciones de indemnización por despido"
+      ],
+      "hrImpactZh": [
+        "家庭雇主合规要求",
+        "合同更新",
+        "登记要求"
+      ],
+      "hrImpactEs": [
+        "Cumplimiento del empleador doméstico",
+        "Actualización de contratos",
+        "Requisitos de registro"
+      ],
+      "lawZh": "劳动保护法 – 家政工人",
+      "lawEs": "Ley de Protección Laboral – Trabajadores Domésticos"
     },
     {
       "id": "my01",
@@ -183,7 +249,29 @@
           "Remarks": "Foreign workers: Mandatory (from Oct 2025, changed to 2%+2%)"
         }
       },
-      "summaryEs": "El Fondo de Provident de Empleados de Malasia (EPF/KWSP) requiere contribuciones obligatorias de empleadores y empleados para el ahorro de jubilación."
+      "summaryEs": "El Fondo de Provident de Empleados de Malasia (EPF/KWSP) requiere contribuciones obligatorias de empleadores y empleados para el ahorro de jubilación.",
+      "changesZh": [
+        "雇主缴费：月薪≤RM5,000为13%；月薪>RM5,000为12%；外籍人士为2%",
+        "雇员缴费：本地雇员11%；外籍人士2%",
+        "缴费基数：税前工资总额"
+      ],
+      "changesEs": [
+        "Contribución del empleador: 13% para salario mensual ≤ RM5.000; 12% para salario mensual > RM5.000; 2% para expatriados",
+        "Contribución del empleado: 11% para locales; 2% para expatriados",
+        "Base de cotización: salario bruto total"
+      ],
+      "hrImpactZh": [
+        "需要每月计算并缴纳EPF",
+        "本地与外籍雇员费率不同",
+        "须于次月15日前完成缴纳"
+      ],
+      "hrImpactEs": [
+        "Se requiere el cálculo y la remisión mensual del EPF",
+        "Tasas diferentes para empleados locales y expatriados",
+        "Debe remitirse antes del día 15 del mes siguiente"
+      ],
+      "lawZh": "公积金(EPF) – 强制缴费",
+      "lawEs": "EPF (Fondo de Previsión de Empleados) – Contribución Obligatoria"
     },
     {
       "id": "my02",
@@ -246,7 +334,29 @@
           "Remarks": "Local/PR: Category 1 (Work Injury + Disability); From July 2024, most foreign employees under 60 also included in Category 1"
         }
       },
-      "summaryEs": "SOCSO proporciona protección de seguridad social a los empleados contra accidentes laborales y enfermedades ocupacionales."
+      "summaryEs": "SOCSO proporciona protección de seguridad social a los empleados contra accidentes laborales y enfermedades ocupacionales.",
+      "changesZh": [
+        "雇主缴费：本地约1.75%；外籍约1.25%",
+        "雇员缴费：本地约0.5%；外籍0.5%",
+        "缴费基数上限：RM 6,000"
+      ],
+      "changesEs": [
+        "Contribución del empleador: alrededor del 1,75% para locales; alrededor del 1,25% para expatriados",
+        "Contribución del empleado: alrededor del 0,5% para locales; 0,5% para expatriados",
+        "Tope de la base de cotización: RM 6.000"
+      ],
+      "hrImpactZh": [
+        "需要每月计算并缴纳SOCSO",
+        "缴费基数上限为RM 6,000",
+        "保障覆盖60岁以下大多数雇员"
+      ],
+      "hrImpactEs": [
+        "Se requiere el cálculo y la remisión mensual de SOCSO",
+        "Base de cotización limitada a RM 6.000",
+        "La cobertura alcanza a la mayoría de los empleados menores de 60 años"
+      ],
+      "lawZh": "社会保险机构(SOCSO) – 工伤与伤残保险",
+      "lawEs": "SOCSO (Organización de Seguridad Social) – Seguro de Accidentes de Trabajo e Invalidez"
     },
     {
       "id": "my03",
@@ -310,7 +420,31 @@
           "Remarks": "Foreign employees currently not applicable"
         }
       },
-      "summaryEs": "El EIS proporciona beneficios de desempleo y asistencia de reempleo a ciudadanos y residentes permanentes malayos."
+      "summaryEs": "El EIS proporciona beneficios de desempleo y asistencia de reempleo a ciudadanos y residentes permanentes malayos.",
+      "changesZh": [
+        "雇主缴费：0.20%",
+        "雇员缴费：0.20%",
+        "缴费基数上限：RM 6,000",
+        "仅适用于马来西亚公民和永久居民"
+      ],
+      "changesEs": [
+        "Contribución del empleador: 0,20%",
+        "Contribución del empleado: 0,20%",
+        "Tope de la base de cotización: RM 6.000",
+        "Aplicable solo a ciudadanos malasios y residentes permanentes"
+      ],
+      "hrImpactZh": [
+        "需要每月计算并缴纳EIS",
+        "仅适用于马来西亚公民和永久居民",
+        "外籍雇员不在覆盖范围内"
+      ],
+      "hrImpactEs": [
+        "Se requiere el cálculo y la remisión mensual de EIS",
+        "Aplicable solo a ciudadanos malasios y residentes permanentes",
+        "Los empleados extranjeros no están cubiertos"
+      ],
+      "lawZh": "就业保险制度(EIS) – 失业保险",
+      "lawEs": "EIS (Sistema de Seguro de Empleo) – Seguro de Desempleo"
     },
     {
       "id": "my04",
@@ -370,7 +504,29 @@
           "Filing Frequency": "Monthly",
           "Remarks": "Mandatory training fund for employer side, used for employee skill development; All industries (mandatory for 10+ local employees), calculated for local employees only"
         }
-      }
+      },
+      "changesZh": [
+        "雇主缴费：1%",
+        "适用于拥有10名及以上本地雇员的雇主",
+        "缴费基数：基本工资+固定津贴（不含加班费和奖金）"
+      ],
+      "changesEs": [
+        "Contribución del empleador: 1%",
+        "Aplicable a empleadores con 10 o más empleados locales",
+        "Base de cotización: salario base + asignación fija (excluyendo horas extras y bonificaciones)"
+      ],
+      "hrImpactZh": [
+        "需要每月计算并缴纳HRDF",
+        "仅适用于本地雇员",
+        "资金可用于员工培训计划"
+      ],
+      "hrImpactEs": [
+        "Se requiere el cálculo y la remisión mensual de HRDF",
+        "Aplicable solo a empleados locales",
+        "Fondos disponibles para programas de formación de empleados"
+      ],
+      "lawZh": "人力资源发展基金(HRDF) – 培训征费",
+      "lawEs": "HRDF (Fondo de Desarrollo de Recursos Humanos) – Gravamen de Formación"
     },
     {
       "id": "my05",
@@ -426,7 +582,31 @@
           "Remarks": "Unused leave expires after 12 months in the following year, unless contract states otherwise"
         }
       },
-      "summaryEs": "La ley de Malasia obliga las vacaciones anuales según los años de servicio: 8 días para <2 años, 12 días para 2-5 años, y 16 días para 5+ años."
+      "summaryEs": "La ley de Malasia obliga las vacaciones anuales según los años de servicio: 8 días para <2 años, 12 días para 2-5 años, y 16 días para 5+ años.",
+      "changesZh": [
+        "服务不足2年：8天",
+        "服务2-5年：12天",
+        "服务5年以上：16天",
+        "未休年假除非另有规定，否则12个月后失效"
+      ],
+      "changesEs": [
+        "Menos de 2 años de servicio: 8 días",
+        "2-5 años de servicio: 12 días",
+        "Más de 5 años de servicio: 16 días",
+        "Las vacaciones no utilizadas caducan después de 12 meses salvo disposición en contrario"
+      ],
+      "hrImpactZh": [
+        "跟踪每位员工的服务年限",
+        "为未满12个月即离职的员工按比例折算年假",
+        "监控年假使用情况以防失效"
+      ],
+      "hrImpactEs": [
+        "Realizar el seguimiento de los años de servicio de cada empleado",
+        "Prorratear las vacaciones para los empleados que se van antes de completar 12 meses",
+        "Monitorear el uso de vacaciones para evitar su caducidad"
+      ],
+      "lawZh": "1955年雇佣法 – 年假权益",
+      "lawEs": "Ley de Empleo de 1955 – Derecho a Vacaciones Anuales"
     },
     {
       "id": "my06",
@@ -480,7 +660,31 @@
           "Pay Treatment": "Employer pays 100%"
         }
       },
-      "summaryEs": "La ley de Malasia obliga las licencias por enfermedad según los años de servicio: 14 días para 1-2 años, 18 días para 2-5 años, y 22 días para 5+ años."
+      "summaryEs": "La ley de Malasia obliga las licencias por enfermedad según los años de servicio: 14 días para 1-2 años, 18 días para 2-5 años, y 22 días para 5+ años.",
+      "changesZh": [
+        "服务1-2年：14天带薪病假",
+        "服务2-5年：18天带薪病假",
+        "服务5年以上：22天带薪病假",
+        "住院假合计：每年最多60天"
+      ],
+      "changesEs": [
+        "1-2 años de servicio: 14 días de baja por enfermedad remunerada",
+        "2-5 años de servicio: 18 días de baja por enfermedad remunerada",
+        "Más de 5 años de servicio: 22 días de baja por enfermedad remunerada",
+        "Licencia por hospitalización total: máximo 60 días al año"
+      ],
+      "hrImpactZh": [
+        "要求注册医生开具医疗证明(MC)",
+        "医疗证明须在48小时内提交",
+        "跟踪每年住院总天数"
+      ],
+      "hrImpactEs": [
+        "Exigir certificado médico (MC) de un médico registrado",
+        "El MC debe presentarse en un plazo de 48 horas",
+        "Registrar el total de días de hospitalización por año"
+      ],
+      "lawZh": "1955年雇佣法 – 病假权益",
+      "lawEs": "Ley de Empleo de 1955 – Derecho a Licencia por Enfermedad"
     },
     {
       "id": "my07",
@@ -533,7 +737,29 @@
           "Pay Treatment": "Employer pays 100%"
         }
       },
-      "summaryEs": "La enmienda de 2022 aumentó la licencia de maternidad a 98 días (desde 60 días)."
+      "summaryEs": "La enmienda de 2022 aumentó la licencia de maternidad a 98 días (desde 60 días).",
+      "changesZh": [
+        "98天连续产假",
+        "可在预产期前30天开始休假",
+        "休假期间由雇主支付100%工资"
+      ],
+      "changesEs": [
+        "98 días consecutivos de permiso de maternidad",
+        "Puede comenzar 30 días antes de la fecha prevista de parto",
+        "100% del salario pagado por el empleador durante el permiso"
+      ],
+      "hrImpactZh": [
+        "将产假政策更新为98天",
+        "根据雇佣时长确认资格",
+        "规划休假期间的临时替代安排"
+      ],
+      "hrImpactEs": [
+        "Actualizar la política de permiso de maternidad a 98 días",
+        "Verificar la elegibilidad según la duración del empleo",
+        "Planificar la cobertura temporal durante el permiso"
+      ],
+      "lawZh": "2022年雇佣(修正)法 – 产假",
+      "lawEs": "Ley de Empleo (Enmienda) de 2022 – Permiso de Maternidad"
     },
     {
       "id": "my08",
@@ -586,7 +812,29 @@
           "Pay Treatment": "Employer pays 100%"
         }
       },
-      "summaryEs": "La enmienda de 2022 introdujo 7 días de licencia de paternidad pagada para empleados masculinos casados."
+      "summaryEs": "La enmienda de 2022 introdujo 7 días de licencia de paternidad pagada para empleados masculinos casados.",
+      "changesZh": [
+        "7天连续陪产假（含休息日和公共假日）",
+        "须在预产期前至少30天通知雇主",
+        "休假期间由雇主支付100%工资"
+      ],
+      "changesEs": [
+        "7 días consecutivos de permiso de paternidad (incluyendo días de descanso y festivos)",
+        "Debe notificar al empleador al menos 30 días antes de la fecha prevista de parto",
+        "100% del salario pagado por el empleador durante el permiso"
+      ],
+      "hrImpactZh": [
+        "将陪产假政策更新为7天",
+        "跟踪服务时长资格（至少12个月）",
+        "监控每位雇员前5次生育"
+      ],
+      "hrImpactEs": [
+        "Actualizar la política de permiso de paternidad a 7 días",
+        "Verificar la elegibilidad por duración del servicio (mínimo 12 meses)",
+        "Monitorear las primeras 5 licencias por nacimiento por empleado"
+      ],
+      "lawZh": "2022年雇佣(修正)法 – 陪产假",
+      "lawEs": "Ley de Empleo (Enmienda) de 2022 – Permiso de Paternidad"
     },
     {
       "id": "my09",
@@ -640,7 +888,31 @@
           "Scope": "Mandatory for employees earning ≤RM4,000/month; For >RM4,000, only if contract specifies"
         }
       },
-      "summaryEs": "Las horas extra en días laborables se calculan a 1.5x la tarifa por hora (salario mensual / 208 horas)."
+      "summaryEs": "Las horas extra en días laborables se calculan a 1.5x la tarifa por hora (salario mensual / 208 horas).",
+      "changesZh": [
+        "时薪 = 月薪 / 208",
+        "加班费率 = 时薪的1.5倍",
+        "每日加班上限：4小时",
+        "每日总工时（含加班）不得超过12小时"
+      ],
+      "changesEs": [
+        "Tarifa por hora = Salario mensual / 208",
+        "Tarifa de horas extras = 1,5 veces la tarifa por hora",
+        "Horas extras máximas: 4 horas por día",
+        "Las horas totales de trabajo (incluidas las extras) no deben superar las 12 horas por día"
+      ],
+      "hrImpactZh": [
+        "实施工时追踪系统",
+        "使用208小时除数正确计算加班费",
+        "确保遵守每日工时上限"
+      ],
+      "hrImpactEs": [
+        "Implementar un sistema de registro de tiempo",
+        "Calcular correctamente las horas extras usando el divisor de 208 horas",
+        "Garantizar el cumplimiento de los límites diarios de horas"
+      ],
+      "lawZh": "1955年雇佣法 – 工作日加班",
+      "lawEs": "Ley de Empleo de 1955 – Horas Extras entre Semana"
     },
     {
       "id": "my10",
@@ -691,7 +963,29 @@
           "Remarks": "Rest day OT pay is additional to monthly salary"
         }
       },
-      "summaryEs": "Las horas extra en días de descanso se calculan sobre la tarifa normal: 0.5x la tarifa diaria para las primeras 4 horas."
+      "summaryEs": "Las horas extra en días de descanso se calculan sobre la tarifa normal: 0.5x la tarifa diaria para las primeras 4 horas.",
+      "changesZh": [
+        "前4小时：日薪的0.5倍（0.5 × 月薪 / 26）",
+        "4-8小时：日薪的1倍",
+        "超过8小时：时薪的2倍（2 × 月薪 / 208）"
+      ],
+      "changesEs": [
+        "Primeras 4 horas: 0,5 veces la tarifa diaria (0,5 × salario mensual / 26)",
+        "4-8 horas: 1 vez la tarifa diaria",
+        "Más de 8 horas: 2 veces la tarifa por hora (2 × salario mensual / 208)"
+      ],
+      "hrImpactZh": [
+        "将休息日工作与工作日加班分开追踪",
+        "应用正确的加班费率层级",
+        "确保休息日工作除非紧急情况外属自愿"
+      ],
+      "hrImpactEs": [
+        "Registrar el trabajo en día de descanso por separado de las horas extras entre semana",
+        "Aplicar los niveles correctos de tarifa de horas extras",
+        "Garantizar que el trabajo en día de descanso sea voluntario salvo emergencia"
+      ],
+      "lawZh": "1955年雇佣法 – 周末/休息日加班",
+      "lawEs": "Ley de Empleo de 1955 – Horas Extras en Fin de Semana/Día de Descanso"
     },
     {
       "id": "my11",
@@ -739,7 +1033,27 @@
           "Calculation Rules": "Within 8 hours: 2x daily wage; Beyond 8 hours: 3x hourly rate = 3×Monthly/208"
         }
       },
-      "summaryEs": "Las horas extra en días festivos públicos se calculan a 2x la tarifa diaria para las primeras 8 horas."
+      "summaryEs": "Las horas extra en días festivos públicos se calculan a 2x la tarifa diaria para las primeras 8 horas.",
+      "changesZh": [
+        "前8小时：日薪的2倍",
+        "超过8小时：时薪的3倍（3 × 月薪 / 208）"
+      ],
+      "changesEs": [
+        "Primeras 8 horas: 2 veces la tarifa diaria",
+        "Más de 8 horas: 3 veces la tarifa por hora (3 × salario mensual / 208)"
+      ],
+      "hrImpactZh": [
+        "将公共假日工作单独追踪",
+        "应用最高加班费率（2倍-3倍）",
+        "确保公共假日工作除非紧急情况外属自愿"
+      ],
+      "hrImpactEs": [
+        "Registrar el trabajo en días festivos por separado",
+        "Aplicar la tarifa más alta de horas extras (2x-3x)",
+        "Garantizar que el trabajo en festivos sea voluntario salvo emergencia"
+      ],
+      "lawZh": "1955年雇佣法 – 公共假日加班",
+      "lawEs": "Ley de Empleo de 1955 – Horas Extras en Días Festivos"
     },
     {
       "id": "my12",
@@ -794,7 +1108,29 @@
           "Settlement Timeline": "All payments must be settled within 7 days of contract termination"
         }
       },
-      "summaryEs": "Los empleados con salario ≤RM4,000/mes tienen derecho a indemnización estatutaria según años de servicio."
+      "summaryEs": "Los empleados con salario ≤RM4,000/mes tienen derecho a indemnización estatutaria según años de servicio.",
+      "changesZh": [
+        "遣散费计算：按服务年限为10/15/20天工资",
+        "通知期：按服务年限为4/6/8周",
+        "最终结算须在解雇后7天内完成"
+      ],
+      "changesEs": [
+        "Fórmula de indemnización: 10/15/20 días de salario según los años de servicio",
+        "Período de preaviso: 4/6/8 semanas según los años de servicio",
+        "La liquidación final debe realizarse dentro de los 7 días posteriores al despido"
+      ],
+      "hrImpactZh": [
+        "按服务年限计算遣散费",
+        "提供适当的通知或以代通知金代替",
+        "在7天内完成最终结算"
+      ],
+      "hrImpactEs": [
+        "Calcular la indemnización según los años de servicio",
+        "Otorgar el preaviso adecuado o pagar en lugar del preaviso",
+        "Completar la liquidación final en un plazo de 7 días"
+      ],
+      "lawZh": "1980年雇佣(解雇与裁员福利)条例 – 解雇",
+      "lawEs": "Reglamento de Empleo (Prestaciones por Despido y Cese) de 1980 – Despido"
     },
     {
       "id": "my13",
@@ -845,7 +1181,29 @@
           "Final Pay Components": "Final month salary, unused leave payout, negotiated severance"
         }
       },
-      "summaryEs": "Cuando empleador y empleado acuerdan mutuamente terminar el empleo, el empleado tiene derecho al salario del último mes y vacaciones acumuladas."
+      "summaryEs": "Cuando empleador y empleado acuerdan mutuamente terminar el empleo, el empleado tiene derecho al salario del último mes y vacaciones acumuladas.",
+      "changesZh": [
+        "最后一个月工资",
+        "未休年假折算补偿",
+        "协商遣散费（如有）"
+      ],
+      "changesEs": [
+        "Salario del último mes",
+        "Pago de las vacaciones anuales no utilizadas",
+        "Indemnización negociada (si procede)"
+      ],
+      "hrImpactZh": [
+        "以书面形式记录双方协议",
+        "计算并支付所有未结款项",
+        "确保遵守通知期要求"
+      ],
+      "hrImpactEs": [
+        "Documentar el acuerdo mutuo por escrito",
+        "Calcular y pagar todos los importes pendientes",
+        "Garantizar el cumplimiento de los requisitos de preaviso"
+      ],
+      "lawZh": "1955年雇佣法 – 协商离职",
+      "lawEs": "Ley de Empleo de 1955 – Renuncia Negociada"
     },
     {
       "id": "my14",
@@ -893,7 +1251,27 @@
           "Final Pay Components": "Final month salary, unused leave payout"
         }
       },
-      "summaryEs": "Cuando un empleado renuncia voluntariamente, tiene derecho al salario del último mes y vacaciones anuales acumuladas."
+      "summaryEs": "Cuando un empleado renuncia voluntariamente, tiene derecho al salario del último mes y vacaciones anuales acumuladas.",
+      "changesZh": [
+        "最后一个月工资",
+        "未休年假折算补偿"
+      ],
+      "changesEs": [
+        "Salario del último mes",
+        "Pago de las vacaciones anuales no utilizadas"
+      ],
+      "hrImpactZh": [
+        "确保收到正式辞职信",
+        "计算并支付未结款项",
+        "在通知期内完成离职手续"
+      ],
+      "hrImpactEs": [
+        "Garantizar la recepción de la carta de renuncia",
+        "Calcular y pagar los importes pendientes",
+        "Completar los trámites de salida dentro del período de preaviso"
+      ],
+      "lawZh": "1955年雇佣法 – 主动辞职",
+      "lawEs": "Ley de Empleo de 1955 – Renuncia Voluntaria"
     },
     {
       "id": "my15",
@@ -946,7 +1324,29 @@
           "Remarks": "Residing in Malaysia for 182+ days in a calendar year = Tax Resident; otherwise Non-Resident"
         }
       },
-      "summaryEs": "Malasia utiliza tasas impositivas progresivas para residentes fiscales (182+ días en el año calendario)."
+      "summaryEs": "Malasia utiliza tasas impositivas progresivas para residentes fiscales (182+ días en el año calendario).",
+      "changesZh": [
+        "累进税率从0%至30%，按收入区间划分",
+        "税务居民身份要求每个日历年内在马来西亚居住182天以上",
+        "新外籍人士初期可能为非居民"
+      ],
+      "changesEs": [
+        "Tasas progresivas del 0% al 30% según los tramos de ingresos",
+        "La condición de residente fiscal requiere más de 182 días en Malasia por año natural",
+        "Los nuevos expatriados pueden ser inicialmente no residentes"
+      ],
+      "hrImpactZh": [
+        "按年收入应用正确税率",
+        "监控外籍雇员的税务居民身份",
+        "每月从工资中预扣PCB（月度预扣税）"
+      ],
+      "hrImpactEs": [
+        "Aplicar la tasa impositiva correcta según los ingresos anuales",
+        "Monitorear la condición de residente fiscal de los empleados expatriados",
+        "Retener mensualmente el PCB (Potongan Cukai Berjadual) del salario"
+      ],
+      "lawZh": "1967年所得税法 – 累进税率",
+      "lawEs": "Ley del Impuesto sobre la Renta de 1967 – Tasas Impositivas Progresivas"
     },
     {
       "id": "my16",
@@ -996,7 +1396,27 @@
           "Tax Rate": "Flat 30%"
         }
       },
-      "summaryEs": "Los no residentes (menos de 182 días en Malasia) están sujetos a una tasa fiscal fija del 30%."
+      "summaryEs": "Los no residentes (menos de 182 días en Malasia) están sujetos a una tasa fiscal fija del 30%.",
+      "changesZh": [
+        "非居民适用30%固定税率",
+        "非居民身份：每个日历年内在马来西亚居住少于182天"
+      ],
+      "changesEs": [
+        "Tasa fija del 30% para no residentes",
+        "Condición de no residente: menos de 182 días en Malasia por año natural"
+      ],
+      "hrImpactZh": [
+        "识别非居民雇员以进行税务处理",
+        "对非居民适用30%固定税率",
+        "监控在马来西亚的天数以确定税务居民身份"
+      ],
+      "hrImpactEs": [
+        "Identificar a los empleados no residentes a efectos fiscales",
+        "Aplicar la tasa fija del 30% para no residentes",
+        "Monitorear los días en Malasia para determinar la residencia fiscal"
+      ],
+      "lawZh": "1967年所得税法 – 非居民固定税率",
+      "lawEs": "Ley del Impuesto sobre la Renta de 1967 – Tasa Fija para No Residentes"
     }
   ],
   "aiMonitorData": [

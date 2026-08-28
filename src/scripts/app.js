@@ -395,7 +395,6 @@ let currentLang = 'zh', currentRegion = '', currentSort = 'date', mapInstance = 
 
 // ============ Category Labels (trilingual) ============
 const categoryLabels = {
-  "\u57FA\u7840\u4FE1\u606FBasic Information": { zh: "\u57FA\u7840\u4FE1\u606F", en: "Basic Information", es: "Informaci\u00F3n B\u00E1sica" },
   "\u6CD5\u5B9A\u7F34\u8D39\u7C7BSocial Security / Statutory Funds": { zh: "\u6CD5\u5B9A\u7F34\u8D39\u7C7B", en: "Social Security / Statutory Funds", es: "Seguridad Social / Fondos Estatutarios" },
   "\u4F11\u5047\u7C7BLeave": { zh: "\u4F11\u5047\u7C7B", en: "Leave", es: "Permisos" },
   "\u5F3A\u5236\u652F\u4ED8/\u6CD5\u5B9A\u6D25\u8D34Mandatory Payments & Allowances": { zh: "\u5F3A\u5236\u652F\u4ED8/\u6CD5\u5B9A\u6D25\u8D34", en: "Mandatory Payments & Allowances", es: "Pagos Obligatorios y Asignaciones" },
@@ -496,7 +495,6 @@ function populateYearFilter() {
 
 // ============ Category Hierarchy ============
 const categoryHierarchy = {
-  "\u57FA\u7840\u4FE1\u606FBasic Information": [],
   "\u6CD5\u5B9A\u7F34\u8D39\u7C7BSocial Security / Statutory Funds": ["\u517B\u8001\u91D1Pension", "\u533B\u7597\u4FDD\u9669Medical", "\u5931\u4E1A\u4FDD\u9669Unemployment", "\u5DE5\u4F24\u4FDD\u9669Work Injury", "\u751F\u80B2\u4FDD\u9669Maternity", "\u4F4F\u623F\u57FA\u91D1Housing Fund", "\u5176\u4ED6\u798F\u5229Others"],
   "\u4F11\u5047\u7C7BLeave": ["\u5E74\u5047Annual Leave", "\u75C5\u5047Sick Leave", "\u4EA7\u5047Maternity Leave", "\u966A\u4EA7\u5047Paternity Leave", "\u80B2\u513F\u5047Childcare Leave"],
   "\u5F3A\u5236\u652F\u4ED8/\u6CD5\u5B9A\u6D25\u8D34Mandatory Payments & Allowances": [],
@@ -627,7 +625,7 @@ function renderTimeline() {
       html += '<div class="tl-entry" onclick="openDetail(\'' + item.id + '\')">';
       html += '<div class="tl-left"><div class="tl-dot"></div><div class="tl-date">' + dateStr + '</div></div>';
       html += '<div class="tl-right"><div class="tl-meta"><span class="tl-flag">' + item.flag + '</span><span class="tl-country">' + getCountryName(item.country) + '</span><span class="tl-cat">' + item.category + '</span></div>';
-      html += '<div class="tl-law">' + item.law + '</div>';
+      html += '<div class="tl-law">' + getLawTitle(item) + '</div>';
       html += '<div class="tl-summary">' + getSummaryText(item) + '</div>';
       html += '<div class="tl-link">' + i18n[currentLang].viewDetails + '</div></div></div>';
     });
@@ -646,7 +644,7 @@ function renderLawCards() {
     const sl = getStatusLabel(item.status);
     html += '<div class="law-card" onclick="openDetail(\'' + item.id + '\')">';
     html += '<div class="lc-top"><span class="lc-flag">' + item.flag + '</span><span class="lc-country">' + getCountryName(item.country) + '</span></div>';
-    html += '<div class="lc-title">' + item.law + '</div>';
+    html += '<div class="lc-title">' + getLawTitle(item) + '</div>';
     html += '<div class="lc-cat"><span class="lc-cat-primary">' + getCategoryLabel(item.primaryCategory) + '</span> \u2192 <span class="lc-cat-secondary">' + item.category + '</span></div>';
     html += '<div class="lc-date">\u00B7 ' + i18n[currentLang].effectiveDatePrefix + formatEffectiveDate(item) + '</div>';
     html += '<div class="lc-summary">' + getSummaryText(item) + '</div>';
@@ -662,6 +660,11 @@ function getSummaryText(item) {
   if (currentLang === 'zh') return item.summaryZh || item.summary;
   if (currentLang === 'es') return item.summaryEs || item.summary;
   return item.summary;
+}
+function getLawTitle(item) {
+  if (currentLang === 'zh') return item.lawZh || item.law;
+  if (currentLang === 'es') return item.lawEs || item.law;
+  return item.law;
 }
 
 // ============ KPIs ============
@@ -687,7 +690,7 @@ function renderUpcoming() {
   upcoming.forEach(item => {
     html += '<div class="upcoming-item" onclick="openDetail(\'' + item.id + '\')">';
     html += '<div class="upcoming-date">' + item.effectiveDate + ' \u00B7 ' + item.flag + ' ' + getCountryName(item.country) + '</div>';
-    html += '<div class="upcoming-title">' + item.law.substring(0, 50) + (item.law.length > 50 ? '...' : '') + '</div>';
+    html += '<div class="upcoming-title">' + getLawTitle(item).substring(0, 50) + (getLawTitle(item).length > 50 ? '...' : '') + '</div>';
     html += '</div>';
   });
   el.innerHTML = html;
@@ -711,13 +714,21 @@ function renderAISummary() {
 // ============ Ticker ============
 function renderTicker() {
   const el = document.getElementById('tickerTrack');
-  const sorted = [...laborLawData].sort((a, b) => (b.effectiveDate || '').localeCompare(a.effectiveDate || '')).slice(0, 12);
+  const now = Date.now();
+  const cutoff = new Date(); cutoff.setMonth(cutoff.getMonth() - 12);
+  const cutoffTs = cutoff.getTime();
+  const sorted = [...laborLawData]
+    .filter(item => ['SG', 'MY', 'TH'].includes(item.countryCode))
+    .filter(item => item.effectiveDate && item.effectiveDateStatus !== 'unavailable')
+    .filter(item => { const ts = new Date(item.effectiveDate).getTime(); return !isNaN(ts) && ts >= cutoffTs && ts <= now; })
+    .sort((a, b) => new Date(b.effectiveDate) - new Date(a.effectiveDate));
   let html = ''; const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
   const build = () => { sorted.forEach(item => {
-    const d = item.effectiveDate ? new Date(item.effectiveDate) : null; if (!d) return;
+    const d = new Date(item.effectiveDate);
     const ds = months[d.getMonth()] + ' ' + String(d.getDate()).padStart(2, '0');
-    const isNew = item.effectiveDate && (Date.now() - new Date(item.effectiveDate).getTime()) < 7 * 86400000;
-    html += '<div class="tc-item" onclick="openDetail(\'' + item.id + '\')"><span class="flag">' + item.flag + '</span><span class="name">' + getCountryName(item.country) + '</span><span class="sep">\u00B7</span><span class="cat">' + item.category + '</span><span class="title">' + item.law.substring(0, 30) + (item.law.length > 30 ? '...' : '') + '</span><span class="date">' + ds + '</span>' + (isNew ? '<span class="new-tag">NEW</span>' : '') + '</div>';
+    const isNew = (now - d.getTime()) < 7 * 86400000;
+    const title = getLawTitle(item);
+    html += '<div class="tc-item" onclick="openDetail(\'' + item.id + '\')"><span class="flag">' + item.flag + '</span><span class="name">' + getCountryName(item.country) + '</span><span class="sep">\u00B7</span><span class="cat">' + item.category + '</span><span class="title">' + title.substring(0, 30) + (title.length > 30 ? '...' : '') + '</span><span class="date">' + ds + '</span>' + (isNew ? '<span class="new-tag">NEW</span>' : '') + '</div>';
   }); };
   build(); build();
   html += '<div class="ticker-viewall" onclick="document.getElementById(\'libraryLabel\').scrollIntoView({behavior:\'smooth\'})">' + i18n[currentLang].viewAllUpdates + '</div>';
@@ -728,9 +739,10 @@ function renderTicker() {
 function openDetail(id) {
   const item = laborLawData.find(d => d.id === id); if (!item) return;
   currentViewingLaw = item;
-  const tl = currentLang === 'zh';
   const t = i18n[currentLang];
-  let html = '<h2 style="font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px">' + item.flag + ' ' + getCountryName(item.country) + ' \u2014 ' + (tl ? (item.lawZh || item.law) : item.law) + '</h2>';
+  const changesArr = (currentLang === 'zh' && item.changesZh && item.changesZh.length) ? item.changesZh : ((currentLang === 'es' && item.changesEs && item.changesEs.length) ? item.changesEs : (item.changes || []));
+  const hrImpactArr = (currentLang === 'zh' && item.hrImpactZh && item.hrImpactZh.length) ? item.hrImpactZh : ((currentLang === 'es' && item.hrImpactEs && item.hrImpactEs.length) ? item.hrImpactEs : (item.hrImpact || []));
+  let html = '<h2 style="font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px">' + item.flag + ' ' + getCountryName(item.country) + ' \u2014 ' + getLawTitle(item) + '</h2>';
   html += '<div class="dp-grid"><div class="dp-section"><h4>\uD83D\uDCCB ' + t.detailBasicInfo + '</h4>';
   html += '<div class="dp-row"><div class="dp-label">' + t.detailCategory + '</div><div class="dp-val"><span class="dp-tag mod">' + item.category + '</span></div></div>';
   html += '<div class="dp-row"><div class="dp-label">' + t.detailLevel1 + '</div><div class="dp-val">' + getCategoryLabel(item.primaryCategory) + '</div></div>';
@@ -766,9 +778,9 @@ function openDetail(id) {
     }
   }
   html += '<div class="dp-section" style="margin-top:16px"><h4>\uD83D\uDD04 ' + t.detailKeyChanges + '</h4>';
-  item.changes.forEach(c => { html += '<div style="margin-bottom:4px;font-size:12px;color:var(--text)">\u2022 ' + c + '</div>'; });
+  changesArr.forEach(c => { html += '<div style="margin-bottom:4px;font-size:12px;color:var(--text)">\u2022 ' + c + '</div>'; });
   html += '</div><div class="dp-section" style="margin-top:16px"><h4>\uD83D\uDCBC ' + t.detailHRImpact + '</h4>';
-  item.hrImpact.forEach(h => { html += '<div style="margin-bottom:4px;font-size:12px;color:var(--text)">\u2022 ' + h + '</div>'; });
+  hrImpactArr.forEach(h => { html += '<div style="margin-bottom:4px;font-size:12px;color:var(--text)">\u2022 ' + h + '</div>'; });
   html += '</div><div class="dp-section" style="margin-top:16px"><h4>\uD83D\uDD17 ' + t.detailOfficialSource + '</h4><div class="dp-val"><a href="' + item.source + '" target="_blank">' + item.source + '</a></div></div>';
   if (countryDetailPages[item.country]) html += '<button class="btn-fullview" onclick="openCountryPage(\'' + item.country + '\')">\uD83D\uDCD6 ' + t.detailViewFull + '</button>';
   document.getElementById('detailContent').innerHTML = html;
