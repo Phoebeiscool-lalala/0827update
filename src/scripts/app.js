@@ -126,7 +126,7 @@ const i18n = {
     kpiCountries: "\u8986\u76D6\u56FD\u5BB6",
     filtersLabel: "\u7B5B\u9009",
     regionSoutheastAsia: "\u4E1C\u5357\u4E9A",
-    aiPanelTitle: "\uD83E\uDD16 DeepSeek AI \u52A9\u624B",
+    aiPanelTitle: "\uD83E\uDD16 MiChat AI \u52A9\u624B",
     aiTabChat: "\uD83D\uDCAC \u95EE\u7B54",
     aiTabTranslate: "\uD83C\uDF10 \u7FFB\u8BD1",
     aiTabAnalyze: "\uD83D\uDCCA \u5206\u6790",
@@ -245,12 +245,12 @@ const i18n = {
     kpiCountries: "Countries Covered",
     filtersLabel: "FILTERS",
     regionSoutheastAsia: "Southeast Asia",
-    aiPanelTitle: "\uD83E\uDD16 DeepSeek AI Assistant",
+    aiPanelTitle: "\uD83E\uDD16 MiChat AI Assistant",
     aiTabChat: "\uD83D\uDCAC Chat",
     aiTabTranslate: "\uD83C\uDF10 Translate",
     aiTabAnalyze: "\uD83D\uDCCA Analyze",
     aiChatWelcome: "\uD83D\uDC4B Hi! I'm your labor law AI assistant. I can help you:<br>\u2022 Answer labor law questions by country<br>\u2022 Compare regulations across countries<br>\u2022 Provide HR compliance advice<br><br>How can I help you?",
-    aiChatPlaceholder: "Ask me anything about labor law...",
+    aiChatPlaceholder: "Ask a question about HR regulations...",
     aiSend: "Send",
     aiTranslatePlaceholder: "Enter regulation text to translate...",
     aiTranslateBtn: "Translate",
@@ -361,12 +361,12 @@ const i18n = {
     kpiCountries: "Pa\u00EDses Cubiertos",
     filtersLabel: "FILTROS",
     regionSoutheastAsia: "Sudeste Asi\u00E1tico",
-    aiPanelTitle: "\uD83E\uDD16 Asistente IA DeepSeek",
+    aiPanelTitle: "\uD83E\uDD16 Asistente de IA MiChat",
     aiTabChat: "\uD83D\uDCAC Chat",
     aiTabTranslate: "\uD83C\uDF10 Traducir",
     aiTabAnalyze: "\uD83D\uDCCA Analizar",
     aiChatWelcome: "\uD83D\uDC4B \u00A1Hola! Soy tu asistente de derecho laboral. Puedo ayudarte:<br>\u2022 Responder preguntas de derecho laboral por pa\u00EDs<br>\u2022 Comparar regulaciones entre pa\u00EDses<br>\u2022 Dar consejos de cumplimiento de RR. HH.<br><br>\u00BFEn qu\u00E9 puedo ayudarte?",
-    aiChatPlaceholder: "Preg\u00FAntame sobre derecho laboral...",
+    aiChatPlaceholder: "Haz una pregunta sobre normativa de RR. HH....",
     aiSend: "Enviar",
     aiTranslatePlaceholder: "Ingrese el texto de la regulaci\u00F3n a traducir...",
     aiTranslateBtn: "Traducir",
@@ -994,7 +994,6 @@ function toggleAIPanel() {
   const panel = document.getElementById('aiPanel');
   const fab = document.getElementById('aiFab');
   if (aiPanelOpen) {
-    if (!hasApiKey()) { openKeyModal(); return; }
     panel.classList.add('open');
     fab.classList.add('hidden');
   } else {
@@ -1033,7 +1032,6 @@ async function sendAIChat() {
   const input = document.getElementById('aiChatInput');
   const msg = input.value.trim();
   if (!msg) return;
-  if (!hasApiKey()) { openKeyModal(); return; }
 
   const messagesEl = document.getElementById('aiChatMessages');
   messagesEl.innerHTML += '<div class="ai-msg ai-msg-user">' + escapeHtml(msg) + '</div>';

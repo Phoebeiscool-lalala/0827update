@@ -325,6 +325,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
 .ai-msg-bot{background:var(--surface);color:var(--text);align-self:flex-start;border-bottom-left-radius:4px}
 .ai-msg-user{background:var(--accent);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
 .ai-msg-loading{background:var(--surface);color:var(--text3);align-self:flex-start;font-style:italic}
+.ai-suggestions{display:flex;flex-wrap:wrap;gap:6px;padding:2px 0}
+.ai-sug{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:var(--radius-pill);font-size:11px;cursor:pointer;font-family:var(--font);transition:all .15s;text-align:left}
+.ai-sug:hover{border-color:var(--accent);color:var(--accent);background:rgba(37,99,235,0.06)}
 
 .ai-chat-input-wrap{padding:10px 12px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0}
 .ai-chat-input{flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-pill);background:var(--card);color:var(--text);font-size:12px;font-family:var(--font);outline:none}
@@ -532,7 +535,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
 <!-- AI Assistant Panel -->
 <div class="ai-panel" id="aiPanel">
   <div class="ai-panel-header">
-    <span data-i18n="aiPanelTitle">🤖 DeepSeek AI 助手</span>
+    <span data-i18n="aiPanelTitle">🤖 MiChat AI 助手</span>
     <div class="ai-panel-actions">
       <button class="ai-tab-btn active" data-tab="chat" onclick="switchAITab('chat')" data-i18n="aiTabChat">💬 问答</button>
       <button class="ai-tab-btn" data-tab="translate" onclick="switchAITab('translate')" data-i18n="aiTabTranslate">🌐 翻译</button>
@@ -544,10 +547,16 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
   <!-- Chat Tab -->
   <div class="ai-tab-content active" id="aiTabChat">
     <div class="ai-chat-messages" id="aiChatMessages">
-      <div class="ai-msg ai-msg-bot" data-i18n="aiChatWelcome">👋 你好！我是劳动法 AI 助手，可以帮你：<br>• 解答各国劳动法问题<br>• 对比不同国家法规<br>• 提供 HR 合规建议<br><br>有什么可以帮你的？</div>
+      <div class="ai-msg ai-msg-bot" data-i18n="aiChatWelcome">👋 你好，我是 MiChat AI 助手。<br>你可以向我询问新加坡、马来西亚和泰国的 HR 法规问题。</div>
+      <div class="ai-suggestions">
+        <button class="ai-sug" data-i18n="aiSug1" onclick="askSuggestion(this.textContent)">这条法规对 HR 有什么影响？</button>
+        <button class="ai-sug" data-i18n="aiSug2" onclick="askSuggestion(this.textContent)">有哪些法规即将生效？</button>
+        <button class="ai-sug" data-i18n="aiSug3" onclick="askSuggestion(this.textContent)">哪些法规需要 HR 马上采取行动？</button>
+        <button class="ai-sug" data-i18n="aiSug4" onclick="askSuggestion(this.textContent)">马来西亚最低工资有哪些最新变化？</button>
+      </div>
     </div>
     <div class="ai-chat-input-wrap">
-      <input type="text" class="ai-chat-input" id="aiChatInput" data-i18n-ph="aiChatPlaceholder" placeholder="问我关于劳动法的任何问题..." onkeydown="if(event.key==='Enter')sendAIChat()">
+      <input type="text" class="ai-chat-input" id="aiChatInput" data-i18n-ph="aiChatPlaceholder" placeholder="请输入你的法规问题……" onkeydown="if(event.key==='Enter')sendAIChat()">
       <button class="ai-send-btn" onclick="sendAIChat()" data-i18n="aiSend">发送</button>
     </div>
   </div>
@@ -587,7 +596,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
 </div>
 
 <!-- AI Panel Toggle Button -->
-<button class="ai-fab" id="aiFab" onclick="toggleAIPanel()">🤖</button>
+<button class="ai-fab" id="aiFab" onclick="toggleAIPanel()" style="width:auto;height:44px;padding:0 18px;border-radius:22px;font-size:13px;font-weight:700">💬 MiChat AI</button>
 
 <!-- API Key Settings Modal -->
 <div class="ai-key-modal" id="aiKeyModal">
@@ -661,6 +670,45 @@ async function callDeepSeek(messages, options = {}) {
   return data.choices[0].message.content;
 }
 
+// ============ AI Provider Adapter Layer ============
+// MiChat is the target assistant provider. No real MiChat endpoint/credentials exist yet,
+// so MiChat is registered as a "not configured" provider — do NOT fabricate an API URL or key.
+// DeepSeek is retained as a working fallback provider during the transition.
+const MICHAT_CONFIG = {
+  // Set only when a real MiChat API becomes available (prefer a server-side proxy / env var).
+  apiUrl: null,
+  model: null
+};
+
+const AI_PROVIDERS = {
+  michat: {
+    id: 'michat',
+    isConfigured() { return !!MICHAT_CONFIG.apiUrl; },
+    async chat(messages, options) {
+      // Real MiChat integration goes here once apiUrl is configured.
+      // Always route through a backend proxy; never hardcode secrets in the frontend.
+      throw new Error((typeof i18n !== 'undefined' && i18n[currentLang] ? i18n[currentLang].aiProviderNotConfigured : null) || 'MiChat API is not configured');
+    }
+  },
+  deepseek: {
+    id: 'deepseek',
+    isConfigured() { return hasApiKey(); },
+    async chat(messages, options) { return await callDeepSeek(messages, options); }
+  }
+};
+
+// Preferred provider (MiChat-first). Flip to 'deepseek' during the transition if needed.
+let activeAIProvider = 'michat';
+
+async function sendToAIProvider(messages, options = {}) {
+  const t = (typeof i18n !== 'undefined' && i18n[currentLang]) ? i18n[currentLang] : {};
+  const preferred = AI_PROVIDERS[activeAIProvider];
+  if (preferred && preferred.isConfigured()) return await preferred.chat(messages, options);
+  const fallback = AI_PROVIDERS.deepseek;
+  if (fallback.isConfigured()) return await fallback.chat(messages, options);
+  throw new Error(t.aiProviderNotConfigured || 'AI provider not configured');
+}
+
 // ============ Feature 1: Translation ============
 async function translateText(text, targetLang = 'zh') {
   const langNames = {
@@ -691,23 +739,49 @@ function resetChat() {
 }
 
 async function chatWithAI(userMessage, context = null) {
-  const systemPrompt = `You are a global labor law expert AI assistant. You have deep knowledge of employment regulations across 30+ countries including working time, minimum wage, employee rights, social insurance, data privacy, and workplace safety.
+  const langName = currentLang === 'zh' ? '中文' : currentLang === 'es' ? 'Español' : 'English';
+  const systemPrompt = `You are the MiChat AI Assistant, an HR regulatory compliance assistant for Southeast Asia. Your scope is limited to Singapore (SG), Malaysia (MY), and Thailand (TH) employment regulations.
 
 When answering:
-- Be specific and cite relevant laws when possible
+- Answer in ${langName}
+- Prioritize the structured regulation data provided in the context; do not fabricate facts that are not present in the data
+- Cite the regulation title, country, effective date, and official source when available
 - Provide practical HR compliance advice
-- Compare regulations across countries when relevant
-- Answer in the same language the user uses (Chinese/English/Spanish)
 - Be concise but thorough`;
 
   const messages = [{ role: 'system', content: systemPrompt }];
 
-  // Add context if viewing a specific law
+  // Add structured platform context (selected regulation + current filters)
   if (context) {
-    messages.push({
-      role: 'system',
-      content: `Current context - the user is viewing: ${JSON.stringify(context)}`
-    });
+    const ctxParts = [];
+    const r = context.selectedRegulation;
+    if (r) {
+      ctxParts.push(
+        '[SELECTED REGULATION]\n' +
+        'ID: ' + r.id + '\n' +
+        'Title: ' + r.law + '\n' +
+        'Country: ' + r.country + ' (' + r.countryCode + ')\n' +
+        'Category: ' + (r.primaryCategory || r.category || '') + '\n' +
+        'Subcategory: ' + (r.secondaryCategory || '') + '\n' +
+        'Status: ' + r.status + '\n' +
+        'Effective Date: ' + (r.effectiveDate || 'N/A') + '\n' +
+        'Official Source: ' + (r.source || 'N/A') + '\n' +
+        'Summary: ' + (r.summaryZh || r.summary || '') + '\n' +
+        'Core Changes: ' + (r.changesZh || r.changes || []).join('; ') + '\n' +
+        'HR Impact: ' + (r.hrImpactZh || r.hrImpact || []).join('; ')
+      );
+    }
+    const f = context.filters || {};
+    const fp = [];
+    if (f.country) fp.push('Country=' + f.country);
+    if (f.category) fp.push('Category=' + f.category);
+    if (f.subcategory) fp.push('Subcategory=' + f.subcategory);
+    if (f.effectiveYear) fp.push('EffectiveYear=' + f.effectiveYear);
+    if (f.search) fp.push('Search=' + f.search);
+    if (fp.length) ctxParts.push('[CURRENT FILTERS]\n' + fp.join(', '));
+    if (ctxParts.length) {
+      messages.push({ role: 'system', content: 'Current platform context:\n' + ctxParts.join('\n\n') });
+    }
   }
 
   // Add chat history (last 10 messages for context window)
@@ -717,7 +791,7 @@ When answering:
   // Add new user message
   messages.push({ role: 'user', content: userMessage });
 
-  const reply = await callDeepSeek(messages, { maxTokens: 1500 });
+  const reply = await sendToAIProvider(messages, { maxTokens: 1500 });
 
   // Save to history
   chatHistory.push({ role: 'user', content: userMessage });
@@ -2272,9 +2346,9 @@ async function loadData() {
 }
 
 const i18n={
-  zh:{title:"全球劳动法规智能监控",heroTitle:"全球劳动法规智能监控",notifications:"通知中心",close:"关闭",all:"全部",sortDate:"按更新日期",sortCountry:"按国家",libTitle:"就业法规库",libSub:"所选国家/地区的全部就业法规",searchPlaceholder:"🔍 搜索法规、国家或HR主题...",globeInfo:"点击国家放大 · 滚轮缩放 · 返回世界视图",backToWorld:"返回世界视图",resetFilters:"重置筛选",countryRegion:"国家/地区",regulationType:"法规类型",updated:"排序方式",classificationLevel1:"法规类目",classificationLevel2:"细分类目",effectiveYear:"生效年份",viewDetails:"查看详情 →",viewAll:"查看全部更新 →",regulationTimeline:"── 法规时间线 ──",regulationLibrary:"── 法规库 ──",regulatoryInsights:"法规洞察",upcomingDates:"即将生效日期",aiImpactSummary:"AI影响摘要",naLabel:"暂无",selectLevel1First:"请先选择法规类目",noSubcategories:"暂无细分类目",detailBasicInfo:"基本信息",detailCategory:"法规类别",detailLevel1:"法规类目",detailLevel2:"细分类目",detailCategorySource:"分类来源",detailStatus:"法规状态",detailEffectiveDate:"生效时间",detailEffectiveDateSource:"生效时间来源",detailEffectiveDateEvidence:"生效时间依据",detailCountry:"国家/地区",detailSummary:"法规摘要",detailEnglish:"English",detailChinese:"中文",detailSpanish:"Español",detailKeyChanges:"核心变更",detailHRImpact:"HR影响评估",detailOfficialSource:"官方来源",detailViewFull:"查看完整法规",upcomingRegulations:"即将生效法规",immediateHRAction:"需要HR马上采取行动",daysUntilEffective:"距离生效",detailDays:"天",hrActionRequired:"需要HR行动",requiredHRActions:"HR 需要采取的行动",noUpcoming:"暂无即将生效的法规",noHRAction:"暂无需HR行动的法规",effectiveDateLabel:"生效时间",noResults:"没有符合筛选条件的法规",libCount:"共 {n} 条法规",statusEffective:"已生效",statusUpcoming:"即将生效",statusActionRequired:"需要采取行动",statusActive:"生效中",viewAllUpdates:"查看全部更新 →",recentUpdates:"最近更新",legend3:"3+ 条法规",legend2:"2 条法规",legend1:"1 条法规",regulationText:"条法规",businessDetails:"业务详情",summaryZhLabel:"中文",summaryEnLabel:"English",aiSummary30d:"过去 30 天共有 <strong>{n}</strong> 项法规生效:",aiSummaryCat:"{count} 项影响 {cat}",aiSummaryHr:"{n} 项需要 HR Policy Update",aiSummaryInfo:"{n} 项仅为信息更新",noDetailPage:"暂无详情页面",effectiveDatePrefix:"生效时间：",countryRegionShort:"国家/地区",heroTag:"AI 法规情报监控",heroSub:"监控 · 对比 · 分析全球 HR 法规",heroBadge:"AI 监控运行中",kpiActive:"生效法规数",kpiCountries:"覆盖国家数",filtersLabel:"筛选",aiPanelTitle:"🤖 DeepSeek AI 助手",aiTabChat:"💬 问答",aiTabTranslate:"🌐 翻译",aiTabAnalyze:"📊 分析",aiChatWelcome:"👋 你好！我是劳动法 AI 助手，可以帮你：<br>• 解答各国劳动法问题<br>• 对比不同国家法规<br>• 提供 HR 合规建议<br><br>有什么可以帮你的？",aiChatPlaceholder:"问我关于劳动法的任何问题...",aiSend:"发送",aiTranslatePlaceholder:"输入要翻译的法规文本...",aiTranslateBtn:"翻译",aiAnalyzeCurrent:"📋 分析当前法规",aiRegionalInsight:"🌍 地区趋势分析",aiKeyTitle:"⚙️ DeepSeek API 设置",aiKeyDesc:"输入你的 DeepSeek API Key 以启用 AI 功能。<br>Key 仅保存在本地浏览器，不会上传到任何服务器。",aiKeyPlaceholder:"sk-xxxxxxxxxxxxxxxx",aiKeySave:"保存",aiKeyCancel:"取消",aiKeyGet:"获取 Key: ",aiKeyInvalid:"API Key 无效，请检查后重新设置",aiKeyRequired:"请先设置 DeepSeek API Key",aiKeySaved:"API Key 已保存",aiKeyEmpty:"请输入 API Key",aiAnalyzeHint:"选择一条法规后点击\"分析当前法规\"，或选择地区后点击\"地区趋势分析\"",aiNoLaw:"请先点击一条法规查看详情",aiTranslating:"翻译中...",aiThinking:"思考中...",closeCountryPage:"✕ 关闭",regionAsia:"亚洲",regionEurope:"欧洲",regionAmericas:"美洲",regionAfrica:"非洲",regionOceania:"大洋洲",aiRateLimited:"请求过于频繁，请稍后再试"},
-  en:{title:"Global Labor Law Intelligence",heroTitle:"Global Labor Law Intelligence",notifications:"Notifications",close:"Close",all:"All",sortDate:"By Update Date",sortCountry:"By Country",libTitle:"Regulation Library",libSub:"All employment regulations for selected countries",searchPlaceholder:"🔍 Search regulations, countries or HR topics...",globeInfo:"Click country to zoom · Scroll to zoom · Return to world view",backToWorld:"Return to World View",resetFilters:"Reset filters",countryRegion:"Country / Region",regulationType:"Regulation Type",updated:"Sort",classificationLevel1:"Regulation Category",classificationLevel2:"Subcategory",effectiveYear:"Effective Year",viewDetails:"View Details →",viewAll:"View All Updates →",regulationTimeline:"── REGULATORY TIMELINE ──",regulationLibrary:"── REGULATION LIBRARY ──",regulatoryInsights:"REGULATORY INSIGHTS",upcomingDates:"UPCOMING EFFECTIVE DATES",aiImpactSummary:"AI IMPACT SUMMARY",naLabel:"N/A",selectLevel1First:"Please select a Regulation Category first",noSubcategories:"No subcategories available",detailBasicInfo:"Basic Info",detailCategory:"Category",detailLevel1:"Regulation Category",detailLevel2:"Subcategory",detailCategorySource:"Category Source",detailStatus:"Status",detailEffectiveDate:"Effective Date",detailEffectiveDateSource:"Effective Date Source",detailEffectiveDateEvidence:"Effective Date Evidence",detailCountry:"Country / Region",detailSummary:"Summary",detailEnglish:"English",detailChinese:"Chinese",detailSpanish:"Español",detailKeyChanges:"Key Changes",detailHRImpact:"HR Impact Assessment",detailOfficialSource:"Official Source",detailViewFull:"View Full Regulation",upcomingRegulations:"Upcoming Regulations",immediateHRAction:"Immediate HR Action Required",daysUntilEffective:"Days Until Effective",detailDays:"",hrActionRequired:"HR Action Required",requiredHRActions:"Required HR Actions",noUpcoming:"No upcoming regulations",noHRAction:"No HR action required",effectiveDateLabel:"Effective Date",noResults:"No regulations match your filters.",libCount:"Showing {n} regulations",statusEffective:"Effective",statusUpcoming:"Upcoming",statusActionRequired:"Action Required",statusActive:"Active",viewAllUpdates:"View All Updates →",recentUpdates:"RECENT UPDATES",legend3:"3+ regulations",legend2:"2 regulations",legend1:"1 regulation",regulationText:" regulation",businessDetails:"Business Details",summaryZhLabel:"Chinese",summaryEnLabel:"English",aiSummary30d:"<strong>{n}</strong> regulations took effect in the last 30 days:",aiSummaryCat:"{count} affecting {cat}",aiSummaryHr:"{n} requiring HR Policy Update",aiSummaryInfo:"{n} are information-only updates",noDetailPage:"No detail page available",effectiveDatePrefix:"Effective: ",countryRegionShort:"Country / Region",heroTag:"AI REGULATORY INTELLIGENCE",heroSub:"Monitor · Compare · Analyze global HR regulations",heroBadge:"AI Monitoring Active",kpiActive:"Active Regulations",kpiCountries:"Countries Covered",filtersLabel:"FILTERS",aiPanelTitle:"🤖 DeepSeek AI Assistant",aiTabChat:"💬 Chat",aiTabTranslate:"🌐 Translate",aiTabAnalyze:"📊 Analyze",aiChatWelcome:"👋 Hi! I'm your labor law AI assistant. I can help you:<br>• Answer labor law questions by country<br>• Compare regulations across countries<br>• Provide HR compliance advice<br><br>How can I help you?",aiChatPlaceholder:"Ask me anything about labor law...",aiSend:"Send",aiTranslatePlaceholder:"Enter regulation text to translate...",aiTranslateBtn:"Translate",aiAnalyzeCurrent:"📋 Analyze Current Regulation",aiRegionalInsight:"🌍 Regional Trend Analysis",aiKeyTitle:"⚙️ DeepSeek API Settings",aiKeyDesc:"Enter your DeepSeek API Key to enable AI features.<br>The key is stored only in your local browser, never uploaded to any server.",aiKeyPlaceholder:"sk-xxxxxxxxxxxxxxxx",aiKeySave:"Save",aiKeyCancel:"Cancel",aiKeyGet:"Get Key: ",aiKeyInvalid:"API Key is invalid, please check and re-enter",aiKeyRequired:"Please set your DeepSeek API Key first",aiKeySaved:"API Key saved",aiKeyEmpty:"Please enter an API Key",aiAnalyzeHint:"Select a regulation then click \"Analyze Current Regulation\", or select a region and click \"Regional Trend Analysis\"",aiNoLaw:"Please click a regulation to view its details first",aiTranslating:"Translating...",aiThinking:"Thinking...",closeCountryPage:"✕ Close",regionAsia:"Asia",regionEurope:"Europe",regionAmericas:"Americas",regionAfrica:"Africa",regionOceania:"Oceania",aiRateLimited:"Too many requests, please try again later"},
-  es:{title:"Inteligencia Laboral Global",heroTitle:"Inteligencia Laboral Global",notifications:"Notificaciones",close:"Cerrar",all:"Todos",sortDate:"Por Fecha",sortCountry:"Por País",libTitle:"Biblioteca de Regulaciones",libSub:"Todas las regulaciones laborales",searchPlaceholder:"🔍 Buscar regulaciones, países o temas de RRHH...",globeInfo:"Haga clic para ampliar · Rueda del ratón para zoom",backToWorld:"Vista Mundial",resetFilters:"Restablecer filtros",countryRegion:"País / Región",regulationType:"Tipo de Regulación",updated:"Ordenar",classificationLevel1:"Clasificación L1",classificationLevel2:"Clasificación L2",effectiveYear:"Año de Vigencia",viewDetails:"Ver Detalles →",viewAll:"Ver Todas las Actualizaciones →",regulationTimeline:"── LÍNEA DE TIEMPO ──",regulationLibrary:"── BIBLIOTECA ──",regulatoryInsights:"PERSPECTIVAS",upcomingDates:"FECHAS PRÓXIMAS",aiImpactSummary:"RESUMEN DE IMPACTO IA",naLabel:"N/A",detailBasicInfo:"Información Básica",detailCategory:"Categoría",detailLevel1:"Categoría Nivel 1",detailLevel2:"Categoría Nivel 2",detailCategorySource:"Fuente de Categoría",detailStatus:"Estado",detailEffectiveDate:"Fecha de Vigencia",detailEffectiveDateSource:"Fuente de Fecha",detailEffectiveDateEvidence:"Evidencia de Fecha",detailCountry:"País / Región",detailSummary:"Resumen",detailEnglish:"English",detailChinese:"Chino",detailSpanish:"Español",detailKeyChanges:"Cambios Clave",detailHRImpact:"Evaluación de Impacto HR",detailOfficialSource:"Fuente Oficial",detailViewFull:"Ver Regulación Completa",upcomingRegulations:"Próximas Regulaciones",immediateHRAction:"Acción HR Inmediata",daysUntilEffective:"Días Hasta Efectividad",detailDays:"días",hrActionRequired:"Acción HR Requerida",requiredHRActions:"Acciones HR Requeridas",noUpcoming:"No hay regulaciones próximas",noHRAction:"No se requiere acción HR",effectiveDateLabel:"Fecha de Vigencia",selectLevel1First:"Seleccione primero una categoría normativa",noSubcategories:"No hay subcategorías disponibles",noResults:"Ninguna regulación coincide con los filtros.",libCount:"Mostrando {n} regulaciones",statusEffective:"Vigente",statusUpcoming:"Próxima",statusActionRequired:"Acción requerida",statusActive:"Activa",viewAllUpdates:"Ver todas las actualizaciones →",recentUpdates:"ACTUALIZACIONES RECIENTES",legend3:"3+ regulaciones",legend2:"2 regulaciones",legend1:"1 regulación",regulationText:" regulaciones",businessDetails:"Detalles del Negocio",summaryZhLabel:"Chino",summaryEnLabel:"English",aiSummary30d:"<strong>{n}</strong> regulaciones entraron en vigor en los últimos 30 días:",aiSummaryCat:"{count} que afectan {cat}",aiSummaryHr:"{n} requieren actualización de políticas de RR. HH.",aiSummaryInfo:"{n} son solo actualizaciones informativas",noDetailPage:"No hay página de detalle disponible",effectiveDatePrefix:"Entrada en vigor: ",countryRegionShort:"País / Región",heroTag:"INTELIGENCIA REGULATORIA IA",heroSub:"Monitorear · Comparar · Analizar regulaciones laborales globales",heroBadge:"Monitoreo IA Activo",kpiActive:"Regulaciones Vigentes",kpiCountries:"Países Cubiertos",filtersLabel:"FILTROS",aiPanelTitle:"🤖 Asistente IA DeepSeek",aiTabChat:"💬 Chat",aiTabTranslate:"🌐 Traducir",aiTabAnalyze:"📊 Analizar",aiChatWelcome:"👋 ¡Hola! Soy tu asistente de derecho laboral. Puedo ayudarte:<br>• Responder preguntas de derecho laboral por país<br>• Comparar regulaciones entre países<br>• Dar consejos de cumplimiento de RR. HH.<br><br>¿En qué puedo ayudarte?",aiChatPlaceholder:"Pregúntame sobre derecho laboral...",aiSend:"Enviar",aiTranslatePlaceholder:"Ingrese el texto de la regulación a traducir...",aiTranslateBtn:"Traducir",aiAnalyzeCurrent:"📋 Analizar Regulación Actual",aiRegionalInsight:"🌍 Análisis de Tendencias Regionales",aiKeyTitle:"⚙️ Configuración de API DeepSeek",aiKeyDesc:"Ingrese su clave de API de DeepSeek para habilitar las funciones de IA.<br>La clave se guarda solo en su navegador local, nunca se sube a ningún servidor.",aiKeyPlaceholder:"sk-xxxxxxxxxxxxxxxx",aiKeySave:"Guardar",aiKeyCancel:"Cancelar",aiKeyGet:"Obtener clave: ",aiKeyInvalid:"La clave de API no es válida, revísela e intente de nuevo",aiKeyRequired:"Configure primero su clave de API de DeepSeek",aiKeySaved:"Clave de API guardada",aiKeyEmpty:"Ingrese una clave de API",aiAnalyzeHint:"Seleccione una regulación y haga clic en \"Analizar Regulación Actual\", o seleccione una región y haga clic en \"Análisis de Tendencias Regionales\"",aiNoLaw:"Haga clic en una regulación para ver sus detalles primero",aiTranslating:"Traduciendo...",aiThinking:"Pensando...",closeCountryPage:"✕ Cerrar",regionAsia:"Asia",regionEurope:"Europa",regionAmericas:"Américas",regionAfrica:"África",regionOceania:"Oceanía",aiRateLimited:"Demasiadas solicitudes, inténtelo de nuevo más tarde"}
+  zh:{title:"全球劳动法规智能监控",heroTitle:"全球劳动法规智能监控",notifications:"通知中心",close:"关闭",all:"全部",sortDate:"按更新日期",sortCountry:"按国家",libTitle:"就业法规库",libSub:"所选国家/地区的全部就业法规",searchPlaceholder:"🔍 搜索法规、国家或HR主题...",globeInfo:"点击国家放大 · 滚轮缩放 · 返回世界视图",backToWorld:"返回世界视图",resetFilters:"重置筛选",countryRegion:"国家/地区",regulationType:"法规类型",updated:"排序方式",classificationLevel1:"法规类目",classificationLevel2:"细分类目",effectiveYear:"生效年份",viewDetails:"查看详情 →",viewAll:"查看全部更新 →",regulationTimeline:"── 法规时间线 ──",regulationLibrary:"── 法规库 ──",regulatoryInsights:"法规洞察",upcomingDates:"即将生效日期",aiImpactSummary:"AI影响摘要",naLabel:"暂无",selectLevel1First:"请先选择法规类目",noSubcategories:"暂无细分类目",detailBasicInfo:"基本信息",detailCategory:"法规类别",detailLevel1:"法规类目",detailLevel2:"细分类目",detailCategorySource:"分类来源",detailStatus:"法规状态",detailEffectiveDate:"生效时间",detailEffectiveDateSource:"生效时间来源",detailEffectiveDateEvidence:"生效时间依据",detailCountry:"国家/地区",detailSummary:"法规摘要",detailEnglish:"English",detailChinese:"中文",detailSpanish:"Español",detailKeyChanges:"核心变更",detailHRImpact:"HR影响评估",detailOfficialSource:"官方来源",detailViewFull:"查看完整法规",upcomingRegulations:"即将生效法规",immediateHRAction:"需要HR马上采取行动",daysUntilEffective:"距离生效",detailDays:"天",hrActionRequired:"需要HR行动",requiredHRActions:"HR 需要采取的行动",noUpcoming:"暂无即将生效的法规",noHRAction:"暂无需HR行动的法规",effectiveDateLabel:"生效时间",noResults:"没有符合筛选条件的法规",libCount:"共 {n} 条法规",statusEffective:"已生效",statusUpcoming:"即将生效",statusActionRequired:"需要采取行动",statusActive:"生效中",viewAllUpdates:"查看全部更新 →",recentUpdates:"最近更新",legend3:"3+ 条法规",legend2:"2 条法规",legend1:"1 条法规",regulationText:"条法规",businessDetails:"业务详情",summaryZhLabel:"中文",summaryEnLabel:"English",aiSummary30d:"过去 30 天共有 <strong>{n}</strong> 项法规生效:",aiSummaryCat:"{count} 项影响 {cat}",aiSummaryHr:"{n} 项需要 HR Policy Update",aiSummaryInfo:"{n} 项仅为信息更新",noDetailPage:"暂无详情页面",effectiveDatePrefix:"生效时间：",countryRegionShort:"国家/地区",heroTag:"AI 法规情报监控",heroSub:"监控 · 对比 · 分析全球 HR 法规",heroBadge:"AI 监控运行中",kpiActive:"生效法规数",kpiCountries:"覆盖国家数",filtersLabel:"筛选",aiPanelTitle:"🤖 MiChat AI 助手",aiTabChat:"💬 问答",aiTabTranslate:"🌐 翻译",aiTabAnalyze:"📊 分析",aiChatWelcome:"👋 你好，我是 MiChat AI 助手。<br>你可以向我询问新加坡、马来西亚和泰国的 HR 法规问题。",aiChatPlaceholder:"请输入你的法规问题……",aiSend:"发送",aiTranslatePlaceholder:"输入要翻译的法规文本...",aiTranslateBtn:"翻译",aiAnalyzeCurrent:"📋 分析当前法规",aiRegionalInsight:"🌍 地区趋势分析",aiKeyTitle:"⚙️ DeepSeek API 设置",aiKeyDesc:"输入你的 DeepSeek API Key 以启用 AI 功能。<br>Key 仅保存在本地浏览器，不会上传到任何服务器。",aiKeyPlaceholder:"sk-xxxxxxxxxxxxxxxx",aiKeySave:"保存",aiKeyCancel:"取消",aiKeyGet:"获取 Key: ",aiKeyInvalid:"API Key 无效，请检查后重新设置",aiKeyRequired:"请先设置 DeepSeek API Key",aiKeySaved:"API Key 已保存",aiKeyEmpty:"请输入 API Key",aiAnalyzeHint:"选择一条法规后点击\"分析当前法规\"，或选择地区后点击\"地区趋势分析\"",aiNoLaw:"请先点击一条法规查看详情",aiTranslating:"翻译中...",aiThinking:"思考中...",closeCountryPage:"✕ 关闭",regionAsia:"亚洲",regionEurope:"欧洲",regionAmericas:"美洲",regionAfrica:"非洲",regionOceania:"大洋洲",aiRateLimited:"请求过于频繁，请稍后再试",aiProviderNotConfigured:"MiChat API 尚未配置，暂时无法回答。",aiAskMiChat:"询问 MiChat",aiSug1:"这条法规对 HR 有什么影响？",aiSug2:"有哪些法规即将生效？",aiSug3:"哪些法规需要 HR 马上采取行动？",aiSug4:"马来西亚最低工资有哪些最新变化？",aiClose:"关闭"},
+  en:{title:"Global Labor Law Intelligence",heroTitle:"Global Labor Law Intelligence",notifications:"Notifications",close:"Close",all:"All",sortDate:"By Update Date",sortCountry:"By Country",libTitle:"Regulation Library",libSub:"All employment regulations for selected countries",searchPlaceholder:"🔍 Search regulations, countries or HR topics...",globeInfo:"Click country to zoom · Scroll to zoom · Return to world view",backToWorld:"Return to World View",resetFilters:"Reset filters",countryRegion:"Country / Region",regulationType:"Regulation Type",updated:"Sort",classificationLevel1:"Regulation Category",classificationLevel2:"Subcategory",effectiveYear:"Effective Year",viewDetails:"View Details →",viewAll:"View All Updates →",regulationTimeline:"── REGULATORY TIMELINE ──",regulationLibrary:"── REGULATION LIBRARY ──",regulatoryInsights:"REGULATORY INSIGHTS",upcomingDates:"UPCOMING EFFECTIVE DATES",aiImpactSummary:"AI IMPACT SUMMARY",naLabel:"N/A",selectLevel1First:"Please select a Regulation Category first",noSubcategories:"No subcategories available",detailBasicInfo:"Basic Info",detailCategory:"Category",detailLevel1:"Regulation Category",detailLevel2:"Subcategory",detailCategorySource:"Category Source",detailStatus:"Status",detailEffectiveDate:"Effective Date",detailEffectiveDateSource:"Effective Date Source",detailEffectiveDateEvidence:"Effective Date Evidence",detailCountry:"Country / Region",detailSummary:"Summary",detailEnglish:"English",detailChinese:"Chinese",detailSpanish:"Español",detailKeyChanges:"Key Changes",detailHRImpact:"HR Impact Assessment",detailOfficialSource:"Official Source",detailViewFull:"View Full Regulation",upcomingRegulations:"Upcoming Regulations",immediateHRAction:"Immediate HR Action Required",daysUntilEffective:"Days Until Effective",detailDays:"",hrActionRequired:"HR Action Required",requiredHRActions:"Required HR Actions",noUpcoming:"No upcoming regulations",noHRAction:"No HR action required",effectiveDateLabel:"Effective Date",noResults:"No regulations match your filters.",libCount:"Showing {n} regulations",statusEffective:"Effective",statusUpcoming:"Upcoming",statusActionRequired:"Action Required",statusActive:"Active",viewAllUpdates:"View All Updates →",recentUpdates:"RECENT UPDATES",legend3:"3+ regulations",legend2:"2 regulations",legend1:"1 regulation",regulationText:" regulation",businessDetails:"Business Details",summaryZhLabel:"Chinese",summaryEnLabel:"English",aiSummary30d:"<strong>{n}</strong> regulations took effect in the last 30 days:",aiSummaryCat:"{count} affecting {cat}",aiSummaryHr:"{n} requiring HR Policy Update",aiSummaryInfo:"{n} are information-only updates",noDetailPage:"No detail page available",effectiveDatePrefix:"Effective: ",countryRegionShort:"Country / Region",heroTag:"AI REGULATORY INTELLIGENCE",heroSub:"Monitor · Compare · Analyze global HR regulations",heroBadge:"AI Monitoring Active",kpiActive:"Active Regulations",kpiCountries:"Countries Covered",filtersLabel:"FILTERS",aiPanelTitle:"🤖 MiChat AI Assistant",aiTabChat:"💬 Chat",aiTabTranslate:"🌐 Translate",aiTabAnalyze:"📊 Analyze",aiChatWelcome:"👋 Hi, I'm the MiChat AI Assistant.<br>You can ask me about HR regulations in Singapore, Malaysia, and Thailand.",aiChatPlaceholder:"Ask a question about HR regulations...",aiSend:"Send",aiTranslatePlaceholder:"Enter regulation text to translate...",aiTranslateBtn:"Translate",aiAnalyzeCurrent:"📋 Analyze Current Regulation",aiRegionalInsight:"🌍 Regional Trend Analysis",aiKeyTitle:"⚙️ DeepSeek API Settings",aiKeyDesc:"Enter your DeepSeek API Key to enable AI features.<br>The key is stored only in your local browser, never uploaded to any server.",aiKeyPlaceholder:"sk-xxxxxxxxxxxxxxxx",aiKeySave:"Save",aiKeyCancel:"Cancel",aiKeyGet:"Get Key: ",aiKeyInvalid:"API Key is invalid, please check and re-enter",aiKeyRequired:"Please set your DeepSeek API Key first",aiKeySaved:"API Key saved",aiKeyEmpty:"Please enter an API Key",aiAnalyzeHint:"Select a regulation then click \"Analyze Current Regulation\", or select a region and click \"Regional Trend Analysis\"",aiNoLaw:"Please click a regulation to view its details first",aiTranslating:"Translating...",aiThinking:"Thinking...",closeCountryPage:"✕ Close",regionAsia:"Asia",regionEurope:"Europe",regionAmericas:"Americas",regionAfrica:"Africa",regionOceania:"Oceania",aiRateLimited:"Too many requests, please try again later",aiProviderNotConfigured:"MiChat API is not configured yet.",aiAskMiChat:"Ask MiChat",aiSug1:"How does this regulation affect HR?",aiSug2:"Which regulations are coming into effect?",aiSug3:"Which regulations require immediate HR action?",aiSug4:"What are the latest minimum wage changes in Malaysia?",aiClose:"Close"},
+  es:{title:"Inteligencia Laboral Global",heroTitle:"Inteligencia Laboral Global",notifications:"Notificaciones",close:"Cerrar",all:"Todos",sortDate:"Por Fecha",sortCountry:"Por País",libTitle:"Biblioteca de Regulaciones",libSub:"Todas las regulaciones laborales",searchPlaceholder:"🔍 Buscar regulaciones, países o temas de RRHH...",globeInfo:"Haga clic para ampliar · Rueda del ratón para zoom",backToWorld:"Vista Mundial",resetFilters:"Restablecer filtros",countryRegion:"País / Región",regulationType:"Tipo de Regulación",updated:"Ordenar",classificationLevel1:"Clasificación L1",classificationLevel2:"Clasificación L2",effectiveYear:"Año de Vigencia",viewDetails:"Ver Detalles →",viewAll:"Ver Todas las Actualizaciones →",regulationTimeline:"── LÍNEA DE TIEMPO ──",regulationLibrary:"── BIBLIOTECA ──",regulatoryInsights:"PERSPECTIVAS",upcomingDates:"FECHAS PRÓXIMAS",aiImpactSummary:"RESUMEN DE IMPACTO IA",naLabel:"N/A",detailBasicInfo:"Información Básica",detailCategory:"Categoría",detailLevel1:"Categoría Nivel 1",detailLevel2:"Categoría Nivel 2",detailCategorySource:"Fuente de Categoría",detailStatus:"Estado",detailEffectiveDate:"Fecha de Vigencia",detailEffectiveDateSource:"Fuente de Fecha",detailEffectiveDateEvidence:"Evidencia de Fecha",detailCountry:"País / Región",detailSummary:"Resumen",detailEnglish:"English",detailChinese:"Chino",detailSpanish:"Español",detailKeyChanges:"Cambios Clave",detailHRImpact:"Evaluación de Impacto HR",detailOfficialSource:"Fuente Oficial",detailViewFull:"Ver Regulación Completa",upcomingRegulations:"Próximas Regulaciones",immediateHRAction:"Acción HR Inmediata",daysUntilEffective:"Días Hasta Efectividad",detailDays:"días",hrActionRequired:"Acción HR Requerida",requiredHRActions:"Acciones HR Requeridas",noUpcoming:"No hay regulaciones próximas",noHRAction:"No se requiere acción HR",effectiveDateLabel:"Fecha de Vigencia",selectLevel1First:"Seleccione primero una categoría normativa",noSubcategories:"No hay subcategorías disponibles",noResults:"Ninguna regulación coincide con los filtros.",libCount:"Mostrando {n} regulaciones",statusEffective:"Vigente",statusUpcoming:"Próxima",statusActionRequired:"Acción requerida",statusActive:"Activa",viewAllUpdates:"Ver todas las actualizaciones →",recentUpdates:"ACTUALIZACIONES RECIENTES",legend3:"3+ regulaciones",legend2:"2 regulaciones",legend1:"1 regulación",regulationText:" regulaciones",businessDetails:"Detalles del Negocio",summaryZhLabel:"Chino",summaryEnLabel:"English",aiSummary30d:"<strong>{n}</strong> regulaciones entraron en vigor en los últimos 30 días:",aiSummaryCat:"{count} que afectan {cat}",aiSummaryHr:"{n} requieren actualización de políticas de RR. HH.",aiSummaryInfo:"{n} son solo actualizaciones informativas",noDetailPage:"No hay página de detalle disponible",effectiveDatePrefix:"Entrada en vigor: ",countryRegionShort:"País / Región",heroTag:"INTELIGENCIA REGULATORIA IA",heroSub:"Monitorear · Comparar · Analizar regulaciones laborales globales",heroBadge:"Monitoreo IA Activo",kpiActive:"Regulaciones Vigentes",kpiCountries:"Países Cubiertos",filtersLabel:"FILTROS",aiPanelTitle:"🤖 Asistente de IA MiChat",aiTabChat:"💬 Chat",aiTabTranslate:"🌐 Traducir",aiTabAnalyze:"📊 Analizar",aiChatWelcome:"👋 Hola, soy el Asistente de IA MiChat.<br>Puedes consultarme sobre normativa de RR. HH. de Singapur, Malasia y Tailandia.",aiChatPlaceholder:"Haz una pregunta sobre normativa de RR. HH....",aiSend:"Enviar",aiTranslatePlaceholder:"Ingrese el texto de la regulación a traducir...",aiTranslateBtn:"Traducir",aiAnalyzeCurrent:"📋 Analizar Regulación Actual",aiRegionalInsight:"🌍 Análisis de Tendencias Regionales",aiKeyTitle:"⚙️ Configuración de API DeepSeek",aiKeyDesc:"Ingrese su clave de API de DeepSeek para habilitar las funciones de IA.<br>La clave se guarda solo en su navegador local, nunca se sube a ningún servidor.",aiKeyPlaceholder:"sk-xxxxxxxxxxxxxxxx",aiKeySave:"Guardar",aiKeyCancel:"Cancelar",aiKeyGet:"Obtener clave: ",aiKeyInvalid:"La clave de API no es válida, revísela e intente de nuevo",aiKeyRequired:"Configure primero su clave de API de DeepSeek",aiKeySaved:"Clave de API guardada",aiKeyEmpty:"Ingrese una clave de API",aiAnalyzeHint:"Seleccione una regulación y haga clic en \"Analizar Regulación Actual\", o seleccione una región y haga clic en \"Análisis de Tendencias Regionales\"",aiNoLaw:"Haga clic en una regulación para ver sus detalles primero",aiTranslating:"Traduciendo...",aiThinking:"Pensando...",closeCountryPage:"✕ Cerrar",regionAsia:"Asia",regionEurope:"Europa",regionAmericas:"Américas",regionAfrica:"África",regionOceania:"Oceanía",aiRateLimited:"Demasiadas solicitudes, inténtelo de nuevo más tarde",aiProviderNotConfigured:"La API de MiChat aún no está configurada.",aiAskMiChat:"Preguntar a MiChat",aiSug1:"¿Cómo afecta esta normativa a RR. HH.?",aiSug2:"¿Qué normativas entrarán en vigor próximamente?",aiSug3:"¿Qué normativas requieren una acción inmediata de RR. HH.?",aiSug4:"¿Cuáles son los últimos cambios del salario mínimo en Malasia?",aiClose:"Cerrar"}
 };
 
 let currentLang='zh',currentRegion='',currentSort='date',mapInstance=null,geoLayer=null,geoData=null,currentZoom=2,selectedCountry=null,filteredData=[...laborLawData],mapMarker=null,mapLabel=null;
@@ -2770,6 +2844,7 @@ function openDetail(id){
   html+='</div><div class="dp-section" style="margin-top:16px"><h4>💼 '+t.detailHRImpact+'</h4>';
   hrImpactArr.forEach(h=>{html+='<div style="margin-bottom:4px;font-size:12px;color:var(--text)">• '+h+'</div>'});
   html+='</div><div class="dp-section" style="margin-top:16px"><h4>🔗 '+t.detailOfficialSource+'</h4><div class="dp-val"><a href="'+item.source+'" target="_blank">'+item.source+'</a></div></div>';
+  html+='<button class="btn-fullview" onclick="askMiChat()">💬 '+t.aiAskMiChat+'</button>';
   if(countryDetailPages[item.country])html+='<button class="btn-fullview" onclick="openCountryPage(\''+item.country+'\')">📖 '+t.detailViewFull+'</button>';
   document.getElementById('detailContent').innerHTML=html;
   document.getElementById('detailOverlay').classList.add('open');
@@ -2850,7 +2925,6 @@ function toggleAIPanel() {
   const panel = document.getElementById('aiPanel');
   const fab = document.getElementById('aiFab');
   if (aiPanelOpen) {
-    if (!hasApiKey()) { openKeyModal(); return; }
     panel.classList.add('open');
     fab.classList.add('hidden');
   } else {
@@ -2885,12 +2959,43 @@ function saveApiKey() {
   if (!aiPanelOpen) toggleAIPanel();
 }
 
+// Build the current assistant context (selected regulation + active filters)
+function getAssistantContext() {
+  const reg = currentViewingLaw;
+  return {
+    selectedRegulationId: reg ? reg.id : null,
+    selectedRegulation: reg,
+    filters: {
+      region: (document.getElementById('filterRegion') && document.getElementById('filterRegion').value) || currentTabRegion || null,
+      country: document.getElementById('filterCountry') ? document.getElementById('filterCountry').value || null : null,
+      category: document.getElementById('filterLevel1') ? document.getElementById('filterLevel1').value || null : null,
+      subcategory: document.getElementById('filterLevel2') ? document.getElementById('filterLevel2').value || null : null,
+      effectiveYear: document.getElementById('filterYear') ? document.getElementById('filterYear').value || null : null,
+      search: document.getElementById('searchInput') ? document.getElementById('searchInput').value || null : null
+    }
+  };
+}
+
+// Open MiChat focused on the currently viewed regulation (used by "Ask MiChat")
+function askMiChat() {
+  if (!aiPanelOpen) {
+    aiPanelOpen = true;
+    document.getElementById('aiPanel').classList.add('open');
+    document.getElementById('aiFab').classList.add('hidden');
+  }
+  switchAITab('chat');
+}
+
+// Suggested-question chip click
+function askSuggestion(text) {
+  sendAIChat(text);
+}
+
 // Chat
-async function sendAIChat() {
+async function sendAIChat(msgOverride) {
   const input = document.getElementById('aiChatInput');
-  const msg = input.value.trim();
+  const msg = (msgOverride !== undefined ? msgOverride : input.value).trim();
   if (!msg) return;
-  if (!hasApiKey()) { openKeyModal(); return; }
 
   const messagesEl = document.getElementById('aiChatMessages');
   // Add user message
@@ -2901,7 +3006,7 @@ async function sendAIChat() {
   messagesEl.scrollTop = messagesEl.scrollHeight;
 
   try {
-    const context = currentViewingLaw ? currentViewingLaw : null;
+    const context = getAssistantContext();
     const reply = await chatWithAI(msg, context);
     document.getElementById('aiLoading')?.remove();
     messagesEl.innerHTML += `<div class="ai-msg ai-msg-bot">${escapeHtml(reply)}</div>`;
