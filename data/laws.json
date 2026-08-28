@@ -64,68 +64,6 @@
       "lawEs": "Ley de Empleo – Modelo de Salario Progresivo"
     },
     {
-      "id": "sg02",
-      "country": "Singapore",
-      "countryCode": "SG",
-      "region": "southeast-asia",
-      "flag": "🇸🇬",
-      "law": "Workplace Fairness – Anti-Discrimination",
-      "category": "法定标准Legal standard",
-      "subCategory": "Anti-Discrimination",
-      "level1Category": "离职与遣散Termination & Severance",
-      "level2Category": "法定标准Legal standard",
-      "summary": "Comprehensive workplace fairness law prohibiting discrimination on 9 protected characteristics.",
-      "summaryZh": "全面工作场所公平法，禁止基于9项受保护特征的歧视。",
-      "status": "upcoming",
-      "effectiveDate": "2027-12-31",
-      "source": "https://www.mom.gov.sg",
-      "changes": [
-        "9 protected characteristics defined",
-        "Employment tribunal enforcement",
-        "Mandatory workplace policies"
-      ],
-      "hrImpact": [
-        "Policy development required",
-        "Manager training programs",
-        "Complaint mechanism setup"
-      ],
-      "modules": [
-        "员工关系"
-      ],
-      "titleCategory": "Termination & Severance",
-      "effectiveDateStatus": "confirmed",
-      "effectiveDateSource": "https://www.mom.gov.sg/newsroom/press-releases/2025/workplace-fairness--dispute-resolution----bill-press-release",
-      "effectiveDateEvidence": "MOM press release: \"We aim for the Act to take effect in end-2027\"",
-      "primaryCategory": "离职与遣散Termination & Severance",
-      "secondaryCategory": "法定标准Legal standard",
-      "categorySource": "AI Classification",
-      "categoryStatus": "confirmed",
-      "classificationReason": "Workplace Fairness Act - anti-discrimination protections",
-      "summaryEs": "Ley integral de equidad en el lugar de trabajo que prohíbe la discriminación por 9 características protegidas.",
-      "changesZh": [
-        "明确9项受保护特征",
-        "设立雇佣法庭执法机制",
-        "强制推行职场政策"
-      ],
-      "changesEs": [
-        "Definición de 9 características protegidas",
-        "Aplicación mediante tribunal laboral",
-        "Políticas laborales obligatorias"
-      ],
-      "hrImpactZh": [
-        "需要制定相关政策",
-        "管理层培训计划",
-        "建立投诉机制"
-      ],
-      "hrImpactEs": [
-        "Desarrollo de políticas requerido",
-        "Programas de formación para directivos",
-        "Configuración del mecanismo de quejas"
-      ],
-      "lawZh": "职场公平法 – 反歧视",
-      "lawEs": "Ley de Equidad Laboral – Antidiscriminación"
-    },
-    {
       "id": "th01",
       "country": "Thailand",
       "countryCode": "TH",

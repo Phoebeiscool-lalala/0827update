@@ -495,10 +495,6 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex
       <div class="right-label" id="upcomingLabel" data-i18n="upcomingDates">📅 即将生效日期</div>
       <div id="upcomingList"></div>
     </div>
-    <div class="right-section">
-      <div class="right-label" id="aiLabel" data-i18n="aiImpactSummary">🤖 AI影响摘要</div>
-      <div class="ai-summary" id="aiSummary"></div>
-    </div>
   </div>
 </div>
 
@@ -953,68 +949,6 @@ const INLINE_DATA = {
       ],
       "lawZh": "雇佣法 – 渐进式工资模式",
       "lawEs": "Ley de Empleo – Modelo de Salario Progresivo"
-    },
-    {
-      "id": "sg02",
-      "country": "Singapore",
-      "countryCode": "SG",
-      "region": "southeast-asia",
-      "flag": "🇸🇬",
-      "law": "Workplace Fairness – Anti-Discrimination",
-      "category": "法定标准Legal standard",
-      "subCategory": "Anti-Discrimination",
-      "level1Category": "离职与遣散Termination & Severance",
-      "level2Category": "法定标准Legal standard",
-      "summary": "Comprehensive workplace fairness law prohibiting discrimination on 9 protected characteristics.",
-      "summaryZh": "全面工作场所公平法，禁止基于9项受保护特征的歧视。",
-      "status": "upcoming",
-      "effectiveDate": "2027-12-31",
-      "source": "https://www.mom.gov.sg",
-      "changes": [
-        "9 protected characteristics defined",
-        "Employment tribunal enforcement",
-        "Mandatory workplace policies"
-      ],
-      "hrImpact": [
-        "Policy development required",
-        "Manager training programs",
-        "Complaint mechanism setup"
-      ],
-      "modules": [
-        "员工关系"
-      ],
-      "titleCategory": "Termination & Severance",
-      "effectiveDateStatus": "confirmed",
-      "effectiveDateSource": "https://www.mom.gov.sg/newsroom/press-releases/2025/workplace-fairness--dispute-resolution----bill-press-release",
-      "effectiveDateEvidence": "MOM press release: \"We aim for the Act to take effect in end-2027\"",
-      "primaryCategory": "离职与遣散Termination & Severance",
-      "secondaryCategory": "法定标准Legal standard",
-      "categorySource": "AI Classification",
-      "categoryStatus": "confirmed",
-      "classificationReason": "Workplace Fairness Act - anti-discrimination protections",
-      "summaryEs": "Ley integral de equidad en el lugar de trabajo que prohíbe la discriminación por 9 características protegidas.",
-      "changesZh": [
-        "明确9项受保护特征",
-        "设立雇佣法庭执法机制",
-        "强制推行职场政策"
-      ],
-      "changesEs": [
-        "Definición de 9 características protegidas",
-        "Aplicación mediante tribunal laboral",
-        "Políticas laborales obligatorias"
-      ],
-      "hrImpactZh": [
-        "需要制定相关政策",
-        "管理层培训计划",
-        "建立投诉机制"
-      ],
-      "hrImpactEs": [
-        "Desarrollo de políticas requerido",
-        "Programas de formación para directivos",
-        "Configuración del mecanismo de quejas"
-      ],
-      "lawZh": "职场公平法 – 反歧视",
-      "lawEs": "Ley de Equidad Laboral – Antidiscriminación"
     },
     {
       "id": "th01",
@@ -2601,7 +2535,7 @@ function applyFilters(){
   if(search)d=d.filter(r=>(r.country+' '+getCountryName(r.country)+' '+r.law+' '+r.category+' '+r.summary+' '+r.summaryZh+' '+r.flag+' '+r.modules.join(' ')).toLowerCase().includes(search));
   d.sort((a,b)=>getCountryName(a.country).localeCompare(getCountryName(b.country)));
   filteredData=d;
-  renderTimeline();renderLawCards();updateKPIs();renderUpcoming();renderAISummary();renderTicker();
+  renderTimeline();renderLawCards();updateKPIs();renderUpcoming();renderTicker();
   document.getElementById('libCount').textContent=i18n[currentLang].libCount.replace('{n}',d.length);
 }
 
@@ -2740,19 +2674,6 @@ function closeEmbeddedPanel(){
   document.getElementById('embeddedPanel').classList.remove('open');
 }
 
-function renderAISummary(){
-  const el=document.getElementById('aiSummary');
-  const t=i18n[currentLang];
-  const thirty=new Date();thirty.setDate(thirty.getDate()-30);
-  const recent=laborLawData.filter(d=>d.effectiveDate&&new Date(d.effectiveDate)>=thirty);
-  const byCat={};recent.forEach(d=>{byCat[d.category]=(byCat[d.category]||0)+1});
-  const actionR=recent.filter(d=>d.status==='upcoming'||d.status==='action-required').length;
-  let html=t.aiSummary30d.replace('{n}',recent.length)+'<br>';
-  Object.entries(byCat).forEach(([cat,count])=>{html+='• '+t.aiSummaryCat.replace('{count}',count).replace('{cat}',getCategoryName(cat))+'<br>'});
-  if(actionR)html+='• '+t.aiSummaryHr.replace('{n}',actionR)+'<br>';
-  html+='• '+t.aiSummaryInfo.replace('{n}',recent.length-actionR);
-  el.innerHTML=html;
-}
 
 function renderTicker(){
   const el=document.getElementById('tickerTrack');
@@ -2807,7 +2728,6 @@ function openDetail(id){
   html+='<div class="dp-row"><div class="dp-label">'+t.detailCategory+'</div><div class="dp-val"><span class="dp-tag mod">'+getCategoryName(item.category)+'</span></div></div>';
   html+='<div class="dp-row"><div class="dp-label">'+t.detailLevel1+'</div><div class="dp-val">'+getCategoryName(item.primaryCategory)+'</div></div>';
   html+='<div class="dp-row"><div class="dp-label">'+t.detailLevel2+'</div><div class="dp-val">'+getCategoryName(item.secondaryCategory)+'</div></div>';
-  html+='<div class="dp-row"><div class="dp-label">'+t.detailCategorySource+'</div><div class="dp-val">'+item.categorySource+'</div></div>';
   html+='<div class="dp-row"><div class="dp-label">'+t.detailStatus+'</div><div class="dp-val" style="text-transform:capitalize">'+getStatusLabel(item.status)+'</div></div>';
   html+='<div class="dp-row"><div class="dp-label">'+t.detailEffectiveDate+'</div><div class="dp-val">'+formatEffectiveDate(item)+'</div></div>';
   if(item.effectiveDateSource){

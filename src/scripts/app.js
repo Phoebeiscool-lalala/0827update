@@ -569,7 +569,7 @@ function applyFilters() {
   if (search) d = d.filter(r => (r.country + ' ' + getCountryName(r.country) + ' ' + r.law + ' ' + r.category + ' ' + r.summary + ' ' + r.summaryZh + ' ' + (r.summaryEs || '') + ' ' + r.flag + ' ' + r.modules.join(' ')).toLowerCase().includes(search));
   d.sort((a, b) => getCountryName(a.country).localeCompare(getCountryName(b.country)));
   filteredData = d;
-  renderTimeline(); renderLawCards(); updateKPIs(); renderUpcoming(); renderAISummary(); renderTicker();
+  renderTimeline(); renderLawCards(); updateKPIs(); renderUpcoming();  renderTicker();
   document.getElementById('libCount').textContent = i18n[currentLang].libCount.replace('{n}', d.length);
 }
 
@@ -697,19 +697,6 @@ function renderUpcoming() {
 }
 
 // ============ AI Summary ============
-function renderAISummary() {
-  const el = document.getElementById('aiSummary');
-  const thirty = new Date(); thirty.setDate(thirty.getDate() - 30);
-  const recent = laborLawData.filter(d => d.effectiveDate && new Date(d.effectiveDate) >= thirty);
-  const byCat = {}; recent.forEach(d => { byCat[d.category] = (byCat[d.category] || 0) + 1; });
-  const actionR = recent.filter(d => d.status === 'upcoming' || d.status === 'action-required').length;
-  const t = i18n[currentLang];
-  let html = t.aiSummary30d.replace('{n}', recent.length) + '<br>';
-  Object.entries(byCat).forEach(([cat, count]) => { html += '\u2022 ' + t.aiSummaryCat.replace('{count}', count).replace('{cat}', cat) + '<br>'; });
-  if (actionR) html += '\u2022 ' + t.aiSummaryHr.replace('{n}', actionR) + '<br>';
-  html += '\u2022 ' + t.aiSummaryInfo.replace('{n}', recent.length - actionR);
-  el.innerHTML = html;
-}
 
 // ============ Ticker ============
 function renderTicker() {
@@ -747,7 +734,6 @@ function openDetail(id) {
   html += '<div class="dp-row"><div class="dp-label">' + t.detailCategory + '</div><div class="dp-val"><span class="dp-tag mod">' + item.category + '</span></div></div>';
   html += '<div class="dp-row"><div class="dp-label">' + t.detailLevel1 + '</div><div class="dp-val">' + getCategoryLabel(item.primaryCategory) + '</div></div>';
   html += '<div class="dp-row"><div class="dp-label">' + t.detailLevel2 + '</div><div class="dp-val">' + item.secondaryCategory + '</div></div>';
-  html += '<div class="dp-row"><div class="dp-label">' + t.detailCategorySource + '</div><div class="dp-val">' + item.categorySource + '</div></div>';
   html += '<div class="dp-row"><div class="dp-label">' + t.detailStatus + '</div><div class="dp-val" style="text-transform:capitalize">' + item.status + '</div></div>';
   html += '<div class="dp-row"><div class="dp-label">' + t.detailEffectiveDate + '</div><div class="dp-val">' + formatEffectiveDate(item) + '</div></div>';
   if (item.effectiveDateSource) {
