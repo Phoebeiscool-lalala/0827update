@@ -670,8 +670,8 @@ async function callDeepSeek(messages, options = {}) {
 // MiChat is the target assistant provider. No real MiChat endpoint/credentials exist yet,
 // MiChat/Dify provider — configured with real API from mioffice.cn
 const MICHAT_CONFIG = {
-  apiUrl: 'https://llm.mioffice.cn/v1/chat/completions',
-  model: 'deepseek-chat',
+  apiUrl: 'https://api.llm.mioffice.cn/v1/chat/completions',
+  model: 'xiaomi/mimo-v2-flash',
   maxTokens: 2048,
   temperature: 0.7
 };
